@@ -6,7 +6,7 @@
 
     <groupId>org.sadtech.telegram</groupId>
     <artifactId>telegram-bot</artifactId>
-    <version>0.0.1-RELEASE</version>
+    <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <dependencies>
