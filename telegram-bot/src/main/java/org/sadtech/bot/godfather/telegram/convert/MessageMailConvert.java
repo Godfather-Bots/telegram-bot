@@ -1,4 +1,4 @@
-package org.sadtech.telegram.bot.convert;
+package org.sadtech.bot.godfather.telegram.convert;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

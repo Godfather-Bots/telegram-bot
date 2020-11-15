@@ -1,4 +1,4 @@
-package org.sadtech.telegram.bot.service;
+package org.sadtech.bot.godfather.telegram.service;
 
 /**
  * // TODO: 18.09.2020 Добавить описание.

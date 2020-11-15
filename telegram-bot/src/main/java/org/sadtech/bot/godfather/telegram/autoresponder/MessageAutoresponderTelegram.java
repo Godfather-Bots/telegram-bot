@@ -1,4 +1,4 @@
-package org.sadtech.telegram.bot.autoresponder;
+package org.sadtech.bot.godfather.telegram.autoresponder;
 
 import org.sadtech.autoresponder.repository.UnitPointerRepository;
 import org.sadtech.social.bot.GeneralAutoResponder;

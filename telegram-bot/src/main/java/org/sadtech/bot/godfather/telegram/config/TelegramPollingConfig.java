@@ -1,11 +1,11 @@
-package org.sadtech.telegram.bot.config;
+package org.sadtech.bot.godfather.telegram.config;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import org.sadtech.telegram.bot.ProxyConfig;
+import org.sadtech.bot.godfather.telegram.ProxyConfig;
 
 /**
  * TODO: Добавить описание класса.

@@ -1,10 +1,10 @@
-package org.sadtech.telegram.bot.listen;
+package org.sadtech.bot.godfather.telegram.listen;
 
 import lombok.extern.slf4j.Slf4j;
-import org.sadtech.telegram.bot.ProxyConfig;
-import org.sadtech.telegram.bot.TelegramBot;
-import org.sadtech.telegram.bot.TelegramPollingBot;
-import org.sadtech.telegram.bot.config.TelegramPollingConfig;
+import org.sadtech.bot.godfather.telegram.ProxyConfig;
+import org.sadtech.bot.godfather.telegram.TelegramBot;
+import org.sadtech.bot.godfather.telegram.TelegramPollingBot;
+import org.sadtech.bot.godfather.telegram.config.TelegramPollingConfig;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.meta.ApiContext;

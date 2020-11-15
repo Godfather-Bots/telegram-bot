@@ -1,4 +1,4 @@
-package org.sadtech.telegram.bot.config;
+package org.sadtech.bot.godfather.telegram.config;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

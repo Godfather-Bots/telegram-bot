@@ -1,9 +1,9 @@
-package org.sadtech.telegram.bot;
+package org.sadtech.bot.godfather.telegram;
 
 import lombok.NonNull;
-import org.sadtech.telegram.bot.config.TelegramPollingConfig;
-import org.sadtech.telegram.bot.listen.EventDistributor;
-import org.sadtech.telegram.bot.listen.EventDistributorImpl;
+import org.sadtech.bot.godfather.telegram.listen.EventDistributorImpl;
+import org.sadtech.bot.godfather.telegram.config.TelegramPollingConfig;
+import org.sadtech.bot.godfather.telegram.listen.EventDistributor;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;

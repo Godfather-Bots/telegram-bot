@@ -1,7 +1,8 @@
-package org.sadtech.telegram.bot.listen;
+package org.sadtech.bot.godfather.telegram.listen;
 
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.sadtech.bot.godfather.telegram.service.SendPreProcessing;
 import org.sadtech.social.core.domain.BoxAnswer;
 import org.sadtech.social.core.domain.keyboard.KeyBoard;
 import org.sadtech.social.core.domain.keyboard.KeyBoardButton;
@@ -9,7 +10,6 @@ import org.sadtech.social.core.domain.keyboard.KeyBoardLine;
 import org.sadtech.social.core.domain.keyboard.button.KeyBoardButtonText;
 import org.sadtech.social.core.service.sender.SendType;
 import org.sadtech.social.core.service.sender.Sending;
-import org.sadtech.telegram.bot.service.SendPreProcessing;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;

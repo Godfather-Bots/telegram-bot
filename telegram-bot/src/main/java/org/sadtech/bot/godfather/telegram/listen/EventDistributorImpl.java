@@ -1,9 +1,9 @@
-package org.sadtech.telegram.bot.listen;
+package org.sadtech.bot.godfather.telegram.listen;
 
 import lombok.NonNull;
 import org.sadtech.social.core.service.MailService;
-import org.sadtech.telegram.bot.convert.CallbackQueryConvert;
-import org.sadtech.telegram.bot.convert.MessageMailConvert;
+import org.sadtech.bot.godfather.telegram.convert.CallbackQueryConvert;
+import org.sadtech.bot.godfather.telegram.convert.MessageMailConvert;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;

@@ -1,59 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.sadtech.bot.godfather</groupId>
+        <artifactId>telegram</artifactId>
+        <version>0.0.1-RELEASE</version>
+    </parent>
 
-    <groupId>org.sadtech.telegram</groupId>
+    <groupId>org.sadtech.telegrambot</groupId>
     <artifactId>telegram-bot</artifactId>
     <version>0.0.1-RELEASE</version>
     <packaging>jar</packaging>
+
+    <name>Telegram Core</name>
+    <description>Allows you to create bots for Telegram</description>
+    <url>https://github.com/uPagge/telegram-bot</url>
 
     <dependencies>
         <dependency>
             <groupId>org.sadtech.social</groupId>
             <artifactId>social-bot</artifactId>
-            <version>1.0.0-RELEASE</version>
         </dependency>
 
         <dependency>
             <groupId>org.telegram</groupId>
             <artifactId>telegrambots</artifactId>
-            <version>4.9.1</version>
         </dependency>
 
         <dependency>
             <groupId>org.telegram</groupId>
             <artifactId>telegrambots-abilities</artifactId>
-            <version>4.6</version>
         </dependency>
 
         <dependency>
             <groupId>org.telegram</groupId>
             <artifactId>telegrambotsextensions</artifactId>
-            <version>4.4.0.1</version>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>8</source>
-                    <target>8</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
-
 
     <developers>
         <developer>
             <id>uPagge</id>
             <name>Struchkov Mark</name>
+            <email>upagge@ya.ru</email>
             <organization>SADTECH</organization>
-            <email>upagge@mail.ru</email>
+            <organizationUrl>https://sadtech.org</organizationUrl>
+            <url>https://uPagge.sadtech.org</url>
+            <roles>
+                <role>Project lead</role>
+            </roles>
+            <timezone>+3</timezone>
         </developer>
     </developers>
 
