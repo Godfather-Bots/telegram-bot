@@ -8,7 +8,6 @@
         <version>0.0.1-RELEASE</version>
     </parent>
 
-    <groupId>org.sadtech.telegrambot</groupId>
     <artifactId>telegram-bot</artifactId>
     <version>0.0.1-RELEASE</version>
     <packaging>jar</packaging>
