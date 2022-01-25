@@ -1,6 +1,6 @@
-package org.sadtech.bot.godfather.telegram.convert;
+package dev.struchkov.godfather.telegram.convert;
 
-import org.sadtech.social.core.domain.content.Mail;
+import dev.struchkov.godfather.context.domain.content.Mail;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
 import java.time.LocalDateTime;

@@ -1,4 +1,4 @@
-package org.sadtech.bot.godfather.telegram.listen;
+package dev.struchkov.godfather.telegram.listen;
 
 import lombok.NonNull;
 import org.telegram.telegrambots.meta.api.objects.Update;

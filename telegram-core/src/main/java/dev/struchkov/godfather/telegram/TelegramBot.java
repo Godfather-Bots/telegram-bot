@@ -1,7 +1,7 @@
-package org.sadtech.bot.godfather.telegram;
+package dev.struchkov.godfather.telegram;
 
 import lombok.NonNull;
-import org.sadtech.bot.godfather.telegram.listen.EventDistributorImpl;
+import dev.struchkov.godfather.telegram.listen.EventDistributorImpl;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
 /**

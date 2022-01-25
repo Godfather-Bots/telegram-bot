@@ -1,15 +1,15 @@
-package org.sadtech.bot.godfather.telegram.listen;
+package dev.struchkov.godfather.telegram.listen;
 
+import dev.struchkov.godfather.context.domain.BoxAnswer;
+import dev.struchkov.godfather.context.domain.keyboard.KeyBoard;
+import dev.struchkov.godfather.context.domain.keyboard.KeyBoardButton;
+import dev.struchkov.godfather.context.domain.keyboard.KeyBoardLine;
+import dev.struchkov.godfather.context.domain.keyboard.button.KeyBoardButtonText;
+import dev.struchkov.godfather.context.service.sender.SendType;
+import dev.struchkov.godfather.context.service.sender.Sending;
+import dev.struchkov.godfather.telegram.service.SendPreProcessing;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.sadtech.bot.godfather.telegram.service.SendPreProcessing;
-import org.sadtech.social.core.domain.BoxAnswer;
-import org.sadtech.social.core.domain.keyboard.KeyBoard;
-import org.sadtech.social.core.domain.keyboard.KeyBoardButton;
-import org.sadtech.social.core.domain.keyboard.KeyBoardLine;
-import org.sadtech.social.core.domain.keyboard.button.KeyBoardButtonText;
-import org.sadtech.social.core.service.sender.SendType;
-import org.sadtech.social.core.service.sender.Sending;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
@@ -64,7 +64,7 @@ public class TelegramSender implements Sending {
                     keyBoard.getKeyBoardLines()
                             .stream()
                             .map(this::convertLint)
-                            .collect(Collectors.toList())
+                            .toList()
             );
             return inlineKeyboardMarkup;
         }

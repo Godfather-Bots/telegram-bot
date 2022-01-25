@@ -1,4 +1,4 @@
-package org.sadtech.bot.godfather.telegram;
+package dev.struchkov.godfather.telegram;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

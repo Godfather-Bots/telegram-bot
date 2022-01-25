@@ -1,16 +1,15 @@
-package org.sadtech.bot.godfather.telegram.listen;
+package dev.struchkov.godfather.telegram.listen;
 
+import dev.struchkov.godfather.telegram.ProxyConfig;
+import dev.struchkov.godfather.telegram.TelegramBot;
+import dev.struchkov.godfather.telegram.TelegramPollingBot;
+import dev.struchkov.godfather.telegram.config.TelegramPollingConfig;
 import lombok.extern.slf4j.Slf4j;
-import org.sadtech.bot.godfather.telegram.ProxyConfig;
-import org.sadtech.bot.godfather.telegram.TelegramBot;
-import org.sadtech.bot.godfather.telegram.TelegramPollingBot;
-import org.sadtech.bot.godfather.telegram.config.TelegramPollingConfig;
-import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
-import org.telegram.telegrambots.meta.ApiContext;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
@@ -22,10 +21,6 @@ import java.net.PasswordAuthentication;
  */
 @Slf4j
 public class TelegramConnect {
-
-    static {
-        ApiContextInitializer.init();
-    }
 
     private TelegramBot telegramBot;
 
@@ -66,21 +61,27 @@ public class TelegramConnect {
             }
         }
 
-        TelegramBotsApi botapi = new TelegramBotsApi();
+        final TelegramBotsApi botapi;
         try {
             if (proxyConfig != null && proxyConfig.getHost() != null) {
                 System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2");
                 System.setProperty("javax.net.debug", "all");
                 log.info(System.getProperty("https.protocols"));
-                DefaultBotOptions botOptions = ApiContext.getInstance(DefaultBotOptions.class);
+                DefaultBotOptions botOptions = new DefaultBotOptions();
                 botOptions.setProxyHost(proxyConfig.getHost());
                 botOptions.setProxyPort(proxyConfig.getPort());
                 botOptions.setProxyType(convertProxyType(proxyConfig.getType()));
+
+
                 final TelegramPollingBot bot = new TelegramPollingBot(telegramPollingConfig, botOptions);
+
+
+                botapi = new TelegramBotsApi(DefaultBotSession.class);
                 botapi.registerBot(bot);
                 this.telegramBot = bot;
             } else {
                 final TelegramPollingBot bot = new TelegramPollingBot(telegramPollingConfig);
+                botapi = new TelegramBotsApi(DefaultBotSession.class);
                 botapi.registerBot(bot);
                 this.telegramBot = bot;
             }

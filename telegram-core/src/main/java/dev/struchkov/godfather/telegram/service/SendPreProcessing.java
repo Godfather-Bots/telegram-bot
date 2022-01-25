@@ -1,4 +1,4 @@
-package org.sadtech.bot.godfather.telegram.service;
+package dev.struchkov.godfather.telegram.service;
 
 /**
  * // TODO: 18.09.2020 Добавить описание.

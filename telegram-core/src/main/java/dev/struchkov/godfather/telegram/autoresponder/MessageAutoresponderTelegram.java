@@ -1,11 +1,11 @@
-package org.sadtech.bot.godfather.telegram.autoresponder;
+package dev.struchkov.godfather.telegram.autoresponder;
 
+import dev.struchkov.godfather.context.domain.content.Mail;
+import dev.struchkov.godfather.context.service.MessageService;
+import dev.struchkov.godfather.context.service.sender.Sending;
+import dev.struchkov.godfather.core.GeneralAutoResponder;
+import dev.struchkov.godfather.core.domain.unit.MainUnit;
 import org.sadtech.autoresponder.repository.UnitPointerRepository;
-import org.sadtech.social.bot.GeneralAutoResponder;
-import org.sadtech.social.bot.domain.unit.MainUnit;
-import org.sadtech.social.core.domain.content.Mail;
-import org.sadtech.social.core.service.MessageService;
-import org.sadtech.social.core.service.sender.Sending;
 
 import java.util.Set;
 

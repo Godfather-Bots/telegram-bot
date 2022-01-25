@@ -1,5 +1,6 @@
-package org.sadtech.bot.godfather.telegram.config;
+package dev.struchkov.godfather.telegram.config;
 
+import dev.struchkov.godfather.telegram.ProxyConfig;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,18 +10,20 @@ import lombok.NonNull;
 /**
  * TODO: Добавить описание класса.
  *
- * @author upagge [12.02.2020]
+ * @author upagge [18.08.2019]
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TelegramWebHookConfig {
+public class TelegramPollingConfig {
 
     @NonNull
     private String botUsername;
 
     @NonNull
     private String botToken;
+
+    private ProxyConfig proxyConfig = new ProxyConfig();
 
 }

@@ -3,23 +3,25 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.sadtech.bot.godfather</groupId>
-        <artifactId>telegram</artifactId>
-        <version>0.0.1-RELEASE</version>
+        <groupId>dev.struchkov.godfather</groupId>
+        <artifactId>telegram-bot</artifactId>
+        <version>0.0.2</version>
     </parent>
 
-    <artifactId>telegram-bot</artifactId>
-    <version>0.0.1-RELEASE</version>
-    <packaging>jar</packaging>
+    <artifactId>telegram-core</artifactId>
+    <version>0.0.2</version>
 
     <name>Telegram Core</name>
     <description>Allows you to create bots for Telegram</description>
-    <url>https://github.com/uPagge/telegram-bot</url>
+
+    <properties>
+        <skip.deploy>false</skip.deploy>
+    </properties>
 
     <dependencies>
         <dependency>
-            <groupId>org.sadtech.social</groupId>
-            <artifactId>social-bot</artifactId>
+            <groupId>dev.struchkov.godfather</groupId>
+            <artifactId>bot-core</artifactId>
         </dependency>
 
         <dependency>
@@ -38,19 +40,20 @@
         </dependency>
     </dependencies>
 
-    <developers>
-        <developer>
-            <id>uPagge</id>
-            <name>Struchkov Mark</name>
-            <email>upagge@ya.ru</email>
-            <organization>SADTECH</organization>
-            <organizationUrl>https://sadtech.org</organizationUrl>
-            <url>https://uPagge.sadtech.org</url>
-            <roles>
-                <role>Project lead</role>
-            </roles>
-            <timezone>+3</timezone>
-        </developer>
-    </developers>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <configuration>
+                    <skipNexusStagingDeployMojo>${skip.deploy}</skipNexusStagingDeployMojo>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
