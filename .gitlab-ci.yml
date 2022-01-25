@@ -1,0 +1,17 @@
+image: maven:3.8.4-openjdk-17
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=./.m2/repository"
+
+stages:
+  - deploy
+
+deploy:
+  stage: deploy
+  only:
+    - /^release-.*$/
+  except:
+    - branches
+  before_script:
+    - gpg --pinentry-mode loopback --passphrase $GPG_PASSPHRASE --import $GPG_PRIVATE_KEY
+  script:
+    - 'mvn --settings $MAVEN_SETTINGS -U -P ossrh,release clean deploy'
