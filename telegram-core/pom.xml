@@ -5,11 +5,11 @@
     <parent>
         <groupId>dev.struchkov.godfather</groupId>
         <artifactId>telegram-bot</artifactId>
-        <version>0.0.2</version>
+        <version>0.0.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>telegram-core</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.3-SNAPSHOT</version>
 
     <name>Telegram Core</name>
     <description>Allows you to create bots for Telegram</description>

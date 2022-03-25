@@ -5,7 +5,7 @@
 
     <groupId>dev.struchkov.godfather</groupId>
     <artifactId>telegram-bot</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -33,7 +33,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <godfather.core.ver>0.0.2</godfather.core.ver>
+        <godfather.core.ver>0.0.3-SNAPSHOT</godfather.core.ver>
         <telegrambots.ver>5.4.0.1</telegrambots.ver>
 
         <plugin.maven.compiler.ver>3.9.0</plugin.maven.compiler.ver>

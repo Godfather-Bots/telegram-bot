@@ -1,0 +1,20 @@
+postgres:
+  image: 192.168.235.157:8182/postgres:13.1-alpine
+  container_name: theater-postgres
+  hostname: postgres
+  restart: on-failure
+  networks:
+    - network
+  ports:
+    - 5433:5432
+  volumes:
+    - ./volume/db/01-init.sh:/docker-entrypoint-initdb.d/01-init.sh
+    - ./volume/db/storage:/var/lib/postgresql/data:z
+  environment:
+    - POSTGRES_USER=${POSTGRES_USER}
+    - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    - APP_DB_USER=${DATASOURCE_USERNAME}
+    - APP_DB_PASS=${DATASOURCE_PASSWORD}
+
+volumes:
+  gitlab-notify:
