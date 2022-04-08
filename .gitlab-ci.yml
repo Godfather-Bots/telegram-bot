@@ -1,4 +1,4 @@
-image: maven:3.8.4-openjdk-17
+image: maven:3.8.5-openjdk-17
 variables:
   MAVEN_OPTS: "-Dmaven.repo.local=./.m2/repository"
 
@@ -8,7 +8,7 @@ stages:
 deploy:
   stage: deploy
   only:
-    - /^release-.*$/
+    - /^v.*$/
   except:
     - branches
   before_script:
