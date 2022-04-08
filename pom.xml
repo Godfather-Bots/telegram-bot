@@ -34,14 +34,13 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <godfather.core.ver>0.0.3-SNAPSHOT</godfather.core.ver>
-        <telegrambots.ver>5.4.0.1</telegrambots.ver>
+        <telegrambots.ver>5.7.1</telegrambots.ver>
 
         <plugin.maven.compiler.ver>3.9.0</plugin.maven.compiler.ver>
         <plugin.nexus.staging.ver>1.6.12</plugin.nexus.staging.ver>
         <plugin.maven.source.ver>3.2.1</plugin.maven.source.ver>
-        <plugin.maven.javadoc.ver>3.3.1</plugin.maven.javadoc.ver>
+        <plugin.maven.javadoc.ver>3.3.2</plugin.maven.javadoc.ver>
         <plugin.maven.gpg.ver>3.0.1</plugin.maven.gpg.ver>
-        <xstream.ver>1.4.15</xstream.ver>
     </properties>
 
     <dependencyManagement>
@@ -142,6 +141,14 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
         </plugins>
     </build>
 
@@ -180,7 +187,7 @@
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
 
@@ -189,7 +196,7 @@
             <id>uPagge</id>
             <name>Struchkov Mark</name>
             <email>mark@struchkov.dev</email>
-            <url>https://mark.struchkov.dev</url>
+            <url>https://struchkov.dev</url>
         </developer>
     </developers>
 
