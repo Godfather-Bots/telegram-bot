@@ -1,11 +1,11 @@
 package dev.struchkov.godfather.telegram.listen;
 
-import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 public interface EventDistributor {
 
-    void processing(@NonNull Update update);
+    void processing(@NotNull Update update);
 
 }
 

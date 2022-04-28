@@ -1,9 +1,9 @@
 package dev.struchkov.godfather.telegram.listen;
 
 import dev.struchkov.godfather.context.service.MailService;
-import lombok.NonNull;
 import dev.struchkov.godfather.telegram.convert.CallbackQueryConvert;
 import dev.struchkov.godfather.telegram.convert.MessageMailConvert;
+import org.jetbrains.annotations.NotNull;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -23,7 +23,7 @@ public class EventDistributorImpl implements EventDistributor {
     }
 
     @Override
-    public void processing(@NonNull Update update) {
+    public void processing(@NotNull Update update) {
         final Message message = update.getMessage();
         final CallbackQuery callbackQuery = update.getCallbackQuery();
         if (message != null) {

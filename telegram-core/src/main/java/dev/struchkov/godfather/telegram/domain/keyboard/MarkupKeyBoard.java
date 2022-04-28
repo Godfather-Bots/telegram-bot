@@ -2,13 +2,10 @@ package dev.struchkov.godfather.telegram.domain.keyboard;
 
 import dev.struchkov.godfather.context.domain.keyboard.KeyBoardLine;
 import dev.struchkov.godfather.context.domain.keyboard.simple.SimpleKeyBoard;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Singular;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Getter
 public class MarkupKeyBoard extends SimpleKeyBoard {
 
     public static final String TYPE = "MARKUP";
@@ -25,17 +22,23 @@ public class MarkupKeyBoard extends SimpleKeyBoard {
 
     private String inputFieldPlaceholder;
 
-    @Builder
-    protected MarkupKeyBoard(
-            @Singular(value = "line") List<KeyBoardLine> keyBoardLines,
-            boolean oneTime,
-            boolean resizeKeyboard,
-            String inputFieldPlaceholder
-    ) {
-        super(keyBoardLines);
-        this.oneTime = oneTime;
-        this.resizeKeyboard = resizeKeyboard;
-        this.inputFieldPlaceholder = inputFieldPlaceholder;
+    private MarkupKeyBoard(Builder builder) {
+        super(builder.lines);
+        oneTime = builder.oneTime;
+        resizeKeyboard = builder.resizeKeyboard;
+        inputFieldPlaceholder = builder.inputFieldPlaceholder;
+    }
+
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    public boolean isResizeKeyboard() {
+        return resizeKeyboard;
+    }
+
+    public String getInputFieldPlaceholder() {
+        return inputFieldPlaceholder;
     }
 
     public boolean isOneTime() {
@@ -47,4 +50,42 @@ public class MarkupKeyBoard extends SimpleKeyBoard {
         return TYPE;
     }
 
+    public static final class Builder {
+        private List<KeyBoardLine> lines = new ArrayList<>();
+        private boolean oneTime = true;
+        private boolean resizeKeyboard;
+        private String inputFieldPlaceholder;
+
+        private Builder() {
+        }
+
+        public Builder lines(List<KeyBoardLine> val) {
+            lines = val;
+            return this;
+        }
+
+        public Builder line(KeyBoardLine val) {
+            lines.add(val);
+            return this;
+        }
+
+        public Builder oneTime(boolean val) {
+            oneTime = val;
+            return this;
+        }
+
+        public Builder resizeKeyboard(boolean val) {
+            resizeKeyboard = val;
+            return this;
+        }
+
+        public Builder inputFieldPlaceholder(String val) {
+            inputFieldPlaceholder = val;
+            return this;
+        }
+
+        public MarkupKeyBoard build() {
+            return new MarkupKeyBoard(this);
+        }
+    }
 }

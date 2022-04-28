@@ -3,8 +3,6 @@ package dev.struchkov.godfather.telegram.convert;
 import dev.struchkov.godfather.context.domain.content.Mail;
 import dev.struchkov.godfather.context.domain.content.attachment.Attachment;
 import dev.struchkov.godfather.context.domain.content.attachment.Link;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 
@@ -15,23 +13,28 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static dev.struchkov.haiti.utils.Exceptions.utilityClass;
+
 /**
  * TODO: Добавить описание класса.
  *
  * @author upagge [18.08.2019]
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class MessageMailConvert {
+public final class MessageMailConvert {
+
+    public MessageMailConvert() {
+        utilityClass();
+    }
 
     public static Mail apply(Message message) {
-        Mail mail = new Mail();
+        final Mail mail = new Mail();
         mail.setPersonId(message.getChatId());
         mail.setAddDate(LocalDateTime.now());
         mail.setText(message.getText());
         mail.setCreateDate(LocalDateTime.ofInstant(Instant.ofEpochSecond(message.getDate()), ZoneId.systemDefault()));
         mail.setFirstName(message.getChat().getFirstName());
         mail.setLastName(message.getChat().getLastName());
-        List<MessageEntity> entities = message.getEntities();
+        final List<MessageEntity> entities = message.getEntities();
         if (entities != null) {
             mail.setAttachments(convertAttachments(entities));
         }
@@ -44,7 +47,7 @@ public class MessageMailConvert {
     }
 
     private static List<Attachment> convertAttachments(List<MessageEntity> entities) {
-        final List<Attachment> attachments = new ArrayList();
+        final List<Attachment> attachments = new ArrayList<>();
         for (MessageEntity entity : entities) {
             String type = entity.getType();
             if ("text_link".equals(type)) {

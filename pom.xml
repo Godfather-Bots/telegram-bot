@@ -33,13 +33,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <godfather.core.ver>0.0.4-SNAPSHOT</godfather.core.ver>
+        <godfather.core.ver>0.0.4</godfather.core.ver>
         <telegrambots.ver>6.0.1</telegrambots.ver>
 
-        <plugin.maven.compiler.ver>3.9.0</plugin.maven.compiler.ver>
-        <plugin.nexus.staging.ver>1.6.12</plugin.nexus.staging.ver>
+        <plugin.maven.compiler.ver>3.10.1</plugin.maven.compiler.ver>
+        <plugin.nexus.staging.ver>1.6.13</plugin.nexus.staging.ver>
         <plugin.maven.source.ver>3.2.1</plugin.maven.source.ver>
-        <plugin.maven.javadoc.ver>3.3.2</plugin.maven.javadoc.ver>
+        <plugin.maven.javadoc.ver>3.4.0</plugin.maven.javadoc.ver>
         <plugin.maven.gpg.ver>3.0.1</plugin.maven.gpg.ver>
     </properties>
 

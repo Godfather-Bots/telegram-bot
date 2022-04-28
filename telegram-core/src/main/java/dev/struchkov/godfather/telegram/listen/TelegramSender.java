@@ -12,8 +12,8 @@ import dev.struchkov.godfather.telegram.domain.keyboard.InlineKeyBoard;
 import dev.struchkov.godfather.telegram.domain.keyboard.MarkupKeyBoard;
 import dev.struchkov.godfather.telegram.domain.keyboard.button.ButtonUrl;
 import dev.struchkov.godfather.telegram.service.SendPreProcessing;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -36,16 +36,21 @@ import java.util.Map;
  *
  * @author upagge [15/07/2019]
  */
-@Slf4j
 public class TelegramSender implements Sending {
+
+    private static final Logger log = LoggerFactory.getLogger(TelegramSender.class);
 
     private final AbsSender absSender;
     private Map<Long, Integer> map = new HashMap<>();
-    @Setter
+
     private SendPreProcessing sendPreProcessing;
 
     public TelegramSender(TelegramConnect telegramConnect) {
         this.absSender = telegramConnect.getAdsSender();
+    }
+
+    public void setSendPreProcessing(SendPreProcessing sendPreProcessing) {
+        this.sendPreProcessing = sendPreProcessing;
     }
 
     public void send(Long telegramId, BoxAnswer boxAnswer) {
@@ -90,7 +95,7 @@ public class TelegramSender implements Sending {
                     return convertSimpleKeyBoard((SimpleKeyBoard) keyBoard);
             }
         }
-        throw new RuntimeException("Ошибка преобразования клавиаутры");
+        return null;
     }
 
     private ReplyKeyboard convertSimpleKeyBoard(SimpleKeyBoard keyBoard) {

@@ -4,7 +4,8 @@ import dev.struchkov.godfather.telegram.ProxyConfig;
 import dev.struchkov.godfather.telegram.TelegramBot;
 import dev.struchkov.godfather.telegram.TelegramPollingBot;
 import dev.struchkov.godfather.telegram.config.TelegramPollingConfig;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.bots.AbsSender;
@@ -19,8 +20,9 @@ import java.net.PasswordAuthentication;
  *
  * @author upagge [30.01.2020]
  */
-@Slf4j
 public class TelegramConnect {
+
+    private static final Logger log = LoggerFactory.getLogger(TelegramConnect.class);
 
     private TelegramBot telegramBot;
 

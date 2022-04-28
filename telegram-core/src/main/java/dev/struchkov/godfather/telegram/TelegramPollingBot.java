@@ -1,9 +1,9 @@
 package dev.struchkov.godfather.telegram;
 
-import lombok.NonNull;
-import dev.struchkov.godfather.telegram.listen.EventDistributorImpl;
 import dev.struchkov.godfather.telegram.config.TelegramPollingConfig;
 import dev.struchkov.godfather.telegram.listen.EventDistributor;
+import dev.struchkov.godfather.telegram.listen.EventDistributorImpl;
+import org.jetbrains.annotations.NotNull;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -53,7 +53,7 @@ public class TelegramPollingBot extends TelegramLongPollingBot implements Telegr
     }
 
     @Override
-    public void initEventDistributor(@NonNull EventDistributorImpl eventDistributor) {
+    public void initEventDistributor(@NotNull EventDistributorImpl eventDistributor) {
         this.eventDistributor = eventDistributor;
     }
 

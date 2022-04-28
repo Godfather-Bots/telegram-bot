@@ -1,29 +1,38 @@
 package dev.struchkov.godfather.telegram.config;
 
 import dev.struchkov.godfather.telegram.ProxyConfig;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 /**
  * TODO: Добавить описание класса.
  *
  * @author upagge [18.08.2019]
  */
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class TelegramPollingConfig {
 
-    @NonNull
-    private String botUsername;
+    private final String botUsername;
+    private final String botToken;
 
-    @NonNull
-    private String botToken;
+    private ProxyConfig proxyConfig;
 
-    private ProxyConfig proxyConfig = new ProxyConfig();
+    public TelegramPollingConfig(String botUsername, String botToken) {
+        this.botUsername = botUsername;
+        this.botToken = botToken;
+    }
+
+    public String getBotUsername() {
+        return botUsername;
+    }
+
+    public String getBotToken() {
+        return botToken;
+    }
+
+    public ProxyConfig getProxyConfig() {
+        return proxyConfig;
+    }
+
+    public void setProxyConfig(ProxyConfig proxyConfig) {
+        this.proxyConfig = proxyConfig;
+    }
 
 }
