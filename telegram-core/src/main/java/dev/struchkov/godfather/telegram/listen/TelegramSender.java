@@ -12,6 +12,9 @@ import dev.struchkov.godfather.telegram.domain.keyboard.InlineKeyBoard;
 import dev.struchkov.godfather.telegram.domain.keyboard.MarkupKeyBoard;
 import dev.struchkov.godfather.telegram.domain.keyboard.button.ButtonUrl;
 import dev.struchkov.godfather.telegram.service.SendPreProcessing;
+import dev.struchkov.haiti.context.exception.ConvertException;
+import dev.struchkov.haiti.utils.Inspector;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -30,6 +33,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static dev.struchkov.haiti.utils.Inspector.isNotNull;
 
 /**
  * TODO: Добавить описание класса.
@@ -53,7 +58,8 @@ public class TelegramSender implements Sending {
         this.sendPreProcessing = sendPreProcessing;
     }
 
-    public void send(Long telegramId, BoxAnswer boxAnswer) {
+    public void send(@NotNull Long telegramId, @NotNull BoxAnswer boxAnswer) {
+        isNotNull(telegramId, boxAnswer);
         try {
             if (boxAnswer.isReplace() && map.containsKey(telegramId)) {
                 final EditMessageText editMessageText = new EditMessageText();
@@ -109,26 +115,31 @@ public class TelegramSender implements Sending {
     }
 
     private ReplyKeyboard convertMarkupKeyBoard(MarkupKeyBoard keyBoard) {
-        final ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-        keyboardMarkup.setOneTimeKeyboard(keyBoard.isOneTime());
-        keyboardMarkup.setInputFieldPlaceholder(keyBoard.getInputFieldPlaceholder());
-        keyboardMarkup.setResizeKeyboard(keyBoard.isResizeKeyboard());
-        keyboardMarkup.setKeyboard(
-                keyBoard.getLines().stream()
-                        .map(this::convertMarkupLine)
-                        .toList()
-        );
-        return keyboardMarkup;
+        if (keyBoard != null) {
+            final ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+            keyboardMarkup.setOneTimeKeyboard(keyBoard.isOneTime());
+            keyboardMarkup.setInputFieldPlaceholder(keyBoard.getInputFieldPlaceholder());
+            keyboardMarkup.setResizeKeyboard(keyBoard.isResizeKeyboard());
+            keyboardMarkup.setKeyboard(
+                    keyBoard.getLines().stream()
+                            .map(this::convertMarkupLine)
+                            .toList()
+            );
+            return keyboardMarkup;
+        }
     }
 
     private InlineKeyboardMarkup convertInlineKeyBoard(InlineKeyBoard keyBoard) {
-        final InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        inlineKeyboardMarkup.setKeyboard(
-                keyBoard.getLines().stream()
-                        .map(this::convertInlineLine)
-                        .toList()
-        );
-        return inlineKeyboardMarkup;
+        if (keyBoard != null) {
+            final InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+            inlineKeyboardMarkup.setKeyboard(
+                    keyBoard.getLines().stream()
+                            .map(this::convertInlineLine)
+                            .toList()
+            );
+            return inlineKeyboardMarkup;
+        }
+        return null;
     }
 
     private List<InlineKeyboardButton> convertInlineLine(KeyBoardLine line) {
@@ -155,7 +166,7 @@ public class TelegramSender implements Sending {
                 button.setUrl(buttonUrl.getUrl());
                 button.setText(buttonUrl.getLabel());
             }
-            default -> throw new RuntimeException("Ошибка преобразования кнопки");
+            default -> throw new ConvertException("Ошибка преобразования кнопки");
         }
         return button;
     }
@@ -166,8 +177,9 @@ public class TelegramSender implements Sending {
             case SimpleButton.TYPE -> {
                 final SimpleButton simpleButton = (SimpleButton) keyBoardButton;
                 button.setText(simpleButton.getLabel());
+                Inspector.isNull(simpleButton.getCallbackData(), ConvertException.supplier("CallbackData поддерживает только Inline клавитаура"));
             }
-            default -> throw new RuntimeException("Ошибка преобразования кнопки");
+            default -> throw new ConvertException("Ошибка преобразования кнопки");
         }
         return button;
     }
