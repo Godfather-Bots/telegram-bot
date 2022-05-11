@@ -127,6 +127,7 @@ public class TelegramSender implements Sending {
             );
             return keyboardMarkup;
         }
+        return null;
     }
 
     private InlineKeyboardMarkup convertInlineKeyBoard(InlineKeyBoard keyBoard) {
