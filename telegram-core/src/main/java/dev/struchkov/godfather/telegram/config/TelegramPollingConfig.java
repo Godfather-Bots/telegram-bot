@@ -9,13 +9,24 @@ import dev.struchkov.godfather.telegram.ProxyConfig;
  */
 public class TelegramPollingConfig {
 
-    private final String botUsername;
-    private final String botToken;
+    private String botUsername;
+    private String botToken;
 
     private ProxyConfig proxyConfig;
 
     public TelegramPollingConfig(String botUsername, String botToken) {
         this.botUsername = botUsername;
+        this.botToken = botToken;
+    }
+
+    public TelegramPollingConfig() {
+    }
+
+    public void setBotUsername(String botUsername) {
+        this.botUsername = botUsername;
+    }
+
+    public void setBotToken(String botToken) {
         this.botToken = botToken;
     }
 

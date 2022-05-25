@@ -22,6 +22,10 @@ public class InlineKeyBoard extends SimpleKeyBoard {
         return new Builder();
     }
 
+    public static InlineKeyBoard inlineKeyBoard(KeyBoardLine keyBoardLine) {
+        return builder().line(keyBoardLine).build();
+    }
+
     @Override
     public String getType() {
         return TYPE;
