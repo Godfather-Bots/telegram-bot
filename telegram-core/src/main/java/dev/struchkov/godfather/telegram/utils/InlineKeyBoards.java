@@ -119,7 +119,7 @@ public final class InlineKeyBoards {
     /**
      * Возвращает клавиатуру формата 1xN сформированную из списка кнопок, где N - количество кнопок в списке
      *
-     * @param simpleButtons Список кнопок
+     * @param buttons Список кнопок
      * @return {@link SimpleKeyBoard}
      */
     public static InlineKeyBoard verticalMenuButton(List<KeyBoardButton> buttons) {
