@@ -45,6 +45,8 @@ public class TelegramSender implements Sending {
 
     private static final Logger log = LoggerFactory.getLogger(TelegramSender.class);
 
+    private static final String ERROR_REPLACE_MESSAGE = "Bad Request: message to edit not found";
+
     private final AbsSender absSender;
     private Map<Long, Integer> map = new HashMap<>();
 
@@ -62,27 +64,44 @@ public class TelegramSender implements Sending {
         isNotNull(telegramId, boxAnswer);
         try {
             if (boxAnswer.isReplace() && map.containsKey(telegramId)) {
-                final EditMessageText editMessageText = new EditMessageText();
-                editMessageText.setChatId(String.valueOf(telegramId));
-                editMessageText.setMessageId(map.get(telegramId));
-                editMessageText.enableMarkdown(true);
-                editMessageText.setText(boxAnswer.getMessage());
-                editMessageText.setReplyMarkup(convertInlineKeyBoard((InlineKeyBoard) boxAnswer.getKeyBoard()));
-                absSender.execute(editMessageText);
+                replaceMessage(telegramId, boxAnswer);
             } else {
-                final SendMessage sendMessage = new SendMessage();
-                sendMessage.enableMarkdown(true);
-                sendMessage.setChatId(String.valueOf(telegramId));
-                sendMessage.setText(
-                        sendPreProcessing != null
-                                ? sendPreProcessing.pretreatment(boxAnswer.getMessage())
-                                : boxAnswer.getMessage()
-                );
-                sendMessage.setReplyMarkup(convertKeyBoard(boxAnswer.getKeyBoard()));
-
-                final Message execute = absSender.execute(sendMessage);
-                map.put(telegramId, execute.getMessageId());
+                sendMessage(telegramId, boxAnswer);
             }
+        } catch (TelegramApiRequestException e) {
+            log.error(e.getApiResponse());
+            if (ERROR_REPLACE_MESSAGE.equals(e.getApiResponse())) {
+                sendMessage(telegramId, boxAnswer);
+            }
+        } catch (TelegramApiException e) {
+            log.error(e.getMessage());
+        }
+    }
+
+    private void replaceMessage(@NotNull Long telegramId, @NotNull BoxAnswer boxAnswer) throws TelegramApiException {
+        final EditMessageText editMessageText = new EditMessageText();
+        editMessageText.setChatId(String.valueOf(telegramId));
+        editMessageText.setMessageId(map.get(telegramId));
+        editMessageText.enableMarkdown(true);
+        editMessageText.setText(boxAnswer.getMessage());
+        editMessageText.setReplyMarkup(convertInlineKeyBoard((InlineKeyBoard) boxAnswer.getKeyBoard()));
+        absSender.execute(editMessageText);
+    }
+
+    private void sendMessage(@NotNull Long telegramId, @NotNull BoxAnswer boxAnswer) {
+        final SendMessage sendMessage = new SendMessage();
+        sendMessage.enableMarkdown(true);
+        sendMessage.setChatId(String.valueOf(telegramId));
+        sendMessage.setText(
+                sendPreProcessing != null
+                        ? sendPreProcessing.pretreatment(boxAnswer.getMessage())
+                        : boxAnswer.getMessage()
+        );
+        sendMessage.setReplyMarkup(convertKeyBoard(boxAnswer.getKeyBoard()));
+        try {
+            final Message execute = absSender.execute(sendMessage);
+
+            map.put(telegramId, execute.getMessageId());
         } catch (TelegramApiRequestException e) {
             log.error(e.getApiResponse());
         } catch (TelegramApiException e) {
