@@ -2,14 +2,12 @@ package dev.struchkov.godfather.telegram;
 
 import dev.struchkov.godfather.telegram.config.TelegramPollingConfig;
 import dev.struchkov.godfather.telegram.listen.EventDistributor;
-import dev.struchkov.godfather.telegram.listen.EventDistributorImpl;
+import dev.struchkov.godfather.telegram.listen.EventDistributorService;
 import org.jetbrains.annotations.NotNull;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.bots.AbsSender;
-
-import java.util.Optional;
 
 /**
  * TODO: Добавить описание класса.
@@ -32,8 +30,8 @@ public class TelegramPollingBot extends TelegramLongPollingBot implements Telegr
 
     @Override
     public void onUpdateReceived(Update update) {
-        if (eventDistributor != null) {
-            Optional.ofNullable(update).ifPresent(newUpdate -> eventDistributor.processing(update));
+        if (update != null && eventDistributor != null) {
+            eventDistributor.processing(update);
         }
     }
 
@@ -53,7 +51,7 @@ public class TelegramPollingBot extends TelegramLongPollingBot implements Telegr
     }
 
     @Override
-    public void initEventDistributor(@NotNull EventDistributorImpl eventDistributor) {
+    public void initEventDistributor(@NotNull EventDistributorService eventDistributor) {
         this.eventDistributor = eventDistributor;
     }
 

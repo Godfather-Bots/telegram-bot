@@ -14,7 +14,7 @@ public class ButtonUrl implements KeyBoardButton {
         this.url = url;
     }
 
-    public static ButtonUrl link(String label, String url) {
+    public static ButtonUrl buttonUrl(String label, String url) {
         return new ButtonUrl(label, url);
     }
 

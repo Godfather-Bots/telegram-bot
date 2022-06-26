@@ -1,6 +1,6 @@
 package dev.struchkov.godfather.telegram;
 
-import dev.struchkov.godfather.telegram.listen.EventDistributorImpl;
+import dev.struchkov.godfather.telegram.listen.EventDistributorService;
 import org.jetbrains.annotations.NotNull;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
@@ -13,6 +13,6 @@ public interface TelegramBot {
 
     AbsSender getAdsSender();
 
-    void initEventDistributor(@NotNull EventDistributorImpl eventDistributor);
+    void initEventDistributor(@NotNull EventDistributorService eventDistributor);
 
 }

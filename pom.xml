@@ -33,7 +33,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <godfather.core.ver>0.0.6</godfather.core.ver>
+        <godfather.core.ver>0.0.7</godfather.core.ver>
         <telegrambots.ver>6.0.1</telegrambots.ver>
 
         <plugin.maven.compiler.ver>3.10.1</plugin.maven.compiler.ver>

@@ -1,21 +1,22 @@
 package dev.struchkov.godfather.telegram.domain.keyboard;
 
+import dev.struchkov.godfather.context.domain.keyboard.KeyBoard;
 import dev.struchkov.godfather.context.domain.keyboard.KeyBoardLine;
-import dev.struchkov.godfather.context.domain.keyboard.simple.SimpleKeyBoard;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class InlineKeyBoard extends SimpleKeyBoard {
+public class InlineKeyBoard implements KeyBoard {
 
     public static final String TYPE = "INLINE";
+    protected List<KeyBoardLine> lines = new ArrayList<>();
 
     public InlineKeyBoard(List<KeyBoardLine> lines) {
-        super(lines);
+        this.lines = lines;
     }
 
     private InlineKeyBoard(Builder builder) {
-        super(builder.lines);
+        this.lines = builder.lines;
     }
 
     public static Builder builder() {
@@ -26,7 +27,10 @@ public class InlineKeyBoard extends SimpleKeyBoard {
         return builder().line(keyBoardLine).build();
     }
 
-    @Override
+    public List<KeyBoardLine> getLines() {
+        return lines;
+    }
+
     public String getType() {
         return TYPE;
     }

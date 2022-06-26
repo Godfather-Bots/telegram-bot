@@ -1,13 +1,12 @@
 package dev.struchkov.godfather.telegram.autoresponder;
 
-import dev.struchkov.autoresponder.repository.UnitPointerRepository;
 import dev.struchkov.godfather.context.domain.content.Mail;
-import dev.struchkov.godfather.context.service.MessageService;
+import dev.struchkov.godfather.context.service.PersonSettingService;
+import dev.struchkov.godfather.context.service.UnitPointerService;
 import dev.struchkov.godfather.context.service.sender.Sending;
 import dev.struchkov.godfather.core.GeneralAutoResponder;
-import dev.struchkov.godfather.core.domain.unit.MainUnit;
 
-import java.util.Set;
+import java.util.List;
 
 /**
  * TODO: Добавить описание класса.
@@ -17,11 +16,12 @@ import java.util.Set;
 public class MessageAutoresponderTelegram extends GeneralAutoResponder<Mail> {
 
     public MessageAutoresponderTelegram(
-            Set<MainUnit> menuUnit, Sending sending,
-            MessageService<Mail> messageService,
-            UnitPointerRepository<MainUnit> unitPointerRepository
+            Sending sending,
+            PersonSettingService personSettingService,
+            UnitPointerService unitPointerService,
+            List<Object> unitConfigurations
     ) {
-        super(menuUnit, sending, messageService, unitPointerRepository);
+        super(sending, personSettingService, unitPointerService, unitConfigurations);
     }
 
 }

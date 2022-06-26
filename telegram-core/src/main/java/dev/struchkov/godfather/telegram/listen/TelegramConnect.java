@@ -109,7 +109,7 @@ public class TelegramConnect {
         return telegramBot.getAdsSender();
     }
 
-    void initEventDistributor(EventDistributorImpl eventDistributor) {
+    void initEventDistributor(EventDistributorService eventDistributor) {
         telegramBot.initEventDistributor(eventDistributor);
     }
 

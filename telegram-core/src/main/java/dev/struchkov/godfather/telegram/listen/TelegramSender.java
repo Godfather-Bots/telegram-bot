@@ -11,6 +11,7 @@ import dev.struchkov.godfather.context.service.sender.Sending;
 import dev.struchkov.godfather.telegram.domain.keyboard.InlineKeyBoard;
 import dev.struchkov.godfather.telegram.domain.keyboard.MarkupKeyBoard;
 import dev.struchkov.godfather.telegram.domain.keyboard.button.ButtonUrl;
+import dev.struchkov.godfather.telegram.domain.keyboard.button.ButtonWebApp;
 import dev.struchkov.godfather.telegram.service.SendPreProcessing;
 import dev.struchkov.haiti.context.exception.ConvertException;
 import dev.struchkov.haiti.utils.Inspector;
@@ -26,6 +27,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
+import org.telegram.telegrambots.meta.api.objects.webapp.WebAppInfo;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
@@ -186,6 +188,12 @@ public class TelegramSender implements Sending {
                 button.setUrl(buttonUrl.getUrl());
                 button.setText(buttonUrl.getLabel());
             }
+            case ButtonWebApp.TYPE -> {
+                final ButtonWebApp buttonWebApp = (ButtonWebApp) keyBoardButton;
+                final WebAppInfo webAppInfo = WebAppInfo.builder().url(buttonWebApp.getUrl()).build();
+                button.setWebApp(webAppInfo);
+                button.setText(buttonWebApp.getLabel());
+            }
             default -> throw new ConvertException("Ошибка преобразования кнопки");
         }
         return button;
@@ -199,13 +207,15 @@ public class TelegramSender implements Sending {
                 button.setText(simpleButton.getLabel());
                 Inspector.isNull(simpleButton.getCallbackData(), ConvertException.supplier("CallbackData поддерживает только Inline клавитаура"));
             }
+            case ButtonWebApp.TYPE -> {
+                final ButtonWebApp buttonWebApp = (ButtonWebApp) keyBoardButton;
+                final WebAppInfo webAppInfo = WebAppInfo.builder().url(buttonWebApp.getUrl()).build();
+                button.setText(buttonWebApp.getLabel());
+                button.setWebApp(webAppInfo);
+            }
             default -> throw new ConvertException("Ошибка преобразования кнопки");
         }
         return button;
-    }
-
-    public void send(Long integer, Long integer1, BoxAnswer boxAnswer) {
-
     }
 
     public SendType getType() {
