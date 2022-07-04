@@ -2,6 +2,7 @@ package dev.struchkov.godfather.telegram.convert;
 
 import dev.struchkov.godfather.context.domain.content.Mail;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.User;
 
 import java.time.LocalDateTime;
 
@@ -17,6 +18,10 @@ public class CallbackQueryConvert {
         mail.setText(callbackQuery.getData());
         mail.setPersonId(callbackQuery.getMessage().getChatId());
         mail.setAddDate(LocalDateTime.now());
+
+        final User user = callbackQuery.getFrom();
+        mail.setFirstName(user.getFirstName());
+        mail.setLastName(user.getLastName());
         return mail;
     }
 

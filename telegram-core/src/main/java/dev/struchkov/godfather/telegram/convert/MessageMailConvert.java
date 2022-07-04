@@ -34,6 +34,7 @@ public final class MessageMailConvert {
         mail.setCreateDate(LocalDateTime.ofInstant(Instant.ofEpochSecond(message.getDate()), ZoneId.systemDefault()));
         mail.setFirstName(message.getChat().getFirstName());
         mail.setLastName(message.getChat().getLastName());
+
         final List<MessageEntity> entities = message.getEntities();
         if (entities != null) {
             mail.setAttachments(convertAttachments(entities));
