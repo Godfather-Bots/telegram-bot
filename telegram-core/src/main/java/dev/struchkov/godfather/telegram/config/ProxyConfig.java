@@ -1,4 +1,4 @@
-package dev.struchkov.godfather.telegram;
+package dev.struchkov.godfather.telegram.config;
 
 /**
  * TODO: Добавить описание класса.

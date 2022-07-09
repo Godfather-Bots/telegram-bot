@@ -1,9 +1,8 @@
-package dev.struchkov.godfather.telegram.listen;
+package dev.struchkov.godfather.telegram;
 
-import dev.struchkov.godfather.telegram.ProxyConfig;
-import dev.struchkov.godfather.telegram.TelegramBot;
-import dev.struchkov.godfather.telegram.TelegramPollingBot;
+import dev.struchkov.godfather.telegram.config.ProxyConfig;
 import dev.struchkov.godfather.telegram.config.TelegramPollingConfig;
+import dev.struchkov.godfather.telegram.listen.EventDistributorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
@@ -25,8 +24,10 @@ public class TelegramConnect {
     private static final Logger log = LoggerFactory.getLogger(TelegramConnect.class);
 
     private TelegramBot telegramBot;
+    private final TelegramPollingConfig telegramPollingConfig;
 
     public TelegramConnect(TelegramPollingConfig telegramPollingConfig) {
+        this.telegramPollingConfig = telegramPollingConfig;
         initLongPolling(telegramPollingConfig);
     }
 
@@ -46,6 +47,7 @@ public class TelegramConnect {
 //    }
 
     private void initLongPolling(TelegramPollingConfig telegramPollingConfig) {
+
         final ProxyConfig proxyConfig = telegramPollingConfig.getProxyConfig();
         if (proxyConfig != null && proxyConfig.getPassword() != null) {
             try {
@@ -105,12 +107,16 @@ public class TelegramConnect {
         }
     }
 
-    AbsSender getAdsSender() {
+    public AbsSender getAdsSender() {
         return telegramBot.getAdsSender();
     }
 
-    void initEventDistributor(EventDistributorService eventDistributor) {
+    public void initEventDistributor(EventDistributorService eventDistributor) {
         telegramBot.initEventDistributor(eventDistributor);
+    }
+
+    public String getToken() {
+        return telegramPollingConfig.getBotToken();
     }
 
 }

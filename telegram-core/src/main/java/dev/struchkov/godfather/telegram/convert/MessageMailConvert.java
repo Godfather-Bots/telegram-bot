@@ -2,7 +2,8 @@ package dev.struchkov.godfather.telegram.convert;
 
 import dev.struchkov.godfather.context.domain.content.Mail;
 import dev.struchkov.godfather.context.domain.content.attachment.Attachment;
-import dev.struchkov.godfather.context.domain.content.attachment.Link;
+import dev.struchkov.godfather.telegram.domain.attachment.DocumentAttachment;
+import org.telegram.telegrambots.meta.api.objects.Document;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 
@@ -12,6 +13,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static dev.struchkov.haiti.utils.Exceptions.utilityClass;
 
@@ -35,9 +37,11 @@ public final class MessageMailConvert {
         mail.setFirstName(message.getChat().getFirstName());
         mail.setLastName(message.getChat().getLastName());
 
+        convertDocument(message.getDocument()).ifPresent(mail::addAttachment);
+
         final List<MessageEntity> entities = message.getEntities();
         if (entities != null) {
-            mail.setAttachments(convertAttachments(entities));
+            mail.addAttachments(convertAttachments(entities));
         }
 
         if (message.getReplyToMessage() != null) {
@@ -47,16 +51,28 @@ public final class MessageMailConvert {
         return mail;
     }
 
+    private static Optional<DocumentAttachment> convertDocument(Document document) {
+        if (document != null) {
+            final DocumentAttachment attachment = new DocumentAttachment();
+            attachment.setFileId(document.getFileId());
+            attachment.setFileSize(document.getFileSize());
+            attachment.setFileName(document.getFileName());
+            attachment.setFileType(document.getMimeType());
+            return Optional.of(attachment);
+        }
+        return Optional.empty();
+    }
+
     private static List<Attachment> convertAttachments(List<MessageEntity> entities) {
         final List<Attachment> attachments = new ArrayList<>();
-        for (MessageEntity entity : entities) {
-            String type = entity.getType();
-            if ("text_link".equals(type)) {
-                Link link = new Link();
-                link.setUrl(entity.getUrl());
-                attachments.add(link);
-            }
-        }
+//        for (MessageEntity entity : entities) {
+//            String type = entity.getType();
+//            if ("text_link".equals(type)) {
+//                Link link = new Link();
+//                link.setUrl(entity.getUrl());
+//                attachments.add(link);
+//            }
+//        }
         return attachments;
     }
 

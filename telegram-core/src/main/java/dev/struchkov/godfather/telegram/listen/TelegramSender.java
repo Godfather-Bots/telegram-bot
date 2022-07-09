@@ -8,6 +8,7 @@ import dev.struchkov.godfather.context.domain.keyboard.button.SimpleButton;
 import dev.struchkov.godfather.context.domain.keyboard.simple.SimpleKeyBoard;
 import dev.struchkov.godfather.context.service.sender.SendType;
 import dev.struchkov.godfather.context.service.sender.Sending;
+import dev.struchkov.godfather.telegram.TelegramConnect;
 import dev.struchkov.godfather.telegram.domain.keyboard.InlineKeyBoard;
 import dev.struchkov.godfather.telegram.domain.keyboard.MarkupKeyBoard;
 import dev.struchkov.godfather.telegram.domain.keyboard.button.ButtonUrl;

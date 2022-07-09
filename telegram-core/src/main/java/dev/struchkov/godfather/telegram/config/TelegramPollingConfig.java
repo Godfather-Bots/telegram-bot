@@ -1,7 +1,5 @@
 package dev.struchkov.godfather.telegram.config;
 
-import dev.struchkov.godfather.telegram.ProxyConfig;
-
 /**
  * TODO: Добавить описание класса.
  *

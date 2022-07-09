@@ -2,6 +2,7 @@ package dev.struchkov.godfather.telegram.listen;
 
 import dev.struchkov.godfather.context.domain.content.Mail;
 import dev.struchkov.godfather.context.service.EventProvider;
+import dev.struchkov.godfather.telegram.TelegramConnect;
 import dev.struchkov.godfather.telegram.convert.CallbackQueryConvert;
 import dev.struchkov.godfather.telegram.convert.MessageMailConvert;
 import org.jetbrains.annotations.NotNull;
