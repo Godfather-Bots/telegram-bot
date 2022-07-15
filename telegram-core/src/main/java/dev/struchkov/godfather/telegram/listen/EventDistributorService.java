@@ -5,12 +5,20 @@ import dev.struchkov.godfather.context.service.EventProvider;
 import dev.struchkov.godfather.telegram.TelegramConnect;
 import dev.struchkov.godfather.telegram.convert.CallbackQueryConvert;
 import dev.struchkov.godfather.telegram.convert.MessageMailConvert;
+import dev.struchkov.godfather.telegram.convert.SubscribeConvert;
+import dev.struchkov.godfather.telegram.convert.UnsubscribeConvert;
+import dev.struchkov.godfather.telegram.domain.event.Subscribe;
+import dev.struchkov.godfather.telegram.domain.event.Unsubscribe;
 import org.jetbrains.annotations.NotNull;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.ChatMemberUpdated;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * TODO: Добавить описание класса.
@@ -19,23 +27,40 @@ import java.util.List;
  */
 public class EventDistributorService implements EventDistributor {
 
-    private final List<EventProvider<Mail>> eventProviders;
+    private final Map<String, List<EventProvider>> eventProviderMap;
 
-    public EventDistributorService(TelegramConnect telegramConnect, List<EventProvider<Mail>> eventProviders) {
-        this.eventProviders = eventProviders;
+    public EventDistributorService(TelegramConnect telegramConnect, List<EventProvider> eventProviders) {
+        this.eventProviderMap = eventProviders.stream().collect(Collectors.groupingBy(EventProvider::getEventType));
         telegramConnect.initEventDistributor(this);
     }
 
     @Override
     public void processing(@NotNull Update update) {
-        final Message message = update.getMessage();
-        final CallbackQuery callbackQuery = update.getCallbackQuery();
-        if (message != null) {
-            eventProviders.forEach(provider -> provider.sendEvent(MessageMailConvert.apply(message)));
+        if (update.getMessage() != null) {
+            final Message message = update.getMessage();
+            getEventProvider(Mail.TYPE)
+                    .ifPresent(eventProviders -> eventProviders.forEach(eventProvider -> eventProvider.sendEvent(MessageMailConvert.apply(message))));
         }
-        if (callbackQuery != null) {
-            eventProviders.forEach(provider -> provider.sendEvent(CallbackQueryConvert.apply(callbackQuery)));
+        if (update.getCallbackQuery() != null) {
+            final CallbackQuery callbackQuery = update.getCallbackQuery();
+            getEventProvider(Mail.TYPE)
+                    .ifPresent(eventProviders -> eventProviders.forEach(eventProvider -> eventProvider.sendEvent(CallbackQueryConvert.apply(callbackQuery))));
         }
+        if (update.getMyChatMember() != null) {
+            final ChatMemberUpdated chatMember = update.getMyChatMember();
+            if ("kicked".equals(chatMember.getNewChatMember().getStatus())) {
+                getEventProvider(Unsubscribe.TYPE)
+                        .ifPresent(providers -> providers.forEach(provider -> provider.sendEvent(UnsubscribeConvert.apply(chatMember))));
+            }
+            if ("member".equals(chatMember.getNewChatMember().getStatus())) {
+                getEventProvider(Subscribe.TYPE)
+                        .ifPresent(eventProviders -> eventProviders.forEach(eventProvider -> eventProvider.sendEvent(SubscribeConvert.apply(chatMember))));
+            }
+        }
+    }
+
+    private Optional<List<EventProvider>> getEventProvider(String type) {
+        return Optional.ofNullable(eventProviderMap.get(type));
     }
 
 }
