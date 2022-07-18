@@ -1,9 +1,11 @@
 package dev.struchkov.godfather.telegram.service;
 
 import dev.struchkov.godfather.telegram.TelegramConnect;
-import dev.struchkov.godfather.telegram.domain.FileContainer;
 import dev.struchkov.godfather.telegram.domain.attachment.DocumentAttachment;
+import dev.struchkov.godfather.telegram.domain.files.ByteContainer;
+import dev.struchkov.godfather.telegram.domain.files.FileContainer;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +19,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -64,6 +65,23 @@ public class AttachmentServiceImpl {
             log.error(e.getMessage(), e);
         }
         return FileContainer.empty();
+    }
+
+    public ByteContainer uploadBytes(@NotNull DocumentAttachment documentAttachment) {
+        isNotNull(documentAttachment);
+        try {
+            final byte[] bytes = downloadBytes(documentAttachment);
+            return new ByteContainer(documentAttachment.getFileName(), bytes);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        return ByteContainer.empty();
+    }
+
+    private byte[] downloadBytes(DocumentAttachment documentAttachment) throws TelegramApiException, IOException {
+        final org.telegram.telegrambots.meta.api.objects.File file = getFilePath(documentAttachment);
+        final URL url = new URL(file.getFileUrl(botToken));
+        return IOUtils.toByteArray(url);
     }
 
     private File downloadFile(DocumentAttachment documentAttachment) throws IOException, TelegramApiException {

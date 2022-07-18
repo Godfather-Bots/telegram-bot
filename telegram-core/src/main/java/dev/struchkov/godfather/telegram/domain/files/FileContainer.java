@@ -1,4 +1,4 @@
-package dev.struchkov.godfather.telegram.domain;
+package dev.struchkov.godfather.telegram.domain.files;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,16 +21,16 @@ public class FileContainer {
         this.file = file;
     }
 
+    public static FileContainer empty() {
+        return EMPTY;
+    }
+
     public String getFileName() {
         return fileName;
     }
 
     public File getFile() {
         return file;
-    }
-
-    public static FileContainer empty() {
-        return EMPTY;
     }
 
     public boolean isNotEmpty() {
