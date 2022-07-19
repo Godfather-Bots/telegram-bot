@@ -38,8 +38,10 @@ public class EventDistributorService implements EventDistributor {
     public void processing(@NotNull Update update) {
         if (update.getMessage() != null) {
             final Message message = update.getMessage();
-            getEventProvider(Mail.TYPE)
-                    .ifPresent(eventProviders -> eventProviders.forEach(eventProvider -> eventProvider.sendEvent(MessageMailConvert.apply(message))));
+            if (!isEvent(message)) {
+                getEventProvider(Mail.TYPE)
+                        .ifPresent(eventProviders -> eventProviders.forEach(eventProvider -> eventProvider.sendEvent(MessageMailConvert.apply(message))));
+            }
         }
         if (update.getCallbackQuery() != null) {
             final CallbackQuery callbackQuery = update.getCallbackQuery();
@@ -57,6 +59,19 @@ public class EventDistributorService implements EventDistributor {
                         .ifPresent(eventProviders -> eventProviders.forEach(eventProvider -> eventProvider.sendEvent(SubscribeConvert.apply(chatMember))));
             }
         }
+    }
+
+    private boolean isEvent(Message message) {
+        return message.getChannelChatCreated() != null
+                || message.getDeleteChatPhoto() != null
+                || message.getNewChatMembers() != null
+                || message.getNewChatTitle() != null
+                || message.getNewChatPhoto() != null
+                || message.getVideoChatEnded() != null
+                || message.getVideoChatParticipantsInvited() != null
+                || message.getVideoChatScheduled() != null
+                || message.getVideoNote() != null
+                || message.getVideoChatStarted() != null;
     }
 
     private Optional<List<EventProvider>> getEventProvider(String type) {
