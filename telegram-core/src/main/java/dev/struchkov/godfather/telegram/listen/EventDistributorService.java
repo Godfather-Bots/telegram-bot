@@ -14,6 +14,7 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.ChatMemberUpdated;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.User;
 
 import java.util.List;
 import java.util.Map;
@@ -64,7 +65,7 @@ public class EventDistributorService implements EventDistributor {
     private boolean isEvent(Message message) {
         return message.getChannelChatCreated() != null
                 || message.getDeleteChatPhoto() != null
-                || message.getNewChatMembers() != null
+                || isNewChatMember(message.getNewChatMembers())
                 || message.getNewChatTitle() != null
                 || message.getNewChatPhoto() != null
                 || message.getVideoChatEnded() != null
@@ -72,6 +73,14 @@ public class EventDistributorService implements EventDistributor {
                 || message.getVideoChatScheduled() != null
                 || message.getVideoNote() != null
                 || message.getVideoChatStarted() != null;
+    }
+
+    private boolean isNewChatMember(List<User> newChatMembers) {
+        if (newChatMembers == null) {
+            return true;
+        } else {
+            return !newChatMembers.isEmpty();
+        }
     }
 
     private Optional<List<EventProvider>> getEventProvider(String type) {
