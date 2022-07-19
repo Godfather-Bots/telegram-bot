@@ -1,15 +1,19 @@
 package dev.struchkov.godfather.telegram.domain.keyboard;
 
 import dev.struchkov.godfather.context.domain.keyboard.KeyBoard;
+import dev.struchkov.godfather.context.domain.keyboard.KeyBoardButton;
 import dev.struchkov.godfather.context.domain.keyboard.KeyBoardLine;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static dev.struchkov.godfather.context.domain.keyboard.simple.SimpleKeyBoardLine.simpleLine;
+
 public class InlineKeyBoard implements KeyBoard {
 
     public static final String TYPE = "INLINE";
-    protected List<KeyBoardLine> lines = new ArrayList<>();
+
+    protected List<KeyBoardLine> lines;
 
     public InlineKeyBoard(List<KeyBoardLine> lines) {
         this.lines = lines;
@@ -23,8 +27,16 @@ public class InlineKeyBoard implements KeyBoard {
         return new Builder();
     }
 
-    public static InlineKeyBoard inlineKeyBoard(KeyBoardLine keyBoardLine) {
-        return builder().line(keyBoardLine).build();
+    public static InlineKeyBoard inlineKeyBoard(KeyBoardLine... keyBoardLine) {
+        final Builder builder = builder();
+        for (KeyBoardLine boardLine : keyBoardLine) {
+            builder.line(boardLine);
+        }
+        return builder.build();
+    }
+
+    public static InlineKeyBoard inlineKeyBoard(KeyBoardButton... buttons) {
+        return builder().line(simpleLine(buttons)).build();
     }
 
     public List<KeyBoardLine> getLines() {

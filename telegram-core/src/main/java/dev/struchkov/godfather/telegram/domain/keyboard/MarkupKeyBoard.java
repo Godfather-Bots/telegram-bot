@@ -4,16 +4,17 @@ import dev.struchkov.godfather.context.domain.keyboard.KeyBoardLine;
 import dev.struchkov.godfather.context.domain.keyboard.simple.SimpleKeyBoard;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MarkupKeyBoard extends SimpleKeyBoard {
 
     public static final String TYPE = "MARKUP";
-
+    private static final MarkupKeyBoard EMPTY = new MarkupKeyBoard();
     /**
      * Скрыть меню после ответа или нет.
      */
-    private boolean oneTime = true;
+    private boolean oneTime;
 
     /**
      * Изменяет размер клавиатуры по вертикали для оптимального соответствия (например, сделать клавиатуру меньше, если есть только два ряда кнопок).
@@ -22,6 +23,10 @@ public class MarkupKeyBoard extends SimpleKeyBoard {
 
     private String inputFieldPlaceholder;
 
+    public MarkupKeyBoard() {
+        super(Collections.emptyList());
+    }
+
     private MarkupKeyBoard(Builder builder) {
         super(builder.lines);
         oneTime = builder.oneTime;
@@ -29,8 +34,12 @@ public class MarkupKeyBoard extends SimpleKeyBoard {
         inputFieldPlaceholder = builder.inputFieldPlaceholder;
     }
 
-    public static Builder newBuilder() {
+    public static Builder markupBuilder() {
         return new Builder();
+    }
+
+    public static MarkupKeyBoard empty() {
+        return EMPTY;
     }
 
     public boolean isResizeKeyboard() {
@@ -48,6 +57,14 @@ public class MarkupKeyBoard extends SimpleKeyBoard {
     @Override
     public String getType() {
         return TYPE;
+    }
+
+    public boolean isEmpty() {
+        return lines.isEmpty();
+    }
+
+    public boolean isNotEmpty() {
+        return !lines.isEmpty();
     }
 
     public static final class Builder {

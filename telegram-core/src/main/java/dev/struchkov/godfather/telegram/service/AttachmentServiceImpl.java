@@ -2,6 +2,7 @@ package dev.struchkov.godfather.telegram.service;
 
 import dev.struchkov.godfather.telegram.TelegramConnect;
 import dev.struchkov.godfather.telegram.domain.attachment.DocumentAttachment;
+import dev.struchkov.godfather.telegram.domain.attachment.Picture;
 import dev.struchkov.godfather.telegram.domain.files.ByteContainer;
 import dev.struchkov.godfather.telegram.domain.files.FileContainer;
 import org.apache.commons.io.FileUtils;
@@ -78,14 +79,32 @@ public class AttachmentServiceImpl {
         return ByteContainer.empty();
     }
 
+    public ByteContainer uploadBytes(@NotNull Picture picture) {
+        isNotNull(picture);
+        try {
+            final byte[] bytes = downloadBytes(picture);
+            return new ByteContainer(null, bytes);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        return ByteContainer.empty();
+    }
+
+    private byte[] downloadBytes(Picture picture) throws TelegramApiException, IOException {
+        return telegramDownloadBytes(picture.getFileId());
+    }
+
     private byte[] downloadBytes(DocumentAttachment documentAttachment) throws TelegramApiException, IOException {
-        final org.telegram.telegrambots.meta.api.objects.File file = getFilePath(documentAttachment);
-        final URL url = new URL(file.getFileUrl(botToken));
-        return IOUtils.toByteArray(url);
+        return telegramDownloadBytes(documentAttachment.getFileId());
+    }
+
+    private byte[] telegramDownloadBytes(String fileId) throws TelegramApiException, IOException {
+        final String fileUrl = getFileUrl(fileId);
+        return IOUtils.toByteArray(new URL(fileUrl));
     }
 
     private File downloadFile(DocumentAttachment documentAttachment) throws IOException, TelegramApiException {
-        final org.telegram.telegrambots.meta.api.objects.File file = getFilePath(documentAttachment);
+        final String fileUrl = getFileUrl(documentAttachment.getFileId());
 
         final StringBuilder filePath = new StringBuilder();
         if (folderPathForFiles != null) {
@@ -96,15 +115,15 @@ public class AttachmentServiceImpl {
         filePath.append(documentAttachment.getFileName());
 
         final java.io.File localFile = new java.io.File(filePath.toString());
-        final InputStream is = new URL(file.getFileUrl(botToken)).openStream();
+        final InputStream is = new URL(fileUrl).openStream();
         FileUtils.copyInputStreamToFile(is, localFile);
         return localFile;
     }
 
-    private org.telegram.telegrambots.meta.api.objects.File getFilePath(DocumentAttachment documentAttachment) throws TelegramApiException {
+    private String getFileUrl(String fileId) throws TelegramApiException {
         final GetFile getFile = new GetFile();
-        getFile.setFileId(documentAttachment.getFileId());
-        return absSender.execute(getFile);
+        getFile.setFileId(fileId);
+        return absSender.execute(getFile).getFileUrl(botToken);
     }
 
 }

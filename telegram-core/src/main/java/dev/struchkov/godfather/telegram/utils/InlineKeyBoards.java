@@ -15,10 +15,10 @@ import static dev.struchkov.haiti.utils.Exceptions.utilityClass;
 
 public final class InlineKeyBoards {
 
-    public static final SimpleButton YES_BUTTON = simpleButton("Да", "{\"button\": \"yes\"}");
-    public static final SimpleButton NO_BUTTON = simpleButton("Нет", "{\"button\": \"no\"}");
+    public static final SimpleButton YES_BUTTON = simpleButton("Да", "Да");
+    public static final SimpleButton NO_BUTTON = simpleButton("Нет", "Нет");
 
-    public InlineKeyBoards() {
+    private InlineKeyBoards() {
         utilityClass();
     }
 
@@ -27,10 +27,8 @@ public final class InlineKeyBoards {
      *
      * @return {@link SimpleKeyBoard}
      */
-    public static InlineKeyBoard keyBoardYesNo() {
-        return InlineKeyBoard.inlineKeyBoard(
-                SimpleKeyBoardLine.builder().button(YES_BUTTON).button(NO_BUTTON).build()
-        );
+    public static SimpleKeyBoardLine lineYesOrNo() {
+        return simpleLine(YES_BUTTON, NO_BUTTON);
     }
 
     /**
@@ -122,7 +120,7 @@ public final class InlineKeyBoards {
      * @param buttons Список кнопок
      * @return {@link SimpleKeyBoard}
      */
-    public static InlineKeyBoard verticalMenuButton(List<KeyBoardButton> buttons) {
+    public static InlineKeyBoard verticalMenuButton(KeyBoardButton... buttons) {
         final InlineKeyBoard.Builder keyBoard = InlineKeyBoard.builder();
         for (KeyBoardButton simpleButton : buttons) {
             keyBoard.line(simpleLine(simpleButton));
