@@ -4,6 +4,7 @@ import dev.struchkov.godfather.context.domain.content.Mail;
 import dev.struchkov.godfather.context.domain.content.attachment.Attachment;
 import dev.struchkov.godfather.telegram.domain.attachment.ContactAttachment;
 import dev.struchkov.godfather.telegram.domain.attachment.DocumentAttachment;
+import dev.struchkov.godfather.telegram.domain.attachment.LinkAttachment;
 import dev.struchkov.godfather.telegram.domain.attachment.Picture;
 import dev.struchkov.godfather.telegram.domain.attachment.PictureGroupAttachment;
 import org.telegram.telegrambots.meta.api.objects.Contact;
@@ -15,11 +16,11 @@ import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static dev.struchkov.haiti.utils.Checker.checkNotEmpty;
 import static dev.struchkov.haiti.utils.Exceptions.utilityClass;
 
 /**
@@ -29,7 +30,7 @@ import static dev.struchkov.haiti.utils.Exceptions.utilityClass;
  */
 public final class MessageMailConvert {
 
-    public MessageMailConvert() {
+    private MessageMailConvert() {
         utilityClass();
     }
 
@@ -111,16 +112,23 @@ public final class MessageMailConvert {
     }
 
     private static List<Attachment> convertAttachments(List<MessageEntity> entities) {
-        final List<Attachment> attachments = new ArrayList<>();
-//        for (MessageEntity entity : entities) {
-//            String type = entity.getType();
-//            if ("text_link".equals(type)) {
-//                Link link = new Link();
-//                link.setUrl(entity.getUrl());
-//                attachments.add(link);
-//            }
-//        }
-        return attachments;
+        if (checkNotEmpty(entities)) {
+            return entities.stream()
+                    .map(MessageMailConvert::convertEntity)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .toList();
+        }
+        return Collections.emptyList();
+    }
+
+    private static Optional<Attachment> convertEntity(MessageEntity entity) {
+        switch (entity.getType()) {
+            case "url" -> {
+                return Optional.of(new LinkAttachment(entity.getText()));
+            }
+        }
+        return Optional.empty();
     }
 
 }
