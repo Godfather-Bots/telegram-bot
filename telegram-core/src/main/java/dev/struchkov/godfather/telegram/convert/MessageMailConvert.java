@@ -105,7 +105,7 @@ public final class MessageMailConvert {
             attachment.setFileId(document.getFileId());
             attachment.setFileSize(document.getFileSize());
             attachment.setFileName(document.getFileName());
-            attachment.setFileType(document.getMimeType());
+            attachment.setMimeType(document.getMimeType());
             return Optional.of(attachment);
         }
         return Optional.empty();

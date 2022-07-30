@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>dev.struchkov.godfather.telegram</groupId>
         <artifactId>telegram-bot</artifactId>
         <version>0.0.26</version>
     </parent>
+    <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>telegram-core</artifactId>
+    <artifactId>telegram-sender</artifactId>
 
-    <name>Telegram Core</name>
-    <description>Allows you to create bots for Telegram</description>
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -20,27 +23,22 @@
         </dependency>
         <dependency>
             <groupId>dev.struchkov.godfather.telegram</groupId>
-            <artifactId>telegram-context</artifactId>
+            <artifactId>telegram-core</artifactId>
         </dependency>
 
         <dependency>
             <groupId>dev.struchkov.godfather</groupId>
-            <artifactId>bot-core</artifactId>
+            <artifactId>bot-context</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>dev.struchkov.haiti</groupId>
+            <artifactId>haiti-utils</artifactId>
         </dependency>
 
         <dependency>
             <groupId>org.telegram</groupId>
             <artifactId>telegrambots</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.telegram</groupId>
-            <artifactId>telegrambots-abilities</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.telegram</groupId>
-            <artifactId>telegrambotsextensions</artifactId>
         </dependency>
     </dependencies>
 

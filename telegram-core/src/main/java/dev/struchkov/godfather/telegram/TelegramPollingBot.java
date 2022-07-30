@@ -1,8 +1,8 @@
 package dev.struchkov.godfather.telegram;
 
-import dev.struchkov.godfather.telegram.config.TelegramPollingConfig;
-import dev.struchkov.godfather.telegram.listen.EventDistributor;
-import dev.struchkov.godfather.telegram.listen.EventDistributorService;
+import dev.struchkov.godfather.telegram.context.EventDistributor;
+import dev.struchkov.godfather.telegram.context.TelegramBot;
+import dev.struchkov.godfather.telegram.domain.config.TelegramConnectConfig;
 import org.jetbrains.annotations.NotNull;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -16,16 +16,16 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
  */
 public class TelegramPollingBot extends TelegramLongPollingBot implements TelegramBot {
 
-    private final TelegramPollingConfig telegramPollingConfig;
+    private final TelegramConnectConfig telegramConnectConfig;
     private EventDistributor eventDistributor;
 
-    public TelegramPollingBot(TelegramPollingConfig telegramPollingConfig, DefaultBotOptions defaultBotOptions) {
+    public TelegramPollingBot(TelegramConnectConfig telegramConnectConfig, DefaultBotOptions defaultBotOptions) {
         super(defaultBotOptions);
-        this.telegramPollingConfig = telegramPollingConfig;
+        this.telegramConnectConfig = telegramConnectConfig;
     }
 
-    public TelegramPollingBot(TelegramPollingConfig telegramPollingConfig) {
-        this.telegramPollingConfig = telegramPollingConfig;
+    public TelegramPollingBot(TelegramConnectConfig telegramConnectConfig) {
+        this.telegramConnectConfig = telegramConnectConfig;
     }
 
     @Override
@@ -37,12 +37,12 @@ public class TelegramPollingBot extends TelegramLongPollingBot implements Telegr
 
     @Override
     public String getBotUsername() {
-        return telegramPollingConfig.getBotUsername();
+        return telegramConnectConfig.getBotUsername();
     }
 
     @Override
     public String getBotToken() {
-        return telegramPollingConfig.getBotToken();
+        return telegramConnectConfig.getBotToken();
     }
 
     @Override
@@ -51,7 +51,7 @@ public class TelegramPollingBot extends TelegramLongPollingBot implements Telegr
     }
 
     @Override
-    public void initEventDistributor(@NotNull EventDistributorService eventDistributor) {
+    public void initEventDistributor(@NotNull EventDistributor eventDistributor) {
         this.eventDistributor = eventDistributor;
     }
 

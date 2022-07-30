@@ -3,13 +3,18 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>dev.struchkov.godfather</groupId>
+    <groupId>dev.struchkov.godfather.telegram</groupId>
     <artifactId>telegram-bot</artifactId>
-    <version>0.0.23</version>
+    <version>0.0.26</version>
     <packaging>pom</packaging>
 
     <modules>
         <module>telegram-core</module>
+        <module>telegram-sender</module>
+        <module>telegram-domain</module>
+        <module>telegram-consumer</module>
+        <module>telegram-context</module>
+        <module>telegram</module>
     </modules>
 
     <name>Telegram Bot</name>
@@ -33,8 +38,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <godfather.core.ver>0.0.18</godfather.core.ver>
+        <godfather.core.ver>0.0.22</godfather.core.ver>
         <telegrambots.ver>6.1.0</telegrambots.ver>
+
+        <haiti.version>1.3.0</haiti.version>
 
         <plugin.maven.compiler.ver>3.10.1</plugin.maven.compiler.ver>
         <plugin.nexus.staging.ver>1.6.13</plugin.nexus.staging.ver>
@@ -46,9 +53,36 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>dev.struchkov.godfather.telegram</groupId>
+                <artifactId>telegram-domain</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>dev.struchkov.godfather.telegram</groupId>
+                <artifactId>telegram-context</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>dev.struchkov.godfather.telegram</groupId>
+                <artifactId>telegram-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>dev.struchkov.godfather</groupId>
+                <artifactId>bot-context</artifactId>
+                <version>${godfather.core.ver}</version>
+            </dependency>
+            <dependency>
                 <groupId>dev.struchkov.godfather</groupId>
                 <artifactId>bot-core</artifactId>
                 <version>${godfather.core.ver}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>dev.struchkov.haiti</groupId>
+                <artifactId>haiti-utils</artifactId>
+                <version>${haiti.version}</version>
             </dependency>
 
             <dependency>

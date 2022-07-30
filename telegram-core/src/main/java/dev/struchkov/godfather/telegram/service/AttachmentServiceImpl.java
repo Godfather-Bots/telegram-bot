@@ -1,6 +1,6 @@
 package dev.struchkov.godfather.telegram.service;
 
-import dev.struchkov.godfather.telegram.TelegramConnect;
+import dev.struchkov.godfather.telegram.context.TelegramConnect;
 import dev.struchkov.godfather.telegram.domain.attachment.DocumentAttachment;
 import dev.struchkov.godfather.telegram.domain.attachment.Picture;
 import dev.struchkov.godfather.telegram.domain.files.ByteContainer;
@@ -35,7 +35,7 @@ public class AttachmentServiceImpl {
     private String folderPathForFiles;
 
     public AttachmentServiceImpl(TelegramConnect telegramConnect) {
-        this.absSender = telegramConnect.getAdsSender();
+        this.absSender = telegramConnect.getAbsSender();
         this.botToken = telegramConnect.getToken();
     }
 
@@ -54,14 +54,13 @@ public class AttachmentServiceImpl {
                 log.error(e.getMessage());
             }
         }
-
     }
 
     public FileContainer uploadFile(@NotNull DocumentAttachment documentAttachment) {
         isNotNull(documentAttachment);
         try {
             final File file = downloadFile(documentAttachment);
-            return new FileContainer(documentAttachment.getFileName(), file);
+            return new FileContainer(documentAttachment.getFileName(), documentAttachment.getMimeType(), file);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
@@ -72,7 +71,7 @@ public class AttachmentServiceImpl {
         isNotNull(documentAttachment);
         try {
             final byte[] bytes = downloadBytes(documentAttachment);
-            return new ByteContainer(documentAttachment.getFileName(), bytes);
+            return new ByteContainer(documentAttachment.getFileName(), documentAttachment.getMimeType(), bytes);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
@@ -83,7 +82,7 @@ public class AttachmentServiceImpl {
         isNotNull(picture);
         try {
             final byte[] bytes = downloadBytes(picture);
-            return new ByteContainer(null, bytes);
+            return new ByteContainer(null, "image/jpeg", bytes);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
