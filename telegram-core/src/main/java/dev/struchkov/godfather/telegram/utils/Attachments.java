@@ -1,6 +1,7 @@
 package dev.struchkov.godfather.telegram.utils;
 
 import dev.struchkov.godfather.context.domain.content.attachment.Attachment;
+import dev.struchkov.godfather.telegram.domain.attachment.CommandAttachment;
 import dev.struchkov.godfather.telegram.domain.attachment.ContactAttachment;
 import dev.struchkov.godfather.telegram.domain.attachment.DocumentAttachment;
 import dev.struchkov.godfather.telegram.domain.attachment.LinkAttachment;
@@ -89,6 +90,17 @@ public final class Attachments {
         return Optional.empty();
     }
 
+    public static Optional<CommandAttachment> findFirstCommand(Collection<Attachment> attachments) {
+        if (checkNotEmpty(attachments)) {
+            for (Attachment attachment : attachments) {
+                if (isCommand(attachment)) {
+                    return Optional.of((CommandAttachment) attachment);
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
     public static boolean hasDocument(Collection<Attachment> attachments) {
         isNotNull(attachments);
         for (Attachment attachment : attachments) {
@@ -97,6 +109,11 @@ public final class Attachments {
             }
         }
         return false;
+    }
+
+    public static boolean isCommand(Attachment attachment) {
+        isNotNull(attachment);
+        return TelegramAttachmentType.COMMAND.name().equals(attachment.getType());
     }
 
     public static boolean isDocument(Attachment attachment) {

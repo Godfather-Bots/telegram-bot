@@ -1,4 +1,4 @@
-package dev.struchkov.godfather.telegram.service;
+package dev.struchkov.godfather.telegram.sender.service;
 
 import dev.struchkov.godfather.context.domain.BoxAnswer;
 import dev.struchkov.godfather.context.service.sender.SendType;
@@ -6,7 +6,7 @@ import dev.struchkov.godfather.telegram.context.SenderStorageService;
 import dev.struchkov.godfather.telegram.context.TelegramConnect;
 import dev.struchkov.godfather.telegram.context.TelegramSending;
 import dev.struchkov.godfather.telegram.domain.keyboard.InlineKeyBoard;
-import dev.struchkov.godfather.telegram.utils.KeyBoardConvert;
+import dev.struchkov.godfather.telegram.sender.util.KeyBoardConvert;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

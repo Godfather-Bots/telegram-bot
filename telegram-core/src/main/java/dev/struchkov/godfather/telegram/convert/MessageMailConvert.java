@@ -2,11 +2,13 @@ package dev.struchkov.godfather.telegram.convert;
 
 import dev.struchkov.godfather.context.domain.content.Mail;
 import dev.struchkov.godfather.context.domain.content.attachment.Attachment;
+import dev.struchkov.godfather.telegram.domain.attachment.CommandAttachment;
 import dev.struchkov.godfather.telegram.domain.attachment.ContactAttachment;
 import dev.struchkov.godfather.telegram.domain.attachment.DocumentAttachment;
 import dev.struchkov.godfather.telegram.domain.attachment.LinkAttachment;
 import dev.struchkov.godfather.telegram.domain.attachment.Picture;
 import dev.struchkov.godfather.telegram.domain.attachment.PictureGroupAttachment;
+import dev.struchkov.haiti.utils.Strings;
 import org.telegram.telegrambots.meta.api.objects.Contact;
 import org.telegram.telegrambots.meta.api.objects.Document;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -49,7 +51,7 @@ public final class MessageMailConvert {
 
         final List<MessageEntity> entities = message.getEntities();
         if (entities != null) {
-            mail.addAttachments(convertAttachments(entities));
+            mail.addAttachments(convertAttachments(message));
         }
 
         if (message.getReplyToMessage() != null) {
@@ -111,10 +113,11 @@ public final class MessageMailConvert {
         return Optional.empty();
     }
 
-    private static List<Attachment> convertAttachments(List<MessageEntity> entities) {
+    private static List<Attachment> convertAttachments(Message message) {
+        final List<MessageEntity> entities = message.getEntities();
         if (checkNotEmpty(entities)) {
             return entities.stream()
-                    .map(MessageMailConvert::convertEntity)
+                    .map(entity -> convertEntity(message, entity))
                     .filter(Optional::isPresent)
                     .map(Optional::get)
                     .toList();
@@ -122,10 +125,23 @@ public final class MessageMailConvert {
         return Collections.emptyList();
     }
 
-    private static Optional<Attachment> convertEntity(MessageEntity entity) {
+    private static Optional<Attachment> convertEntity(Message message, MessageEntity entity) {
         switch (entity.getType()) {
             case "url" -> {
                 return Optional.of(new LinkAttachment(entity.getText()));
+            }
+            case "bot_command" -> {
+                final String commandValue = entity.getText();
+                String commandArg = message.getText().replace(commandValue, "");
+                if (checkNotEmpty(commandArg)) {
+                    commandArg = commandArg.substring(1);
+                }
+                final CommandAttachment commandAttachment = new CommandAttachment();
+                commandAttachment.setValue(commandValue);
+                commandAttachment.setCommandType(commandValue.replace("/", ""));
+                commandAttachment.setArg(Strings.EMPTY.equals(commandArg) ? null : commandArg);
+                commandAttachment.setRawValue(message.getText());
+                return Optional.of(commandAttachment);
             }
         }
         return Optional.empty();

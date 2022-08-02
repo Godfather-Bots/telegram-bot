@@ -1,4 +1,4 @@
-package dev.struchkov.godfather.telegram.service;
+package dev.struchkov.godfather.telegram.quarkus.sender;
 
 /**
  * // TODO: 18.09.2020 Добавить описание.

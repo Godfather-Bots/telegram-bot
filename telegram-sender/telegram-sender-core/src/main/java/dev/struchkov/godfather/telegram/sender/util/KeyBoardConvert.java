@@ -1,4 +1,4 @@
-package dev.struchkov.godfather.telegram.utils;
+package dev.struchkov.godfather.telegram.sender.util;
 
 import dev.struchkov.godfather.context.domain.keyboard.KeyBoard;
 import dev.struchkov.godfather.context.domain.keyboard.KeyBoardButton;
@@ -23,9 +23,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.api.objects.webapp.WebAppInfo;
 
 import java.util.List;
-
-import static dev.struchkov.haiti.context.exception.ConvertException.convertException;
-import static dev.struchkov.haiti.utils.Inspector.isNull;
 
 public final class KeyBoardConvert {
 
@@ -133,7 +130,7 @@ public final class KeyBoardConvert {
             case SimpleButton.TYPE -> {
                 final SimpleButton simpleButton = (SimpleButton) keyBoardButton;
                 button.setText(simpleButton.getLabel());
-                isNull(simpleButton.getCallbackData(), convertException("CallbackData поддерживает только Inline клавитаура"));
+                Inspector.isNull(simpleButton.getCallbackData(), ConvertException.convertException("CallbackData поддерживает только Inline клавитаура"));
             }
             case WebAppButton.TYPE -> {
                 final WebAppButton webAppButton = (WebAppButton) keyBoardButton;

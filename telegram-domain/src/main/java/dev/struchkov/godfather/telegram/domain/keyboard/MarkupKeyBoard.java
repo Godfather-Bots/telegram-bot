@@ -1,11 +1,14 @@
 package dev.struchkov.godfather.telegram.domain.keyboard;
 
+import dev.struchkov.godfather.context.domain.keyboard.KeyBoardButton;
 import dev.struchkov.godfather.context.domain.keyboard.KeyBoardLine;
 import dev.struchkov.godfather.context.domain.keyboard.simple.SimpleKeyBoard;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static dev.struchkov.godfather.context.domain.keyboard.simple.SimpleKeyBoardLine.simpleLine;
 
 public class MarkupKeyBoard extends SimpleKeyBoard {
 
@@ -32,6 +35,22 @@ public class MarkupKeyBoard extends SimpleKeyBoard {
         oneTime = builder.oneTime;
         resizeKeyboard = builder.resizeKeyboard;
         inputFieldPlaceholder = builder.inputFieldPlaceholder;
+    }
+
+    public static MarkupKeyBoard markupKeyBoard(KeyBoardLine... lines) {
+        final Builder builder = new Builder();
+        for (KeyBoardLine line : lines) {
+            builder.line(line);
+        }
+        return builder.build();
+    }
+
+    public static MarkupKeyBoard markupKeyBoard(KeyBoardButton... buttons) {
+        final Builder builder = new Builder();
+        for (KeyBoardButton button : buttons) {
+            builder.line(simpleLine(button));
+        }
+        return builder.build();
     }
 
     public static Builder markupBuilder() {

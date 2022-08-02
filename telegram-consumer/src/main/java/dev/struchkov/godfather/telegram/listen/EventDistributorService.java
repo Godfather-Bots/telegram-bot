@@ -5,18 +5,15 @@ import dev.struchkov.godfather.context.service.EventHandler;
 import dev.struchkov.godfather.telegram.TelegramConnectBot;
 import dev.struchkov.godfather.telegram.context.EventDistributor;
 import dev.struchkov.godfather.telegram.convert.CallbackQueryConvert;
-import dev.struchkov.godfather.telegram.convert.CommandConvert;
 import dev.struchkov.godfather.telegram.convert.MessageMailConvert;
 import dev.struchkov.godfather.telegram.convert.SubscribeConvert;
 import dev.struchkov.godfather.telegram.convert.UnsubscribeConvert;
-import dev.struchkov.godfather.telegram.domain.event.Command;
 import dev.struchkov.godfather.telegram.domain.event.Subscribe;
 import dev.struchkov.godfather.telegram.domain.event.Unsubscribe;
 import org.jetbrains.annotations.NotNull;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.ChatMemberUpdated;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 
@@ -24,8 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static dev.struchkov.haiti.utils.Checker.checkNotEmpty;
 
 /**
  * TODO: Добавить описание класса.
@@ -46,15 +41,9 @@ public class EventDistributorService implements EventDistributor {
         if (update.getMessage() != null) {
             final Message message = update.getMessage();
             if (!isEvent(message)) {
-                if (isCommand(message)) {
-                    getHandler(Command.TYPE)
-                            .ifPresent(eventProviders -> eventProviders.forEach(eventProvider -> eventProvider.handle(CommandConvert.apply(message))));
-                    return;
-                } else {
-                    getHandler(Mail.TYPE)
-                            .ifPresent(eventProviders -> eventProviders.forEach(eventProvider -> eventProvider.handle(MessageMailConvert.apply(message))));
-                    return;
-                }
+                getHandler(Mail.TYPE)
+                        .ifPresent(eventProviders -> eventProviders.forEach(eventProvider -> eventProvider.handle(MessageMailConvert.apply(message))));
+                return;
             }
         }
         if (update.getCallbackQuery() != null) {
@@ -97,14 +86,6 @@ public class EventDistributorService implements EventDistributor {
         } else {
             return !newChatMembers.isEmpty();
         }
-    }
-
-    private boolean isCommand(Message message) {
-        final List<MessageEntity> entities = message.getEntities();
-        if (checkNotEmpty(entities)) {
-            return "bot_command".equals(entities.get(0).getType());
-        }
-        return false;
     }
 
     private Optional<List<EventHandler>> getHandler(String type) {

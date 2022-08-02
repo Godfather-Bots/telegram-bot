@@ -5,41 +5,21 @@
     <parent>
         <groupId>dev.struchkov.godfather.telegram</groupId>
         <artifactId>telegram-bot</artifactId>
-        <version>0.0.26</version>
+        <version>0.0.30</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>telegram-sender</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>telegram-sender-core</module>
+        <module>telegram-quarkus-reactive-sender</module>
+        <module>telegram-simple-sender</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>dev.struchkov.godfather.telegram</groupId>
-            <artifactId>telegram-domain</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>dev.struchkov.godfather.telegram</groupId>
-            <artifactId>telegram-core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>dev.struchkov.godfather</groupId>
-            <artifactId>bot-context</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>dev.struchkov.haiti</groupId>
-            <artifactId>haiti-utils</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.telegram</groupId>
-            <artifactId>telegrambots</artifactId>
-        </dependency>
-    </dependencies>
 
 </project>

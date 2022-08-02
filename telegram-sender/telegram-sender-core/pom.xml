@@ -3,23 +3,24 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>telegram-bot</artifactId>
         <groupId>dev.struchkov.godfather.telegram</groupId>
+        <artifactId>telegram-sender</artifactId>
         <version>0.0.30</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>telegram-domain</artifactId>
+    <artifactId>telegram-sender-core</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>dev.struchkov.godfather</groupId>
-            <artifactId>bot-context</artifactId>
+            <groupId>dev.struchkov.godfather.telegram</groupId>
+            <artifactId>telegram-domain</artifactId>
         </dependency>
 
         <dependency>
