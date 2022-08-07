@@ -1,6 +1,6 @@
 package dev.struchkov.godfather.telegram.domain.attachment;
 
-import dev.struchkov.godfather.context.domain.content.attachment.Attachment;
+import dev.struchkov.godfather.main.domain.content.Attachment;
 import dev.struchkov.haiti.utils.Parser;
 import dev.struchkov.haiti.utils.domain.CompositeUrl;
 

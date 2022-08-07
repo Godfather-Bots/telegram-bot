@@ -10,22 +10,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>telegram-context</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>telegram-context-main</module>
+        <module>telegram-context-simple</module>
+        <module>telegram-context-quarkus</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>dev.struchkov.godfather</groupId>
-            <artifactId>bot-context</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.telegram</groupId>
-            <artifactId>telegrambots</artifactId>
-        </dependency>
-    </dependencies>
 
 </project>

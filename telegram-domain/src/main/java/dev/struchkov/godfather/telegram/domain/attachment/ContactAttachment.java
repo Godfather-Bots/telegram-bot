@@ -1,6 +1,6 @@
 package dev.struchkov.godfather.telegram.domain.attachment;
 
-import dev.struchkov.godfather.context.domain.content.attachment.Attachment;
+import dev.struchkov.godfather.main.domain.content.Attachment;
 
 public class ContactAttachment extends Attachment {
 

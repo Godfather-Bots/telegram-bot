@@ -7,41 +7,16 @@
         <artifactId>telegram-bot</artifactId>
         <version>0.0.30</version>
     </parent>
+    <modules>
+        <module>telegram-core-main</module>
+        <module>telegram-core-simple</module>
+        <module>telegram-core-quarkus</module>
+    </modules>
 
     <artifactId>telegram-core</artifactId>
+    <packaging>pom</packaging>
 
     <name>Telegram Core</name>
     <description>Allows you to create bots for Telegram</description>
-
-    <dependencies>
-        <dependency>
-            <groupId>dev.struchkov.godfather.telegram</groupId>
-            <artifactId>telegram-domain</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>dev.struchkov.godfather.telegram</groupId>
-            <artifactId>telegram-context</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>dev.struchkov.godfather</groupId>
-            <artifactId>bot-core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.telegram</groupId>
-            <artifactId>telegrambots</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.telegram</groupId>
-            <artifactId>telegrambots-abilities</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.telegram</groupId>
-            <artifactId>telegrambotsextensions</artifactId>
-        </dependency>
-    </dependencies>
 
 </project>

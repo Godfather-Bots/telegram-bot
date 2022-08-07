@@ -12,9 +12,9 @@
     <artifactId>telegram-sender</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>telegram-sender-core</module>
-        <module>telegram-quarkus-reactive-sender</module>
-        <module>telegram-simple-sender</module>
+        <module>telegram-sender-main</module>
+        <module>telegram-sender-simple</module>
+        <module>telegram-sender-quarkus</module>
     </modules>
 
     <properties>

@@ -1,6 +1,6 @@
 package dev.struchkov.godfather.telegram.domain.event;
 
-import dev.struchkov.godfather.context.domain.event.Event;
+import dev.struchkov.godfather.main.domain.event.Event;
 
 import java.time.LocalDateTime;
 

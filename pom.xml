@@ -38,7 +38,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <godfather.core.ver>0.0.24</godfather.core.ver>
+        <godfather.core.ver>0.0.25</godfather.core.ver>
         <telegrambots.ver>6.1.0</telegrambots.ver>
 
         <haiti.version>1.4.0</haiti.version>
@@ -57,11 +57,71 @@
                 <artifactId>telegram-domain</artifactId>
                 <version>${project.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>dev.struchkov.godfather.telegram</groupId>
-                <artifactId>telegram-context</artifactId>
+                <artifactId>telegram-context-main</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>dev.struchkov.godfather.telegram</groupId>
+                <artifactId>telegram-context-simple</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>dev.struchkov.godfather.telegram</groupId>
+                <artifactId>telegram-context-quarkus</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>dev.struchkov.godfather.telegram</groupId>
+                <artifactId>telegram-core-main</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>dev.struchkov.godfather.telegram</groupId>
+                <artifactId>telegram-core-simple</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>dev.struchkov.godfather.telegram</groupId>
+                <artifactId>telegram-core-quarkus</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>dev.struchkov.godfather.telegram</groupId>
+                <artifactId>telegram-consumer-main</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>dev.struchkov.godfather.telegram</groupId>
+                <artifactId>telegram-consumer-simple</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>dev.struchkov.godfather.telegram</groupId>
+                <artifactId>telegram-consumer-quarkus</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>dev.struchkov.godfather.telegram</groupId>
+                <artifactId>telegram-sender-main</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>dev.struchkov.godfather.telegram</groupId>
+                <artifactId>telegram-sender-simple</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>dev.struchkov.godfather.telegram</groupId>
+                <artifactId>telegram-sender-quarkus</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>dev.struchkov.godfather.telegram</groupId>
                 <artifactId>telegram-core</artifactId>
@@ -90,16 +150,45 @@
                 <version>${project.version}</version>
             </dependency>
 
+            <!--godfather-->
             <dependency>
                 <groupId>dev.struchkov.godfather</groupId>
-                <artifactId>bot-context</artifactId>
+                <artifactId>bot-domain-main</artifactId>
+                <version>${godfather.core.ver}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>dev.struchkov.godfather</groupId>
+                <artifactId>bot-context-main</artifactId>
                 <version>${godfather.core.ver}</version>
             </dependency>
             <dependency>
                 <groupId>dev.struchkov.godfather</groupId>
-                <artifactId>bot-core</artifactId>
+                <artifactId>bot-context-simple</artifactId>
                 <version>${godfather.core.ver}</version>
             </dependency>
+            <dependency>
+                <groupId>dev.struchkov.godfather</groupId>
+                <artifactId>bot-context-quarkus</artifactId>
+                <version>${godfather.core.ver}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>dev.struchkov.godfather</groupId>
+                <artifactId>bot-core-main</artifactId>
+                <version>${godfather.core.ver}</version>
+            </dependency>
+            <dependency>
+                <groupId>dev.struchkov.godfather</groupId>
+                <artifactId>bot-core-simple</artifactId>
+                <version>${godfather.core.ver}</version>
+            </dependency>
+            <dependency>
+                <groupId>dev.struchkov.godfather</groupId>
+                <artifactId>bot-core-quarkus</artifactId>
+                <version>${godfather.core.ver}</version>
+            </dependency>
+            <!--/godfather-->
 
             <dependency>
                 <groupId>dev.struchkov.haiti</groupId>
@@ -110,6 +199,11 @@
             <dependency>
                 <groupId>org.telegram</groupId>
                 <artifactId>telegrambots</artifactId>
+                <version>${telegrambots.ver}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.telegram</groupId>
+                <artifactId>telegrambots-meta</artifactId>
                 <version>${telegrambots.ver}</version>
             </dependency>
 

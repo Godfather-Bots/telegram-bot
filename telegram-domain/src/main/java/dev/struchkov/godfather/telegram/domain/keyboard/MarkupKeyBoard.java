@@ -1,14 +1,14 @@
 package dev.struchkov.godfather.telegram.domain.keyboard;
 
-import dev.struchkov.godfather.context.domain.keyboard.KeyBoardButton;
-import dev.struchkov.godfather.context.domain.keyboard.KeyBoardLine;
-import dev.struchkov.godfather.context.domain.keyboard.simple.SimpleKeyBoard;
+import dev.struchkov.godfather.main.domain.keyboard.KeyBoardButton;
+import dev.struchkov.godfather.main.domain.keyboard.KeyBoardLine;
+import dev.struchkov.godfather.main.domain.keyboard.simple.SimpleKeyBoard;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static dev.struchkov.godfather.context.domain.keyboard.simple.SimpleKeyBoardLine.simpleLine;
+import static dev.struchkov.godfather.main.domain.keyboard.simple.SimpleKeyBoardLine.simpleLine;
 
 public class MarkupKeyBoard extends SimpleKeyBoard {
 

@@ -10,20 +10,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>telegram-consumer</artifactId>
-    <dependencies>
-        <dependency>
-            <groupId>dev.struchkov.godfather.telegram</groupId>
-            <artifactId>telegram-context</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>dev.struchkov.godfather</groupId>
-            <artifactId>bot-context</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>dev.struchkov.godfather.telegram</groupId>
-            <artifactId>telegram-core</artifactId>
-        </dependency>
-    </dependencies>
+    <packaging>pom</packaging>
+    <modules>
+        <module>telegram-consumer-main</module>
+        <module>telegram-consumer-simple</module>
+        <module>telegram-consumer-quarkus</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

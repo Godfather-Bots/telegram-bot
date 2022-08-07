@@ -1,6 +1,6 @@
 package dev.struchkov.godfather.telegram.domain.keyboard.button;
 
-import dev.struchkov.godfather.context.domain.keyboard.KeyBoardButton;
+import dev.struchkov.godfather.main.domain.keyboard.KeyBoardButton;
 import org.jetbrains.annotations.NotNull;
 
 /**
