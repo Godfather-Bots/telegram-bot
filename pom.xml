@@ -5,7 +5,7 @@
 
     <groupId>dev.struchkov.godfather.telegram</groupId>
     <artifactId>telegram-bot</artifactId>
-    <version>0.0.30</version>
+    <version>0.0.34</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -14,7 +14,7 @@
         <module>telegram-domain</module>
         <module>telegram-consumer</module>
         <module>telegram-context</module>
-        <module>telegram</module>
+        <module>telegram-simple</module>
     </modules>
 
     <name>Telegram Bot</name>
@@ -38,7 +38,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <godfather.core.ver>0.0.25</godfather.core.ver>
+        <godfather.core.ver>0.0.27</godfather.core.ver>
         <telegrambots.ver>6.1.0</telegrambots.ver>
 
         <haiti.version>1.4.0</haiti.version>
@@ -74,6 +74,11 @@
                 <version>${project.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>dev.struchkov.godfather.telegram</groupId>
+                <artifactId>telegram-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>dev.struchkov.godfather.telegram</groupId>
                 <artifactId>telegram-core-main</artifactId>

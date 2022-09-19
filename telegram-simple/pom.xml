@@ -5,11 +5,11 @@
     <parent>
         <groupId>dev.struchkov.godfather.telegram</groupId>
         <artifactId>telegram-bot</artifactId>
-        <version>0.0.30</version>
+        <version>0.0.34</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>telegram</artifactId>
+    <artifactId>telegram-simple</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -19,15 +19,15 @@
     <dependencies>
         <dependency>
             <groupId>dev.struchkov.godfather.telegram</groupId>
-            <artifactId>telegram-core</artifactId>
+            <artifactId>telegram-core-simple</artifactId>
         </dependency>
         <dependency>
             <groupId>dev.struchkov.godfather.telegram</groupId>
-            <artifactId>telegram-consumer</artifactId>
+            <artifactId>telegram-consumer-simple</artifactId>
         </dependency>
         <dependency>
             <groupId>dev.struchkov.godfather.telegram</groupId>
-            <artifactId>telegram-simple-sender</artifactId>
+            <artifactId>telegram-sender-simple</artifactId>
         </dependency>
     </dependencies>
 

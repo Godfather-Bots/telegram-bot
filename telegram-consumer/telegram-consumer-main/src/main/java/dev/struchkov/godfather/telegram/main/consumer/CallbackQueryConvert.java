@@ -4,6 +4,8 @@ import dev.struchkov.godfather.main.domain.content.Mail;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.User;
 
+import java.time.LocalDateTime;
+
 /**
  * TODO: Добавить описание класса.
  *
@@ -13,6 +15,7 @@ public class CallbackQueryConvert {
 
     public static Mail apply(CallbackQuery callbackQuery) {
         final Mail mail = new Mail();
+        mail.setCreateDate(LocalDateTime.now());
         mail.setText(callbackQuery.getData());
         mail.setPersonId(callbackQuery.getMessage().getChatId());
 

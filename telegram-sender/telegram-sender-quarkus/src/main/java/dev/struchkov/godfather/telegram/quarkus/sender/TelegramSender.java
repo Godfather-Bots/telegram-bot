@@ -55,31 +55,32 @@ public class TelegramSender implements TelegramSending {
     }
 
     @Override
-    public SendType getType() {
-        return SendType.PRIVATE;
-    }
-
     public Uni<Void> sendNotSave(@NotNull Long telegramId, @NotNull BoxAnswer boxAnswer) {
         return sendBoxAnswer(telegramId, boxAnswer, false);
     }
 
     private Uni<Void> sendBoxAnswer(@NotNull Long telegramId, @NotNull BoxAnswer boxAnswer, boolean saveMessageId) {
-        isNotNull(telegramId, boxAnswer);
+        return Uni.createFrom().voidItem()
+                .onItem().transformToUni(
+                        v -> {
+                            isNotNull(telegramId, boxAnswer);
 
-        if (boxAnswer.isReplace() && checkNotNull(senderStorageService)) {
-            return senderStorageService.getLastSendMessage(telegramId)
-                    .onItem().transformToUni(
-                            lastId -> {
-                                if (checkNotNull(lastId)) {
-                                    return replaceMessage(telegramId, lastId, boxAnswer);
-                                } else {
-                                    return sendMessage(telegramId, boxAnswer, saveMessageId);
-                                }
+                            if (boxAnswer.isReplace() && checkNotNull(senderStorageService)) {
+                                return senderStorageService.getLastSendMessage(telegramId)
+                                        .onItem().transformToUni(
+                                                lastId -> {
+                                                    if (checkNotNull(lastId)) {
+                                                        return replaceMessage(telegramId, lastId, boxAnswer);
+                                                    } else {
+                                                        return sendMessage(telegramId, boxAnswer, saveMessageId);
+                                                    }
+                                                }
+                                        );
+                            } else {
+                                return sendMessage(telegramId, boxAnswer, saveMessageId);
                             }
-                    );
-        } else {
-            return sendMessage(telegramId, boxAnswer, saveMessageId);
-        }
+                        }
+                );
     }
 
     private Uni<Void> replaceMessage(@NotNull Long telegramId, @NotNull Integer lastMessageId, @NotNull BoxAnswer boxAnswer) {
@@ -131,7 +132,12 @@ public class TelegramSender implements TelegramSending {
                             }
                             return Uni.createFrom().voidItem();
                         }
-                );
+                ).replaceWithVoid();
+    }
+
+    @Override
+    public SendType getType() {
+        return SendType.PRIVATE;
     }
 
 }
