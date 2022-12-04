@@ -38,7 +38,8 @@ public final class MessageMailConvert {
 
     public static Mail apply(Message message) {
         final Mail mail = new Mail();
-        mail.setPersonId(message.getChatId());
+        final Long chatId = message.getChatId();
+        mail.setPersonId(chatId != null ? chatId.toString() : null);
         mail.setText(message.getText());
         mail.setCreateDate(LocalDateTime.ofInstant(Instant.ofEpochSecond(message.getDate()), ZoneId.systemDefault()));
         mail.setFirstName(message.getChat().getFirstName());

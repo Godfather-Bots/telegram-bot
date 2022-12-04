@@ -1,6 +1,7 @@
 package dev.struchkov.godfather.telegram.main.consumer;
 
 import dev.struchkov.godfather.main.domain.content.Mail;
+import dev.struchkov.godfather.telegram.domain.attachment.ButtonClickAttachment;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.User;
 
@@ -14,15 +15,35 @@ import java.time.LocalDateTime;
 public class CallbackQueryConvert {
 
     public static Mail apply(CallbackQuery callbackQuery) {
+        final String callbackData = callbackQuery.getData();
+
         final Mail mail = new Mail();
         mail.setCreateDate(LocalDateTime.now());
-        mail.setText(callbackQuery.getData());
-        mail.setPersonId(callbackQuery.getMessage().getChatId());
+        mail.setText(callbackData);
+        mail.addAttachment(convertToButtonClick(callbackData));
+
+        final Long chatId = callbackQuery.getMessage().getChatId();
+        mail.setPersonId(chatId != null ? chatId.toString() : null);
 
         final User user = callbackQuery.getFrom();
         mail.setFirstName(user.getFirstName());
         mail.setLastName(user.getLastName());
         return mail;
+    }
+
+    private static ButtonClickAttachment convertToButtonClick(String callbackData) {
+        final ButtonClickAttachment buttonClickAttachment = new ButtonClickAttachment();
+        buttonClickAttachment.setRawCallBackData(callbackData);
+        if (callbackData.charAt(0) == '[' && callbackData.charAt(callbackData.length() - 1) == ']') {
+            final String[] args = callbackData.substring(1, callbackData.length() - 1).split(";");
+            for (String arg : args) {
+                final String[] oneArg = arg.split(":");
+                final String key = oneArg[0];
+                final String value = oneArg[1];
+                buttonClickAttachment.addClickArg(key, value);
+            }
+        }
+        return buttonClickAttachment;
     }
 
 }

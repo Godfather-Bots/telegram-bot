@@ -93,25 +93,33 @@ public final class InlineKeyBoards {
         return keyBoard.build();
     }
 
-    public static InlineKeyBoard verticalDuoMenu(KeyBoardButton... buttons) {
-        final InlineKeyBoard.Builder keyBoard = InlineKeyBoard.builder();
+    public static void verticalDuoMenu(InlineKeyBoard.Builder builder, List<? extends KeyBoardButton> buttons) {
         boolean flag = true;
         SimpleKeyBoardLine.Builder keyBoardLine = SimpleKeyBoardLine.builder();
-        for (int i = 0; i <= buttons.length - 1; i++) {
-            keyBoardLine.button(buttons[i]);
+        for (int i = 0; i <= buttons.size() - 1; i++) {
+            keyBoardLine.button(buttons.get(i));
             if (flag) {
-                if (i == buttons.length - 1) {
-                    keyBoard.line(keyBoardLine.build());
+                if (i == buttons.size() - 1) {
+                    builder.line(keyBoardLine.build());
                 } else {
                     flag = false;
                 }
             } else {
-                keyBoard.line(keyBoardLine.build());
+                builder.line(keyBoardLine.build());
                 keyBoardLine = SimpleKeyBoardLine.builder();
                 flag = true;
             }
         }
+    }
+
+    public static InlineKeyBoard verticalDuoMenu(List<? extends KeyBoardButton> buttons) {
+        final InlineKeyBoard.Builder keyBoard = InlineKeyBoard.builder();
+        verticalDuoMenu(keyBoard, buttons);
         return keyBoard.build();
+    }
+
+    public static InlineKeyBoard verticalDuoMenu(KeyBoardButton... buttons) {
+        return verticalDuoMenu(Arrays.stream(buttons).toList());
     }
 
     /**

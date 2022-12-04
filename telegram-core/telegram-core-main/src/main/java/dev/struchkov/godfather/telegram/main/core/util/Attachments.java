@@ -1,6 +1,7 @@
 package dev.struchkov.godfather.telegram.main.core.util;
 
 import dev.struchkov.godfather.main.domain.content.Attachment;
+import dev.struchkov.godfather.telegram.domain.attachment.ButtonClickAttachment;
 import dev.struchkov.godfather.telegram.domain.attachment.CommandAttachment;
 import dev.struchkov.godfather.telegram.domain.attachment.ContactAttachment;
 import dev.struchkov.godfather.telegram.domain.attachment.DocumentAttachment;
@@ -39,6 +40,17 @@ public final class Attachments {
             for (Attachment attachment : attachments) {
                 if (isLink(attachment)) {
                     return Optional.of((LinkAttachment) attachment);
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
+    public static Optional<ButtonClickAttachment> findFirstButtonClick(Collection<Attachment> attachments) {
+        if (checkNotEmpty(attachments)) {
+            for (Attachment attachment : attachments) {
+                if (isButtonClick(attachment)) {
+                    return Optional.of((ButtonClickAttachment) attachment);
                 }
             }
         }
@@ -134,6 +146,11 @@ public final class Attachments {
     private static boolean isLink(Attachment attachment) {
         isNotNull(attachment);
         return TelegramAttachmentType.LINK.name().equals(attachment.getType());
+    }
+
+    public static boolean isButtonClick(Attachment attachment) {
+        isNotNull(attachment);
+        return TelegramAttachmentType.BUTTON_CLICK.name().equals(attachment.getType());
     }
 
 }

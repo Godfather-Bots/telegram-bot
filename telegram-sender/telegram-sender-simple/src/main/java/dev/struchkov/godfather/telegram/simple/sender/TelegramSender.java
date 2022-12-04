@@ -51,16 +51,16 @@ public class TelegramSender implements TelegramSending {
     }
 
     @Override
-    public void send(@NotNull Long telegramId, @NotNull BoxAnswer boxAnswer) {
+    public void send(@NotNull String telegramId, @NotNull BoxAnswer boxAnswer) {
         sendBoxAnswer(telegramId, boxAnswer, true);
     }
 
     @Override
-    public void sendNotSave(@NotNull Long telegramId, @NotNull BoxAnswer boxAnswer) {
+    public void sendNotSave(@NotNull String telegramId, @NotNull BoxAnswer boxAnswer) {
         sendBoxAnswer(telegramId, boxAnswer, false);
     }
 
-    private void sendBoxAnswer(@NotNull Long telegramId, @NotNull BoxAnswer boxAnswer, boolean saveMessageId) {
+    private void sendBoxAnswer(@NotNull String telegramId, @NotNull BoxAnswer boxAnswer, boolean saveMessageId) {
         isNotNull(telegramId, boxAnswer);
         try {
             if (boxAnswer.isReplace() && checkNotNull(senderStorageService)) {
@@ -83,9 +83,9 @@ public class TelegramSender implements TelegramSending {
         }
     }
 
-    private void replaceMessage(@NotNull Long telegramId, @NotNull Integer lastMessageId, @NotNull BoxAnswer boxAnswer) throws TelegramApiException {
+    private void replaceMessage(@NotNull String telegramId, @NotNull Integer lastMessageId, @NotNull BoxAnswer boxAnswer) throws TelegramApiException {
         final EditMessageText editMessageText = new EditMessageText();
-        editMessageText.setChatId(String.valueOf(telegramId));
+        editMessageText.setChatId(telegramId);
         editMessageText.setMessageId(lastMessageId);
         editMessageText.enableMarkdown(true);
         editMessageText.setText(boxAnswer.getMessage());
@@ -93,10 +93,10 @@ public class TelegramSender implements TelegramSending {
         absSender.execute(editMessageText);
     }
 
-    private void sendMessage(@NotNull Long telegramId, @NotNull BoxAnswer boxAnswer, boolean saveMessageId) {
+    private void sendMessage(@NotNull String telegramId, @NotNull BoxAnswer boxAnswer, boolean saveMessageId) {
         final SendMessage sendMessage = new SendMessage();
         sendMessage.enableMarkdown(true);
-        sendMessage.setChatId(String.valueOf(telegramId));
+        sendMessage.setChatId(telegramId);
         sendMessage.setText(
                 sendPreProcessing != null
                         ? sendPreProcessing.pretreatment(boxAnswer.getMessage())

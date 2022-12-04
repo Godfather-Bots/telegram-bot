@@ -8,16 +8,16 @@ public class Unsubscribe implements Event {
 
     public static final String TYPE = "UNSUBSCRIBE";
 
-    private Long telegramId;
+    private String telegramId;
     private String firstName;
     private String lastName;
     private LocalDateTime subscriptionDate;
 
-    public Long getTelegramId() {
+    public String getTelegramId() {
         return telegramId;
     }
 
-    public void setTelegramId(Long telegramId) {
+    public void setTelegramId(String telegramId) {
         this.telegramId = telegramId;
     }
 

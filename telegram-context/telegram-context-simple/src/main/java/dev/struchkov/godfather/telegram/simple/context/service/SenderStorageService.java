@@ -4,10 +4,10 @@ import java.util.Optional;
 
 public interface SenderStorageService {
 
-    Optional<Integer> getLastSendMessage(Long telegramId);
+    Optional<Integer> getLastSendMessage(String telegramId);
 
-    void saveLastSendMessage(Long telegramId, Integer messageId);
+    void saveLastSendMessage(String telegramId, Integer messageId);
 
-    void removeLastSendMessage(Long telegramId);
+    void removeLastSendMessage(String telegramId);
 
 }

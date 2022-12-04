@@ -50,16 +50,16 @@ public class TelegramSender implements TelegramSending {
     }
 
     @Override
-    public Uni<Void> send(@NotNull Long telegramId, @NotNull BoxAnswer boxAnswer) {
+    public Uni<Void> send(@NotNull String telegramId, @NotNull BoxAnswer boxAnswer) {
         return sendBoxAnswer(telegramId, boxAnswer, true);
     }
 
     @Override
-    public Uni<Void> sendNotSave(@NotNull Long telegramId, @NotNull BoxAnswer boxAnswer) {
+    public Uni<Void> sendNotSave(@NotNull String telegramId, @NotNull BoxAnswer boxAnswer) {
         return sendBoxAnswer(telegramId, boxAnswer, false);
     }
 
-    private Uni<Void> sendBoxAnswer(@NotNull Long telegramId, @NotNull BoxAnswer boxAnswer, boolean saveMessageId) {
+    private Uni<Void> sendBoxAnswer(@NotNull String telegramId, @NotNull BoxAnswer boxAnswer, boolean saveMessageId) {
         return Uni.createFrom().voidItem()
                 .onItem().transformToUni(
                         v -> {
@@ -83,7 +83,7 @@ public class TelegramSender implements TelegramSending {
                 );
     }
 
-    private Uni<Void> replaceMessage(@NotNull Long telegramId, @NotNull Integer lastMessageId, @NotNull BoxAnswer boxAnswer) {
+    private Uni<Void> replaceMessage(@NotNull String telegramId, @NotNull Integer lastMessageId, @NotNull BoxAnswer boxAnswer) {
         return Uni.createFrom().voidItem()
                 .onItem().transformToUni(
                         v -> {
@@ -103,13 +103,13 @@ public class TelegramSender implements TelegramSending {
                 );
     }
 
-    private Uni<Void> sendMessage(@NotNull Long telegramId, @NotNull BoxAnswer boxAnswer, boolean saveMessageId) {
+    private Uni<Void> sendMessage(@NotNull String telegramId, @NotNull BoxAnswer boxAnswer, boolean saveMessageId) {
         return Uni.createFrom().voidItem()
                 .onItem().transformToUni(
                         v -> {
                             final SendMessage sendMessage = new SendMessage();
                             sendMessage.enableMarkdown(true);
-                            sendMessage.setChatId(String.valueOf(telegramId));
+                            sendMessage.setChatId(telegramId);
                             sendMessage.setText(
                                     sendPreProcessing != null
                                             ? sendPreProcessing.pretreatment(boxAnswer.getMessage())

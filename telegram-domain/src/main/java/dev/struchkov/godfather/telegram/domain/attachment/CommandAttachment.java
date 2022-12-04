@@ -4,6 +4,8 @@ import dev.struchkov.godfather.main.domain.content.Attachment;
 
 import java.util.Optional;
 
+import static dev.struchkov.haiti.utils.Checker.checkNotNull;
+
 public class CommandAttachment extends Attachment {
 
     private String value;
@@ -37,6 +39,13 @@ public class CommandAttachment extends Attachment {
 
     public String getCommandType() {
         return commandType;
+    }
+
+    public boolean isCommandType(String type) {
+        if (checkNotNull(type)) {
+            return type.equals(commandType);
+        }
+        return false;
     }
 
     public String getRawValue() {

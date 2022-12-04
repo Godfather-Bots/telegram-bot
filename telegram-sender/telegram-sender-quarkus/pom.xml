@@ -5,7 +5,7 @@
     <parent>
         <groupId>dev.struchkov.godfather.telegram</groupId>
         <artifactId>telegram-sender</artifactId>
-        <version>0.0.34</version>
+        <version>0.0.38</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 

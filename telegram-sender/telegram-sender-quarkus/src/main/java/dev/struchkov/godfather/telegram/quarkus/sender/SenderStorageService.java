@@ -4,10 +4,10 @@ import io.smallrye.mutiny.Uni;
 
 public interface SenderStorageService {
 
-    Uni<Integer> getLastSendMessage(Long telegramId);
+    Uni<Integer> getLastSendMessage(String telegramId);
 
-    Uni<Void> saveLastSendMessage(Long telegramId, Integer messageId);
+    Uni<Void> saveLastSendMessage(String telegramId, Integer messageId);
 
-    Uni<Void> removeLastSendMessage(Long telegramId);
+    Uni<Void> removeLastSendMessage(String telegramId);
 
 }

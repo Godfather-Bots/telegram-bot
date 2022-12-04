@@ -34,21 +34,6 @@ public class TelegramConnectBot implements TelegramConnect {
         initLongPolling(telegramConnectConfig);
     }
 
-//    public TelegramConnect(TelegramWebHookConfig telegramWebHookConfig) {
-//        initWebHook(telegramWebHookConfig);
-//    }
-//
-//    private void initWebHook(TelegramWebHookConfig telegramWebHookConfig) {
-//        TelegramBotsApi botapi = new TelegramBotsApi();
-//        final TelegramWebhookBot telegramWebhookBot = new TelegramHookBot(telegramWebHookConfig);
-//        try {
-//            botapi.registerBot(telegramWebhookBot);
-//            this.telegramBot = (TelegramBot) telegramWebhookBot;
-//        } catch (TelegramApiRequestException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
     private void initLongPolling(TelegramConnectConfig telegramConnectConfig) {
 
         final ProxyConfig proxyConfig = telegramConnectConfig.getProxyConfig();
@@ -78,7 +63,6 @@ public class TelegramConnectBot implements TelegramConnect {
                 botOptions.setProxyHost(proxyConfig.getHost());
                 botOptions.setProxyPort(proxyConfig.getPort());
                 botOptions.setProxyType(convertProxyType(proxyConfig.getType()));
-
 
                 final TelegramPollingBot bot = new TelegramPollingBot(telegramConnectConfig, botOptions);
 

@@ -1,13 +1,11 @@
 package dev.struchkov.godfather.telegram.main.consumer;
 
 import dev.struchkov.godfather.telegram.domain.event.Subscribe;
-import dev.struchkov.haiti.utils.Exceptions;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.ChatMemberUpdated;
 
 import java.time.LocalDateTime;
 
-import static dev.struchkov.haiti.utils.Exceptions.*;
 import static dev.struchkov.haiti.utils.Exceptions.utilityClass;
 
 public final class SubscribeConvert {
@@ -20,7 +18,7 @@ public final class SubscribeConvert {
         final Chat chat = updated.getChat();
 
         final Subscribe subscribe = new Subscribe();
-        subscribe.setTelegramId(chat.getId());
+        subscribe.setTelegramId(chat.getId().toString());
         subscribe.setLastName(chat.getLastName());
         subscribe.setFirstName(chat.getFirstName());
         subscribe.setSubscriptionDate(LocalDateTime.now());

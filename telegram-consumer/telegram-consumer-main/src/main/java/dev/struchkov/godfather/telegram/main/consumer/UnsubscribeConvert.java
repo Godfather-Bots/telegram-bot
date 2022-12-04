@@ -18,7 +18,7 @@ public final class UnsubscribeConvert {
         final Chat chat = updated.getChat();
 
         final Unsubscribe unsubscribe = new Unsubscribe();
-        unsubscribe.setTelegramId(chat.getId());
+        unsubscribe.setTelegramId(chat.getId().toString());
         unsubscribe.setLastName(chat.getLastName());
         unsubscribe.setFirstName(chat.getFirstName());
         unsubscribe.setSubscriptionDate(LocalDateTime.now());
