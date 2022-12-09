@@ -5,6 +5,7 @@ import dev.struchkov.godfather.main.domain.SendType;
 import dev.struchkov.godfather.telegram.domain.keyboard.InlineKeyBoard;
 import dev.struchkov.godfather.telegram.main.context.TelegramConnect;
 import dev.struchkov.godfather.telegram.main.sender.util.KeyBoardConvert;
+import dev.struchkov.godfather.telegram.quarkus.context.repository.SenderRepository;
 import dev.struchkov.godfather.telegram.quarkus.context.service.TelegramSending;
 import io.smallrye.mutiny.Uni;
 import org.jetbrains.annotations.NotNull;
@@ -30,23 +31,23 @@ public class TelegramSender implements TelegramSending {
     private final AbsSender absSender;
 
     private SendPreProcessing sendPreProcessing;
-    private SenderStorageService senderStorageService;
+    private SenderRepository senderRepository;
 
     public TelegramSender(TelegramConnect telegramConnect) {
         this.absSender = telegramConnect.getAbsSender();
     }
 
-    public TelegramSender(TelegramConnect telegramConnect, SenderStorageService senderStorageService) {
+    public TelegramSender(TelegramConnect telegramConnect, SenderRepository senderRepository) {
         this.absSender = telegramConnect.getAbsSender();
-        this.senderStorageService = senderStorageService;
+        this.senderRepository = senderRepository;
     }
 
     public void setSendPreProcessing(SendPreProcessing sendPreProcessing) {
         this.sendPreProcessing = sendPreProcessing;
     }
 
-    public void setSenderRepository(SenderStorageService senderStorageService) {
-        this.senderStorageService = senderStorageService;
+    public void setSenderRepository(SenderRepository senderStorageService) {
+        this.senderRepository = senderRepository;
     }
 
     @Override
@@ -65,8 +66,8 @@ public class TelegramSender implements TelegramSending {
                         v -> {
                             isNotNull(telegramId, boxAnswer);
 
-                            if (boxAnswer.isReplace() && checkNotNull(senderStorageService)) {
-                                return senderStorageService.getLastSendMessage(telegramId)
+                            if (boxAnswer.isReplace() && checkNotNull(senderRepository)) {
+                                return senderRepository.getLastSendMessage(telegramId)
                                         .onItem().transformToUni(
                                                 lastId -> {
                                                     if (checkNotNull(lastId)) {
@@ -119,8 +120,8 @@ public class TelegramSender implements TelegramSending {
 
                             try {
                                 final Message execute = absSender.execute(sendMessage);
-                                if (checkNotNull(senderStorageService) && saveMessageId) {
-                                    return senderStorageService.saveLastSendMessage(telegramId, execute.getMessageId());
+                                if (checkNotNull(senderRepository) && saveMessageId) {
+                                    return senderRepository.saveLastSendMessage(telegramId, execute.getMessageId());
                                 }
                             } catch (TelegramApiRequestException e) {
                                 log.error(e.getApiResponse());

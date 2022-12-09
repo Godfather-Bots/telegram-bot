@@ -1,8 +1,8 @@
-package dev.struchkov.godfather.telegram.simple.context.service;
+package dev.struchkov.godfather.telegram.simple.context.repository;
 
 import java.util.Optional;
 
-public interface SenderStorageService {
+public interface SenderRepository {
 
     Optional<Integer> getLastSendMessage(String telegramId);
 

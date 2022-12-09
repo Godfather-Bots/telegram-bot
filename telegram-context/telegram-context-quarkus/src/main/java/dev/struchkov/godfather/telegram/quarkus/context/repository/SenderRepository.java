@@ -1,8 +1,8 @@
-package dev.struchkov.godfather.telegram.quarkus.sender;
+package dev.struchkov.godfather.telegram.quarkus.context.repository;
 
 import io.smallrye.mutiny.Uni;
 
-public interface SenderStorageService {
+public interface SenderRepository {
 
     Uni<Integer> getLastSendMessage(String telegramId);
 

@@ -1,6 +1,6 @@
 package dev.struchkov.godfather.telegram.quarkus.core.service;
 
-import dev.struchkov.godfather.telegram.quarkus.context.service.SenderStorageService;
+import dev.struchkov.godfather.telegram.quarkus.context.repository.SenderRepository;
 import io.smallrye.mutiny.Uni;
 import org.jetbrains.annotations.NotNull;
 
@@ -9,7 +9,7 @@ import java.util.Map;
 
 import static dev.struchkov.haiti.utils.Inspector.isNotNull;
 
-public class SenderMapStorageService implements SenderStorageService {
+public class SenderMapRepository implements SenderRepository {
 
     private final Map<Long, Integer> lastMessageId = new HashMap<>();
 

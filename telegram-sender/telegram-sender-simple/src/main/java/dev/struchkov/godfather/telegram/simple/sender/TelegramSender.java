@@ -5,7 +5,7 @@ import dev.struchkov.godfather.main.domain.SendType;
 import dev.struchkov.godfather.telegram.domain.keyboard.InlineKeyBoard;
 import dev.struchkov.godfather.telegram.main.context.TelegramConnect;
 import dev.struchkov.godfather.telegram.main.sender.util.KeyBoardConvert;
-import dev.struchkov.godfather.telegram.simple.context.service.SenderStorageService;
+import dev.struchkov.godfather.telegram.simple.context.repository.SenderRepository;
 import dev.struchkov.godfather.telegram.simple.context.service.TelegramSending;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -31,23 +31,23 @@ public class TelegramSender implements TelegramSending {
     private final AbsSender absSender;
 
     private SendPreProcessing sendPreProcessing;
-    private SenderStorageService senderStorageService;
+    private SenderRepository senderRepository;
 
     public TelegramSender(TelegramConnect telegramConnect) {
         this.absSender = telegramConnect.getAbsSender();
     }
 
-    public TelegramSender(TelegramConnect telegramConnect, SenderStorageService senderStorageService) {
+    public TelegramSender(TelegramConnect telegramConnect, SenderRepository senderRepository) {
         this.absSender = telegramConnect.getAbsSender();
-        this.senderStorageService = senderStorageService;
+        this.senderRepository = senderRepository;
     }
 
     public void setSendPreProcessing(SendPreProcessing sendPreProcessing) {
         this.sendPreProcessing = sendPreProcessing;
     }
 
-    public void setSenderRepository(SenderStorageService senderStorageService) {
-        this.senderStorageService = senderStorageService;
+    public void setSenderRepository(SenderRepository senderRepository) {
+        this.senderRepository = senderRepository;
     }
 
     @Override
@@ -63,8 +63,8 @@ public class TelegramSender implements TelegramSending {
     private void sendBoxAnswer(@NotNull String telegramId, @NotNull BoxAnswer boxAnswer, boolean saveMessageId) {
         isNotNull(telegramId, boxAnswer);
         try {
-            if (boxAnswer.isReplace() && checkNotNull(senderStorageService)) {
-                final Optional<Integer> optLastId = senderStorageService.getLastSendMessage(telegramId);
+            if (boxAnswer.isReplace() && checkNotNull(senderRepository)) {
+                final Optional<Integer> optLastId = senderRepository.getLastSendMessage(telegramId);
                 if (optLastId.isPresent()) {
                     replaceMessage(telegramId, optLastId.get(), boxAnswer);
                 } else {
@@ -105,8 +105,8 @@ public class TelegramSender implements TelegramSending {
         sendMessage.setReplyMarkup(KeyBoardConvert.convertKeyBoard(boxAnswer.getKeyBoard()));
         try {
             final Message execute = absSender.execute(sendMessage);
-            if (checkNotNull(senderStorageService) && saveMessageId) {
-                senderStorageService.saveLastSendMessage(telegramId, execute.getMessageId());
+            if (checkNotNull(senderRepository) && saveMessageId) {
+                senderRepository.saveLastSendMessage(telegramId, execute.getMessageId());
             }
         } catch (TelegramApiRequestException e) {
             log.error(e.getApiResponse());

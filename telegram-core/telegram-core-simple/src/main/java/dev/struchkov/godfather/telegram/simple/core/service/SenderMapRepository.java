@@ -1,6 +1,6 @@
 package dev.struchkov.godfather.telegram.simple.core.service;
 
-import dev.struchkov.godfather.telegram.simple.context.service.SenderStorageService;
+import dev.struchkov.godfather.telegram.simple.context.repository.SenderRepository;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -9,7 +9,7 @@ import java.util.Optional;
 
 import static dev.struchkov.haiti.utils.Inspector.isNotNull;
 
-public class SenderMapStorageService implements SenderStorageService {
+public class SenderMapRepository implements SenderRepository {
 
     private final Map<String, Integer> lastMessageId = new HashMap<>();
 
