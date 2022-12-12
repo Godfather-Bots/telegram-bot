@@ -2,6 +2,7 @@ package dev.struchkov.godfather.telegram.simple.sender;
 
 import dev.struchkov.godfather.main.domain.BoxAnswer;
 import dev.struchkov.godfather.main.domain.SendType;
+import dev.struchkov.godfather.simple.context.service.PreSendProcessing;
 import dev.struchkov.godfather.telegram.domain.keyboard.InlineKeyBoard;
 import dev.struchkov.godfather.telegram.main.context.TelegramConnect;
 import dev.struchkov.godfather.telegram.main.sender.util.KeyBoardConvert;
@@ -17,6 +18,8 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static dev.struchkov.haiti.utils.Checker.checkNotNull;
@@ -30,7 +33,7 @@ public class TelegramSender implements TelegramSending {
 
     private final AbsSender absSender;
 
-    private SendPreProcessing sendPreProcessing;
+    private List<PreSendProcessing> preSendProcessors = new ArrayList<>();
     private SenderRepository senderRepository;
 
     public TelegramSender(TelegramConnect telegramConnect) {
@@ -40,10 +43,6 @@ public class TelegramSender implements TelegramSending {
     public TelegramSender(TelegramConnect telegramConnect, SenderRepository senderRepository) {
         this.absSender = telegramConnect.getAbsSender();
         this.senderRepository = senderRepository;
-    }
-
-    public void setSendPreProcessing(SendPreProcessing sendPreProcessing) {
-        this.sendPreProcessing = sendPreProcessing;
     }
 
     public void setSenderRepository(SenderRepository senderRepository) {
@@ -56,12 +55,22 @@ public class TelegramSender implements TelegramSending {
     }
 
     @Override
+    public void addPreSendProcess(@NotNull PreSendProcessing processing) {
+        preSendProcessors.add(processing);
+    }
+
+    @Override
     public void sendNotSave(@NotNull String telegramId, @NotNull BoxAnswer boxAnswer) {
         sendBoxAnswer(telegramId, boxAnswer, false);
     }
 
     private void sendBoxAnswer(@NotNull String telegramId, @NotNull BoxAnswer boxAnswer, boolean saveMessageId) {
         isNotNull(telegramId, boxAnswer);
+
+        for (PreSendProcessing preSendProcessor : preSendProcessors) {
+            boxAnswer = preSendProcessor.pretreatment(boxAnswer);
+        }
+
         try {
             if (boxAnswer.isReplace() && checkNotNull(senderRepository)) {
                 final Optional<Integer> optLastId = senderRepository.getLastSendMessage(telegramId);
@@ -97,11 +106,7 @@ public class TelegramSender implements TelegramSending {
         final SendMessage sendMessage = new SendMessage();
         sendMessage.enableMarkdown(true);
         sendMessage.setChatId(telegramId);
-        sendMessage.setText(
-                sendPreProcessing != null
-                        ? sendPreProcessing.pretreatment(boxAnswer.getMessage())
-                        : boxAnswer.getMessage()
-        );
+        sendMessage.setText(boxAnswer.getMessage());
         sendMessage.setReplyMarkup(KeyBoardConvert.convertKeyBoard(boxAnswer.getKeyBoard()));
         try {
             final Message execute = absSender.execute(sendMessage);

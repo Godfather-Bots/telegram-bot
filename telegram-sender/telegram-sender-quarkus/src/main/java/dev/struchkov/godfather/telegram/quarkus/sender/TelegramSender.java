@@ -2,6 +2,7 @@ package dev.struchkov.godfather.telegram.quarkus.sender;
 
 import dev.struchkov.godfather.main.domain.BoxAnswer;
 import dev.struchkov.godfather.main.domain.SendType;
+import dev.struchkov.godfather.quarkus.context.service.PreSendProcessing;
 import dev.struchkov.godfather.telegram.domain.keyboard.InlineKeyBoard;
 import dev.struchkov.godfather.telegram.main.context.TelegramConnect;
 import dev.struchkov.godfather.telegram.main.sender.util.KeyBoardConvert;
@@ -18,9 +19,10 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
+import java.util.List;
+
 import static dev.struchkov.godfather.telegram.main.sender.util.KeyBoardConvert.convertInlineKeyBoard;
 import static dev.struchkov.haiti.utils.Checker.checkNotNull;
-import static dev.struchkov.haiti.utils.Inspector.isNotNull;
 
 public class TelegramSender implements TelegramSending {
 
@@ -30,7 +32,8 @@ public class TelegramSender implements TelegramSending {
 
     private final AbsSender absSender;
 
-    private SendPreProcessing sendPreProcessing;
+    //TODO [09.12.2022|uPagge]: Доработать использование preSendProcessors
+    private List<PreSendProcessing> preSendProcessors;
     private SenderRepository senderRepository;
 
     public TelegramSender(TelegramConnect telegramConnect) {
@@ -42,17 +45,18 @@ public class TelegramSender implements TelegramSending {
         this.senderRepository = senderRepository;
     }
 
-    public void setSendPreProcessing(SendPreProcessing sendPreProcessing) {
-        this.sendPreProcessing = sendPreProcessing;
-    }
-
-    public void setSenderRepository(SenderRepository senderStorageService) {
+    public void setSenderRepository(SenderRepository senderRepository) {
         this.senderRepository = senderRepository;
     }
 
     @Override
     public Uni<Void> send(@NotNull String telegramId, @NotNull BoxAnswer boxAnswer) {
         return sendBoxAnswer(telegramId, boxAnswer, true);
+    }
+
+    @Override
+    public void addPreSendProcess(@NotNull PreSendProcessing processing) {
+        preSendProcessors.add(processing);
     }
 
     @Override
@@ -64,8 +68,6 @@ public class TelegramSender implements TelegramSending {
         return Uni.createFrom().voidItem()
                 .onItem().transformToUni(
                         v -> {
-                            isNotNull(telegramId, boxAnswer);
-
                             if (boxAnswer.isReplace() && checkNotNull(senderRepository)) {
                                 return senderRepository.getLastSendMessage(telegramId)
                                         .onItem().transformToUni(
@@ -89,7 +91,7 @@ public class TelegramSender implements TelegramSending {
                 .onItem().transformToUni(
                         v -> {
                             final EditMessageText editMessageText = new EditMessageText();
-                            editMessageText.setChatId(String.valueOf(telegramId));
+                            editMessageText.setChatId(telegramId);
                             editMessageText.setMessageId(lastMessageId);
                             editMessageText.enableMarkdown(true);
                             editMessageText.setText(boxAnswer.getMessage());
@@ -111,11 +113,7 @@ public class TelegramSender implements TelegramSending {
                             final SendMessage sendMessage = new SendMessage();
                             sendMessage.enableMarkdown(true);
                             sendMessage.setChatId(telegramId);
-                            sendMessage.setText(
-                                    sendPreProcessing != null
-                                            ? sendPreProcessing.pretreatment(boxAnswer.getMessage())
-                                            : boxAnswer.getMessage()
-                            );
+                            sendMessage.setText(boxAnswer.getMessage());
                             sendMessage.setReplyMarkup(KeyBoardConvert.convertKeyBoard(boxAnswer.getKeyBoard()));
 
                             try {
