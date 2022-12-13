@@ -50,8 +50,8 @@ public class TelegramSender implements TelegramSending {
     }
 
     @Override
-    public Uni<Void> send(@NotNull String telegramId, @NotNull BoxAnswer boxAnswer) {
-        return sendBoxAnswer(telegramId, boxAnswer, true);
+    public Uni<Void> send(@NotNull BoxAnswer boxAnswer) {
+        return sendBoxAnswer(boxAnswer, true);
     }
 
     @Override
@@ -60,27 +60,28 @@ public class TelegramSender implements TelegramSending {
     }
 
     @Override
-    public Uni<Void> sendNotSave(@NotNull String telegramId, @NotNull BoxAnswer boxAnswer) {
-        return sendBoxAnswer(telegramId, boxAnswer, false);
+    public Uni<Void> sendNotSave(@NotNull BoxAnswer boxAnswer) {
+        return sendBoxAnswer(boxAnswer, false);
     }
 
-    private Uni<Void> sendBoxAnswer(@NotNull String telegramId, @NotNull BoxAnswer boxAnswer, boolean saveMessageId) {
+    private Uni<Void> sendBoxAnswer(@NotNull BoxAnswer boxAnswer, boolean saveMessageId) {
         return Uni.createFrom().voidItem()
                 .onItem().transformToUni(
                         v -> {
+                            final String recipientTelegramId = boxAnswer.getRecipientPersonId();
                             if (boxAnswer.isReplace() && checkNotNull(senderRepository)) {
-                                return senderRepository.getLastSendMessage(telegramId)
+                                return senderRepository.getLastSendMessage(recipientTelegramId)
                                         .onItem().transformToUni(
                                                 lastId -> {
                                                     if (checkNotNull(lastId)) {
-                                                        return replaceMessage(telegramId, lastId, boxAnswer);
+                                                        return replaceMessage(recipientTelegramId, lastId, boxAnswer);
                                                     } else {
-                                                        return sendMessage(telegramId, boxAnswer, saveMessageId);
+                                                        return sendMessage(recipientTelegramId, boxAnswer, saveMessageId);
                                                     }
                                                 }
                                         );
                             } else {
-                                return sendMessage(telegramId, boxAnswer, saveMessageId);
+                                return sendMessage(recipientTelegramId, boxAnswer, saveMessageId);
                             }
                         }
                 );

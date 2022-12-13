@@ -5,8 +5,9 @@
     <parent>
         <groupId>dev.struchkov.godfather.telegram</groupId>
         <artifactId>telegram-bot</artifactId>
-        <version>0.0.42</version>
+        <version>0.0.43</version>
     </parent>
+
     <modules>
         <module>telegram-core-main</module>
         <module>telegram-core-simple</module>

@@ -50,8 +50,9 @@ public class TelegramSender implements TelegramSending {
     }
 
     @Override
-    public void send(@NotNull String telegramId, @NotNull BoxAnswer boxAnswer) {
-        sendBoxAnswer(telegramId, boxAnswer, true);
+    public void send(@NotNull BoxAnswer boxAnswer) {
+        isNotNull(boxAnswer.getRecipientPersonId());
+        sendBoxAnswer(boxAnswer, true);
     }
 
     @Override
@@ -60,12 +61,13 @@ public class TelegramSender implements TelegramSending {
     }
 
     @Override
-    public void sendNotSave(@NotNull String telegramId, @NotNull BoxAnswer boxAnswer) {
-        sendBoxAnswer(telegramId, boxAnswer, false);
+    public void sendNotSave(@NotNull BoxAnswer boxAnswer) {
+        sendBoxAnswer(boxAnswer, false);
     }
 
-    private void sendBoxAnswer(@NotNull String telegramId, @NotNull BoxAnswer boxAnswer, boolean saveMessageId) {
-        isNotNull(telegramId, boxAnswer);
+    private void sendBoxAnswer(BoxAnswer boxAnswer, boolean saveMessageId) {
+        final String recipientTelegramId = boxAnswer.getRecipientPersonId();
+        isNotNull(recipientTelegramId);
 
         for (PreSendProcessing preSendProcessor : preSendProcessors) {
             boxAnswer = preSendProcessor.pretreatment(boxAnswer);
@@ -73,19 +75,19 @@ public class TelegramSender implements TelegramSending {
 
         try {
             if (boxAnswer.isReplace() && checkNotNull(senderRepository)) {
-                final Optional<Integer> optLastId = senderRepository.getLastSendMessage(telegramId);
+                final Optional<Integer> optLastId = senderRepository.getLastSendMessage(recipientTelegramId);
                 if (optLastId.isPresent()) {
-                    replaceMessage(telegramId, optLastId.get(), boxAnswer);
+                    replaceMessage(recipientTelegramId, optLastId.get(), boxAnswer);
                 } else {
-                    sendMessage(telegramId, boxAnswer, saveMessageId);
+                    sendMessage(recipientTelegramId, boxAnswer, saveMessageId);
                 }
             } else {
-                sendMessage(telegramId, boxAnswer, saveMessageId);
+                sendMessage(recipientTelegramId, boxAnswer, saveMessageId);
             }
         } catch (TelegramApiRequestException e) {
             log.error(e.getApiResponse());
             if (ERROR_REPLACE_MESSAGE.equals(e.getApiResponse())) {
-                sendMessage(telegramId, boxAnswer, saveMessageId);
+                sendMessage(recipientTelegramId, boxAnswer, saveMessageId);
             }
         } catch (TelegramApiException e) {
             log.error(e.getMessage());

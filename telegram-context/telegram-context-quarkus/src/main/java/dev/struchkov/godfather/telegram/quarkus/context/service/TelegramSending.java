@@ -7,6 +7,6 @@ import org.jetbrains.annotations.NotNull;
 
 public interface TelegramSending extends Sending {
 
-    Uni<Void> sendNotSave(@NotNull String personId, @NotNull BoxAnswer boxAnswer);
+    Uni<Void> sendNotSave(@NotNull BoxAnswer boxAnswer);
 
 }
