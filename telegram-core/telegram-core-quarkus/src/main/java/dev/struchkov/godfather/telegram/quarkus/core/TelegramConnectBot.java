@@ -17,6 +17,8 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 
+import static dev.struchkov.haiti.utils.Checker.checkNotNull;
+
 /**
  * TODO: Добавить описание класса.
  *
@@ -52,7 +54,7 @@ public class TelegramConnectBot implements TelegramConnect {
     private void initLongPolling(TelegramConnectConfig telegramConnectConfig) {
 
         final ProxyConfig proxyConfig = telegramConnectConfig.getProxyConfig();
-        if (proxyConfig != null && proxyConfig.getPassword() != null) {
+        if (checkNotNull(proxyConfig) && proxyConfig.isEnable() && checkNotNull(proxyConfig.getPassword()) && !"".equals(proxyConfig.getPassword())) {
             try {
                 Authenticator.setDefault(new Authenticator() {
                     @Override
@@ -70,7 +72,7 @@ public class TelegramConnectBot implements TelegramConnect {
 
         final TelegramBotsApi botapi;
         try {
-            if (proxyConfig != null && proxyConfig.getHost() != null) {
+            if (checkNotNull(proxyConfig) && proxyConfig.isEnable() && checkNotNull(proxyConfig.getHost()) && !"".equals(proxyConfig.getHost())) {
                 System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2");
                 System.setProperty("javax.net.debug", "all");
                 log.info(System.getProperty("https.protocols"));
@@ -97,16 +99,11 @@ public class TelegramConnectBot implements TelegramConnect {
     }
 
     private DefaultBotOptions.ProxyType convertProxyType(Type type) {
-        switch (type) {
-            case SOCKS5:
-                return DefaultBotOptions.ProxyType.SOCKS5;
-            case SOCKS4:
-                return DefaultBotOptions.ProxyType.SOCKS4;
-            case HTTP:
-                return DefaultBotOptions.ProxyType.HTTP;
-            default:
-                return DefaultBotOptions.ProxyType.NO_PROXY;
-        }
+        return switch (type) {
+            case SOCKS5 -> DefaultBotOptions.ProxyType.SOCKS5;
+            case SOCKS4 -> DefaultBotOptions.ProxyType.SOCKS4;
+            case HTTP -> DefaultBotOptions.ProxyType.HTTP;
+        };
     }
 
     public void initEventDistributor(EventDistributor eventDistributor) {

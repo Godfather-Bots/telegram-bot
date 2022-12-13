@@ -7,6 +7,7 @@ package dev.struchkov.godfather.telegram.domain.config;
  */
 public class ProxyConfig {
 
+    private boolean enable = true;
     private String host;
     private Integer port;
     private String user;
@@ -53,7 +54,16 @@ public class ProxyConfig {
         this.type = type;
     }
 
+    public boolean isEnable() {
+        return enable;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
+    }
+
     public enum Type {
         SOCKS5, SOCKS4, HTTP
     }
+
 }
