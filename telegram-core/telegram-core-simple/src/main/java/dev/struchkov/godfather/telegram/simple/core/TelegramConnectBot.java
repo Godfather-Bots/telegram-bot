@@ -58,7 +58,7 @@ public class TelegramConnectBot implements TelegramConnect {
         try {
             if (checkNotNull(proxyConfig) && proxyConfig.isEnable() && checkNotNull(proxyConfig.getHost()) && !"".equals(proxyConfig.getHost())) {
                 System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2");
-                System.setProperty("javax.net.debug", "all");
+//                System.setProperty("javax.net.debug", "all");
                 log.info(System.getProperty("https.protocols"));
                 DefaultBotOptions botOptions = new DefaultBotOptions();
                 botOptions.setProxyHost(proxyConfig.getHost());

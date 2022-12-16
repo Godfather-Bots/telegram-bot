@@ -47,7 +47,7 @@ public class TelegramDefaultConnect implements TelegramConnect {
 
             if (checkNotNull(proxyConfig.getHost())) {
                 System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2");
-                System.setProperty("javax.net.debug", "all");
+//                System.setProperty("javax.net.debug", "all");
                 botOptions.setProxyHost(proxyConfig.getHost());
                 botOptions.setProxyPort(proxyConfig.getPort());
                 botOptions.setProxyType(convertProxyType(proxyConfig.getType()));
