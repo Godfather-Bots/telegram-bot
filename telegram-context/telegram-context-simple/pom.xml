@@ -6,7 +6,7 @@
     <parent>
         <artifactId>telegram-context</artifactId>
         <groupId>dev.struchkov.godfather.telegram</groupId>
-        <version>0.0.43</version>
+        <version>0.0.44</version>
     </parent>
 
     <artifactId>telegram-context-simple</artifactId>
