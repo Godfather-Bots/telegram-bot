@@ -6,7 +6,7 @@
     <parent>
         <artifactId>telegram-core</artifactId>
         <groupId>dev.struchkov.godfather.telegram</groupId>
-        <version>0.0.44</version>
+        <version>0.0.45-SNAPSHOT</version>
     </parent>
 
     <artifactId>telegram-core-quarkus</artifactId>

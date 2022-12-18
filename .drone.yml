@@ -1,0 +1,33 @@
+kind: pipeline
+type: docker
+name: haiti-framework
+
+steps:
+
+  - name: publish maven central
+    image: maven:3.8.5-openjdk-17
+    privileged: true
+    volumes:
+      - name: m2
+        path: /root/.m2/repository
+    environment:
+      GPG_PRIVATE_KEY:
+        from_secret: GPG_PRIVATE_KEY
+      MAVEN_SETTINGS:
+        from_secret: MAVEN_SETTINGS
+      GPG_PASSPHRASE:
+        from_secret: GPG_PASSPHRASE
+    commands:
+      - echo "$GPG_PRIVATE_KEY" >> gpg.key
+      - echo "$MAVEN_SETTINGS" >> maven-settings.xml
+      - gpg --pinentry-mode loopback --passphrase $GPG_PASSPHRASE --import gpg.key
+      - mvn --settings maven-settings.xml -U -P ossrh,release clean deploy
+
+trigger:
+  ref:
+    - refs/tags/v.*.*.*
+
+volumes:
+  - name: m2
+    host:
+      path: /drone/volume/m2
