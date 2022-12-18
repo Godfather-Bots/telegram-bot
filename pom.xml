@@ -289,7 +289,7 @@
                     <version>${plugin.maven.release.ver}</version>
                     <configuration>
                         <preparationGoals>clean compile</preparationGoals>
-                        <goal>install</goal>
+                        <goals>install</goals>
                         <tagNameFormat>v.@{project.version}</tagNameFormat>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                         <pushChanges>false</pushChanges>
