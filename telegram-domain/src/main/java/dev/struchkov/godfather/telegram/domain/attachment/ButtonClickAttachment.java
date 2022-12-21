@@ -12,6 +12,10 @@ import static dev.struchkov.haiti.utils.Inspector.isNotNull;
 
 public class ButtonClickAttachment extends Attachment {
 
+    /**
+     * Идентификатор сообщения, под которым пользователь нажал кнопку.
+     */
+    private Integer messageId;
     private String rawCallBackData;
     private final Map<String, Arg> args = new HashMap<>();
 
@@ -40,6 +44,18 @@ public class ButtonClickAttachment extends Attachment {
 
     public Collection<Arg> getClickArgs() {
         return args.values();
+    }
+
+    public Integer getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(Integer messageId) {
+        this.messageId = messageId;
+    }
+
+    public Map<String, Arg> getArgs() {
+        return args;
     }
 
     @Override

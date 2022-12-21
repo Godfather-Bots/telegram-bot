@@ -20,7 +20,7 @@ public class CallbackQueryConvert {
         final Mail mail = new Mail();
         mail.setCreateDate(LocalDateTime.now());
         mail.setText(callbackData);
-        mail.addAttachment(convertToButtonClick(callbackData));
+        mail.addAttachment(convertToButtonClick(callbackData, callbackQuery.getMessage().getMessageId()));
 
         final Long chatId = callbackQuery.getMessage().getChatId();
         mail.setPersonId(chatId != null ? chatId.toString() : null);
@@ -31,9 +31,10 @@ public class CallbackQueryConvert {
         return mail;
     }
 
-    private static ButtonClickAttachment convertToButtonClick(String callbackData) {
+    private static ButtonClickAttachment convertToButtonClick(String callbackData, Integer messageId) {
         final ButtonClickAttachment buttonClickAttachment = new ButtonClickAttachment();
         buttonClickAttachment.setRawCallBackData(callbackData);
+        buttonClickAttachment.setMessageId(messageId);
         if (callbackData.charAt(0) == '[' && callbackData.charAt(callbackData.length() - 1) == ']') {
             final String[] args = callbackData.substring(1, callbackData.length() - 1).split(";");
             for (String arg : args) {
