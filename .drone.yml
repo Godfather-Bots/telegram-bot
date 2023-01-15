@@ -1,6 +1,45 @@
+---
 kind: pipeline
 type: docker
-name: haiti-framework
+name: snapshot-publish
+
+trigger:
+  branch:
+    - develop
+
+volumes:
+  - name: m2
+    host:
+      path: /drone/volume/m2
+
+steps:
+
+  - name: publish
+    image: maven:3.8.5-openjdk-17
+    privileged: true
+    volumes:
+      - name: m2
+        path: /root/.m2/repository
+    environment:
+      MAVEN_SETTINGS:
+        from_secret: MAVEN_SETTINGS
+    commands:
+      - echo "$MAVEN_SETTINGS" >> maven-settings.xml
+      - mvn --settings maven-settings.xml -U -P snapshot clean deploy
+
+---
+kind: pipeline
+type: docker
+name: release-publish
+
+trigger:
+  ref:
+    - refs/tags/v.*.*.*
+
+volumes:
+  - name: m2
+    host:
+      path: /drone/volume/m2
 
 steps:
 
@@ -22,12 +61,8 @@ steps:
       - echo "$MAVEN_SETTINGS" >> maven-settings.xml
       - gpg --pinentry-mode loopback --passphrase $GPG_PASSPHRASE --import gpg.key
       - mvn --settings maven-settings.xml -U -P ossrh,release clean deploy
+---
+kind: signature
+hmac: b723bf6653b2825acdb1de24d88acc510d58c7336f642e71ed0ba0489a7066eb
 
-trigger:
-  ref:
-    - refs/tags/v.*.*.*
-
-volumes:
-  - name: m2
-    host:
-      path: /drone/volume/m2
+...

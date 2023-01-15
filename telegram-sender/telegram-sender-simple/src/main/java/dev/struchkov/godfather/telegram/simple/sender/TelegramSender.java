@@ -2,6 +2,7 @@ package dev.struchkov.godfather.telegram.simple.sender;
 
 import dev.struchkov.godfather.main.domain.BoxAnswer;
 import dev.struchkov.godfather.main.domain.SendType;
+import dev.struchkov.godfather.main.domain.SentBox;
 import dev.struchkov.godfather.simple.context.service.PreSendProcessing;
 import dev.struchkov.godfather.telegram.domain.keyboard.InlineKeyBoard;
 import dev.struchkov.godfather.telegram.main.context.TelegramConnect;
@@ -12,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.bots.AbsSender;
@@ -33,7 +35,7 @@ public class TelegramSender implements TelegramSending {
 
     private final AbsSender absSender;
 
-    private List<PreSendProcessing> preSendProcessors = new ArrayList<>();
+    private final List<PreSendProcessing> preSendProcessors = new ArrayList<>();
     private SenderRepository senderRepository;
 
     public TelegramSender(TelegramConnect telegramConnect) {
@@ -50,61 +52,81 @@ public class TelegramSender implements TelegramSending {
     }
 
     @Override
-    public void send(@NotNull BoxAnswer boxAnswer) {
-        isNotNull(boxAnswer.getRecipientPersonId());
-        sendBoxAnswer(boxAnswer, true);
-    }
-
-    @Override
     public void addPreSendProcess(@NotNull PreSendProcessing processing) {
         preSendProcessors.add(processing);
     }
 
     @Override
-    public void sendNotSave(@NotNull BoxAnswer boxAnswer) {
-        sendBoxAnswer(boxAnswer, false);
+    public void deleteMessage(@NotNull String personId, @NotNull Integer messageId) {
+        final DeleteMessage deleteMessage = new DeleteMessage();
+        deleteMessage.setChatId(personId);
+        deleteMessage.setMessageId(messageId);
+        try {
+            absSender.execute(deleteMessage);
+        } catch (TelegramApiException e) {
+            log.error(e.getMessage(), e);
+        }
     }
 
-    private void sendBoxAnswer(BoxAnswer boxAnswer, boolean saveMessageId) {
+    @Override
+    public Optional<SentBox<Integer>> replaceMessage(@NotNull String personId, @NotNull Integer messageId, @NotNull BoxAnswer newAnswer) {
+        return replace(personId, messageId, newAnswer, newAnswer, true);
+    }
+
+    @Override
+    public Optional<SentBox<Integer>> send(@NotNull BoxAnswer boxAnswer) {
+        isNotNull(boxAnswer.getRecipientPersonId());
+        return sendBoxAnswer(boxAnswer, true);
+    }
+
+    @Override
+    public Optional<SentBox<Integer>> sendNotSave(@NotNull BoxAnswer boxAnswer) {
+        return sendBoxAnswer(boxAnswer, false);
+    }
+
+    private Optional<SentBox<Integer>> sendBoxAnswer(BoxAnswer boxAnswer, boolean saveMessageId) {
         final String recipientTelegramId = boxAnswer.getRecipientPersonId();
         isNotNull(recipientTelegramId);
 
+        BoxAnswer preparedAnswer = boxAnswer;
         for (PreSendProcessing preSendProcessor : preSendProcessors) {
-            boxAnswer = preSendProcessor.pretreatment(boxAnswer);
+            preparedAnswer = preSendProcessor.pretreatment(boxAnswer);
         }
 
-        try {
-            if (boxAnswer.isReplace() && checkNotNull(senderRepository)) {
-                final Optional<Integer> optLastId = senderRepository.getLastSendMessage(recipientTelegramId);
-                if (optLastId.isPresent()) {
-                    replaceMessage(recipientTelegramId, optLastId.get(), boxAnswer);
-                } else {
-                    sendMessage(recipientTelegramId, boxAnswer, saveMessageId);
-                }
+        if (preparedAnswer.isReplace() && checkNotNull(senderRepository)) {
+            final Optional<Integer> optLastId = senderRepository.getLastSendMessage(recipientTelegramId);
+            if (optLastId.isPresent()) {
+                return replace(recipientTelegramId, optLastId.get(), boxAnswer, preparedAnswer, saveMessageId);
             } else {
-                sendMessage(recipientTelegramId, boxAnswer, saveMessageId);
+                return sendMessage(recipientTelegramId, boxAnswer, preparedAnswer, saveMessageId);
             }
-        } catch (TelegramApiRequestException e) {
-            log.error(e.getApiResponse());
-            if (ERROR_REPLACE_MESSAGE.equals(e.getApiResponse())) {
-                sendMessage(recipientTelegramId, boxAnswer, saveMessageId);
-            }
-        } catch (TelegramApiException e) {
-            log.error(e.getMessage());
+        } else {
+            return sendMessage(recipientTelegramId, boxAnswer, preparedAnswer, saveMessageId);
         }
     }
 
-    private void replaceMessage(@NotNull String telegramId, @NotNull Integer lastMessageId, @NotNull BoxAnswer boxAnswer) throws TelegramApiException {
+    private Optional<SentBox<Integer>> replace(@NotNull String telegramId, @NotNull Integer lastMessageId, @NotNull BoxAnswer boxAnswer, BoxAnswer preparedAnswer, boolean saveMessageId) {
         final EditMessageText editMessageText = new EditMessageText();
         editMessageText.setChatId(telegramId);
         editMessageText.setMessageId(lastMessageId);
         editMessageText.enableMarkdown(true);
         editMessageText.setText(boxAnswer.getMessage());
         editMessageText.setReplyMarkup(KeyBoardConvert.convertInlineKeyBoard((InlineKeyBoard) boxAnswer.getKeyBoard()));
-        absSender.execute(editMessageText);
+        try {
+            absSender.execute(editMessageText);
+            return SentBox.optional(lastMessageId, preparedAnswer, boxAnswer);
+        } catch (TelegramApiRequestException e) {
+            log.error(e.getApiResponse());
+            if (ERROR_REPLACE_MESSAGE.equals(e.getApiResponse())) {
+                return sendMessage(telegramId, preparedAnswer, preparedAnswer, saveMessageId);
+            }
+        } catch (TelegramApiException e) {
+            log.error(e.getMessage(), e);
+        }
+        return Optional.empty();
     }
 
-    private void sendMessage(@NotNull String telegramId, @NotNull BoxAnswer boxAnswer, boolean saveMessageId) {
+    private Optional<SentBox<Integer>> sendMessage(@NotNull String telegramId, @NotNull BoxAnswer boxAnswer, BoxAnswer preparedAnswer, boolean saveMessageId) {
         final SendMessage sendMessage = new SendMessage();
         sendMessage.enableMarkdown(true);
         sendMessage.setChatId(telegramId);
@@ -115,12 +137,13 @@ public class TelegramSender implements TelegramSending {
             if (checkNotNull(senderRepository) && saveMessageId) {
                 senderRepository.saveLastSendMessage(telegramId, execute.getMessageId());
             }
+            return SentBox.optional(execute.getMessageId(), preparedAnswer, boxAnswer);
         } catch (TelegramApiRequestException e) {
             log.error(e.getApiResponse());
         } catch (TelegramApiException e) {
             log.error(e.getMessage());
         }
-
+        return Optional.empty();
     }
 
     @Override
