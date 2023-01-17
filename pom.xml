@@ -38,7 +38,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <godfather.core.ver>0.0.42-SNAPSHOT</godfather.core.ver>
+        <godfather.core.ver>0.0.50</godfather.core.ver>
         <telegrambots.ver>6.3.0</telegrambots.ver>
 
         <haiti.version>2.0.0</haiti.version>
@@ -284,12 +284,12 @@
                     <artifactId>maven-release-plugin</artifactId>
                     <version>${plugin.maven.release.ver}</version>
                     <configuration>
-                        <preparationGoals>clean compile</preparationGoals>
-                        <goal>install</goal>
+                        <preparationGoals>clean install</preparationGoals>
                         <tagNameFormat>v.@{project.version}</tagNameFormat>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                         <pushChanges>false</pushChanges>
                         <localCheckout>true</localCheckout>
+                        <signTag>true</signTag>
                     </configuration>
                 </plugin>
             </plugins>
