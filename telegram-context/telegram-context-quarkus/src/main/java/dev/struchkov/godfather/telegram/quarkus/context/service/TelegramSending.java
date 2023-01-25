@@ -6,8 +6,8 @@ import dev.struchkov.godfather.quarkus.context.service.SendingService;
 import io.smallrye.mutiny.Uni;
 import org.jetbrains.annotations.NotNull;
 
-public interface TelegramSending extends SendingService<Integer> {
+public interface TelegramSending extends SendingService {
 
-    Uni<SentBox<Integer>> sendNotSave(@NotNull BoxAnswer boxAnswer);
+    Uni<SentBox> sendNotSave(@NotNull BoxAnswer boxAnswer);
 
 }

@@ -4,9 +4,9 @@ import io.smallrye.mutiny.Uni;
 
 public interface SenderRepository {
 
-    Uni<Integer> getLastSendMessage(String telegramId);
+    Uni<String> getLastSendMessage(String telegramId);
 
-    Uni<Void> saveLastSendMessage(String telegramId, Integer messageId);
+    Uni<Void> saveLastSendMessage(String telegramId, String messageId);
 
     Uni<Void> removeLastSendMessage(String telegramId);
 

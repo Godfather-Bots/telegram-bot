@@ -38,16 +38,16 @@ public class EventDistributorService implements EventDistributor {
 
     @Override
     public void processing(@NotNull Update update) {
-        if (update.getMessage() != null) {
-            final Message message = update.getMessage();
+        final Message message = update.getMessage();
+        final CallbackQuery callbackQuery = update.getCallbackQuery();
+        if (message != null) {
             if (!isEvent(message)) {
                 getHandler(Mail.TYPE)
                         .ifPresent(eventProviders -> eventProviders.forEach(eventProvider -> eventProvider.handle(MessageMailConvert.apply(message))));
                 return;
             }
         }
-        if (update.getCallbackQuery() != null) {
-            final CallbackQuery callbackQuery = update.getCallbackQuery();
+        if (callbackQuery != null) {
             getHandler(Mail.TYPE)
                     .ifPresent(eventProviders -> eventProviders.forEach(eventProvider -> eventProvider.handle(CallbackQueryConvert.apply(callbackQuery))));
             return;
@@ -69,15 +69,15 @@ public class EventDistributorService implements EventDistributor {
 
     private boolean isEvent(Message message) {
         return message.getChannelChatCreated() != null
-                || message.getDeleteChatPhoto() != null
-                || isNewChatMember(message.getNewChatMembers())
-                || message.getNewChatTitle() != null
-                || message.getNewChatPhoto() != null
-                || message.getVideoChatEnded() != null
-                || message.getVideoChatParticipantsInvited() != null
-                || message.getVideoChatScheduled() != null
-                || message.getVideoNote() != null
-                || message.getVideoChatStarted() != null;
+               || message.getDeleteChatPhoto() != null
+               || isNewChatMember(message.getNewChatMembers())
+               || message.getNewChatTitle() != null
+               || message.getNewChatPhoto() != null
+               || message.getVideoChatEnded() != null
+               || message.getVideoChatParticipantsInvited() != null
+               || message.getVideoChatScheduled() != null
+               || message.getVideoNote() != null
+               || message.getVideoChatStarted() != null;
     }
 
     private boolean isNewChatMember(List<User> newChatMembers) {

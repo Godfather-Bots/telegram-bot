@@ -27,4 +27,8 @@ public class TriggerChecks {
         };
     }
 
+    public static Predicate<Mail> isClickButton() {
+        return mail -> Attachments.findFirstButtonClick(mail.getAttachments()).isPresent();
+    }
+
 }

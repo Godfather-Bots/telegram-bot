@@ -15,7 +15,7 @@ public class ButtonClickAttachment extends Attachment {
     /**
      * Идентификатор сообщения, под которым пользователь нажал кнопку.
      */
-    private Integer messageId;
+    private String messageId;
     private String rawCallBackData;
     private final Map<String, Arg> args = new HashMap<>();
 
@@ -46,11 +46,11 @@ public class ButtonClickAttachment extends Attachment {
         return args.values();
     }
 
-    public Integer getMessageId() {
+    public String getMessageId() {
         return messageId;
     }
 
-    public void setMessageId(Integer messageId) {
+    public void setMessageId(String messageId) {
         this.messageId = messageId;
     }
 
@@ -64,6 +64,7 @@ public class ButtonClickAttachment extends Attachment {
     }
 
     public static class Arg {
+
         private final String type;
         private final String value;
 

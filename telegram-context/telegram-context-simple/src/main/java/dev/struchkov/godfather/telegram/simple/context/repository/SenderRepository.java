@@ -4,9 +4,9 @@ import java.util.Optional;
 
 public interface SenderRepository {
 
-    Optional<Integer> getLastSendMessage(String telegramId);
+    Optional<String> getLastSendMessage(String telegramId);
 
-    void saveLastSendMessage(String telegramId, Integer messageId);
+    void saveLastSendMessage(String telegramId, String messageId);
 
     void removeLastSendMessage(String telegramId);
 

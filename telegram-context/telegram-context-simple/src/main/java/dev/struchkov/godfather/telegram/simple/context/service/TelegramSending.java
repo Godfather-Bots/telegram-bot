@@ -7,8 +7,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public interface TelegramSending extends SendingService<Integer> {
+public interface TelegramSending extends SendingService {
 
-    Optional<SentBox<Integer>> sendNotSave(@NotNull BoxAnswer boxAnswer);
+    Optional<SentBox> sendNotSave(@NotNull BoxAnswer boxAnswer);
 
 }

@@ -51,7 +51,7 @@ public class TelegramSender implements TelegramSending {
     }
 
     @Override
-    public Uni<SentBox<Integer>> send(@NotNull BoxAnswer boxAnswer) {
+    public Uni<SentBox> send(@NotNull BoxAnswer boxAnswer) {
         return sendBoxAnswer(boxAnswer, true);
     }
 
@@ -61,10 +61,10 @@ public class TelegramSender implements TelegramSending {
     }
 
     @Override
-    public Uni<Void> deleteMessage(@NotNull String personId, @NotNull Integer messageId) {
+    public Uni<Void> deleteMessage(@NotNull String personId, @NotNull String messageId) {
         final DeleteMessage deleteMessage = new DeleteMessage();
         deleteMessage.setChatId(personId);
-        deleteMessage.setMessageId(messageId);
+        deleteMessage.setMessageId(Integer.parseInt(messageId));
         try {
             absSender.execute(deleteMessage);
         } catch (TelegramApiException e) {
@@ -74,51 +74,57 @@ public class TelegramSender implements TelegramSending {
     }
 
     @Override
-    public Uni<SentBox<Integer>> replaceMessage(@NotNull String personId, @NotNull Integer messageId, @NotNull BoxAnswer newAnswer) {
+    public Uni<SentBox> replaceMessage(@NotNull String personId, @NotNull String messageId, @NotNull BoxAnswer newAnswer) {
         return replace(personId, messageId, newAnswer, true);
     }
 
     @Override
-    public Uni<SentBox<Integer>> sendNotSave(@NotNull BoxAnswer boxAnswer) {
+    public Uni<SentBox> sendNotSave(@NotNull BoxAnswer boxAnswer) {
         return sendBoxAnswer(boxAnswer, false);
     }
 
-    private Uni<SentBox<Integer>> sendBoxAnswer(@NotNull BoxAnswer boxAnswer, boolean saveMessageId) {
+    private Uni<SentBox> sendBoxAnswer(@NotNull BoxAnswer boxAnswer, boolean saveMessageId) {
         return Uni.createFrom().voidItem()
                 .onItem().transformToUni(
                         v -> {
                             final String recipientTelegramId = boxAnswer.getRecipientPersonId();
-                            if (boxAnswer.isReplace() && checkNotNull(senderRepository)) {
-                                return senderRepository.getLastSendMessage(recipientTelegramId)
-                                        .onItem().transformToUni(
-                                                lastId -> {
-                                                    if (checkNotNull(lastId)) {
-                                                        return replace(recipientTelegramId, lastId, boxAnswer, saveMessageId);
-                                                    } else {
-                                                        return sendMessage(recipientTelegramId, boxAnswer, saveMessageId);
-                                                    }
-                                                }
-                                        );
-                            } else {
-                                return sendMessage(recipientTelegramId, boxAnswer, saveMessageId);
+                            if (boxAnswer.isReplace()) {
+                                final String replaceMessageId = boxAnswer.getReplaceMessageId();
+                                if (checkNotNull(replaceMessageId)) {
+                                    return replace(recipientTelegramId, replaceMessageId, boxAnswer, saveMessageId);
+                                } else {
+                                    if (checkNotNull(senderRepository)) {
+                                        return senderRepository.getLastSendMessage(recipientTelegramId)
+                                                .onItem().transformToUni(
+                                                        lastId -> {
+                                                            if (checkNotNull(lastId)) {
+                                                                return replace(recipientTelegramId, lastId, boxAnswer, saveMessageId);
+                                                            } else {
+                                                                return sendMessage(recipientTelegramId, boxAnswer, saveMessageId);
+                                                            }
+                                                        }
+                                                );
+                                    }
+                                }
                             }
+                            return sendMessage(recipientTelegramId, boxAnswer, saveMessageId);
                         }
                 );
     }
 
-    private Uni<SentBox<Integer>> replace(@NotNull String telegramId, @NotNull Integer lastMessageId, @NotNull BoxAnswer boxAnswer, boolean saveMessageId) {
+    private Uni<SentBox> replace(@NotNull String telegramId, @NotNull String lastMessageId, @NotNull BoxAnswer boxAnswer, boolean saveMessageId) {
         return Uni.createFrom().voidItem()
                 .onItem().transformToUni(
                         v -> {
                             final EditMessageText editMessageText = new EditMessageText();
                             editMessageText.setChatId(telegramId);
-                            editMessageText.setMessageId(lastMessageId);
+                            editMessageText.setMessageId(Integer.parseInt(lastMessageId));
                             editMessageText.enableMarkdown(true);
                             editMessageText.setText(boxAnswer.getMessage());
                             editMessageText.setReplyMarkup(convertInlineKeyBoard((InlineKeyBoard) boxAnswer.getKeyBoard()));
                             try {
                                 absSender.execute(editMessageText);
-                                return Uni.createFrom().optional(SentBox.optional(lastMessageId, boxAnswer, boxAnswer));
+                                return Uni.createFrom().optional(SentBox.optional(telegramId, lastMessageId, boxAnswer, boxAnswer));
                             } catch (TelegramApiRequestException e) {
                                 log.error(e.getApiResponse());
                                 if (ERROR_REPLACE_MESSAGE.equals(e.getApiResponse())) {
@@ -132,7 +138,7 @@ public class TelegramSender implements TelegramSending {
                 );
     }
 
-    private Uni<SentBox<Integer>> sendMessage(@NotNull String telegramId, @NotNull BoxAnswer boxAnswer, boolean saveMessageId) {
+    private Uni<SentBox> sendMessage(@NotNull String telegramId, @NotNull BoxAnswer boxAnswer, boolean saveMessageId) {
         return Uni.createFrom().voidItem()
                 .onItem().transform(
                         v -> {
@@ -153,12 +159,12 @@ public class TelegramSender implements TelegramSending {
                         }
                 ).onItem().ifNotNull().call(answerMessage -> {
                     if (checkNotNull(senderRepository) && saveMessageId) {
-                        return senderRepository.saveLastSendMessage(telegramId, answerMessage.getMessageId());
+                        return senderRepository.saveLastSendMessage(telegramId, answerMessage.getMessageId().toString());
                     }
                     return null;
                 })
                 .onItem().ifNotNull().transformToUni(
-                        answerMessage -> Uni.createFrom().optional(SentBox.optional(answerMessage.getMessageId(), boxAnswer, boxAnswer))
+                        answerMessage -> Uni.createFrom().optional(SentBox.optional(telegramId, answerMessage.getMessageId().toString(), boxAnswer, boxAnswer))
                 );
     }
 

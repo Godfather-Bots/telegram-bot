@@ -37,7 +37,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <godfather.core.ver>0.0.50</godfather.core.ver>
+        <godfather.core.ver>0.0.51-SNAPSHOT</godfather.core.ver>
         <telegrambots.ver>6.3.0</telegrambots.ver>
 
         <haiti.version>2.0.0</haiti.version>

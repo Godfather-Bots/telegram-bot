@@ -45,8 +45,9 @@ public class EventDistributorService implements EventDistributor {
         return Uni.createFrom().voidItem()
                 .onItem().transformToUni(
                         v -> {
-                            if (checkNotNull(update.getMessage())) {
-                                final Message message = update.getMessage();
+                            final Message message = update.getMessage();
+                            final CallbackQuery callbackQuery = update.getCallbackQuery();
+                            if (checkNotNull(message)) {
                                 if (!isEvent(message)) {
                                     final Optional<List<EventHandler>> optHandlers = getHandler(Mail.TYPE);
                                     if (optHandlers.isPresent()) {
@@ -58,8 +59,7 @@ public class EventDistributorService implements EventDistributor {
                                     return Uni.createFrom().voidItem();
                                 }
                             }
-                            if (checkNotNull(update.getCallbackQuery())) {
-                                final CallbackQuery callbackQuery = update.getCallbackQuery();
+                            if (checkNotNull(callbackQuery)) {
                                 final Optional<List<EventHandler>> optHandlers = getHandler(Mail.TYPE);
                                 if (optHandlers.isPresent()) {
                                     return Multi.createFrom().iterable(optHandlers.get())
@@ -100,15 +100,15 @@ public class EventDistributorService implements EventDistributor {
 
     private boolean isEvent(Message message) {
         return message.getChannelChatCreated() != null
-                || message.getDeleteChatPhoto() != null
-                || isNewChatMember(message.getNewChatMembers())
-                || message.getNewChatTitle() != null
-                || message.getNewChatPhoto() != null
-                || message.getVideoChatEnded() != null
-                || message.getVideoChatParticipantsInvited() != null
-                || message.getVideoChatScheduled() != null
-                || message.getVideoNote() != null
-                || message.getVideoChatStarted() != null;
+               || message.getDeleteChatPhoto() != null
+               || isNewChatMember(message.getNewChatMembers())
+               || message.getNewChatTitle() != null
+               || message.getNewChatPhoto() != null
+               || message.getVideoChatEnded() != null
+               || message.getVideoChatParticipantsInvited() != null
+               || message.getVideoChatScheduled() != null
+               || message.getVideoNote() != null
+               || message.getVideoChatStarted() != null;
     }
 
     private boolean isNewChatMember(List<User> newChatMembers) {

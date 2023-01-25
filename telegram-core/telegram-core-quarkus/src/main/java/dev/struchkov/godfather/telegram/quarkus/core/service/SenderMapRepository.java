@@ -11,15 +11,15 @@ import static dev.struchkov.haiti.utils.Inspector.isNotNull;
 
 public class SenderMapRepository implements SenderRepository {
 
-    private final Map<String, Integer> lastMessageId = new HashMap<>();
+    private final Map<String, String> lastMessageId = new HashMap<>();
 
     @Override
-    public Uni<Integer> getLastSendMessage(String telegramId) {
+    public Uni<String> getLastSendMessage(String telegramId) {
         return Uni.createFrom().item(lastMessageId.get(telegramId));
     }
 
     @Override
-    public Uni<Void> saveLastSendMessage(@NotNull String telegramId, @NotNull Integer messageId) {
+    public Uni<Void> saveLastSendMessage(@NotNull String telegramId, @NotNull String messageId) {
         isNotNull(telegramId);
         lastMessageId.put(telegramId, messageId);
         return Uni.createFrom().voidItem();
