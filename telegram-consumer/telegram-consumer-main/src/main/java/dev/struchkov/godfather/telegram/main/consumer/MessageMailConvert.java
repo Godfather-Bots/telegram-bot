@@ -129,7 +129,12 @@ public final class MessageMailConvert {
     private static Optional<Attachment> convertEntity(Message message, MessageEntity entity) {
         switch (entity.getType()) {
             case "text_link" -> {
-                return Optional.of(new LinkAttachment(entity.getUrl()));
+                return Optional.of(entity.getUrl())
+                        .map(LinkAttachment::new);
+            }
+            case "url" -> {
+                return Optional.of(entity.getText())
+                        .map(LinkAttachment::new);
             }
             case "bot_command" -> {
                 final String commandValue = entity.getText();

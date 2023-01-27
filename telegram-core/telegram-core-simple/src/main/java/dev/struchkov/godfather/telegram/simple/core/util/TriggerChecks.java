@@ -31,4 +31,8 @@ public class TriggerChecks {
         return mail -> Attachments.findFirstButtonClick(mail.getAttachments()).isPresent();
     }
 
+    public static Predicate<Mail> isLinks() {
+        return mail -> Attachments.findFirstLink(mail.getAttachments()).isPresent();
+    }
+
 }
