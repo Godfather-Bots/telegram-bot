@@ -22,8 +22,11 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
 import java.util.List;
 
+import static dev.struchkov.godfather.telegram.main.context.BoxAnswerPayload.DISABLE_NOTIFICATION;
+import static dev.struchkov.godfather.telegram.main.context.BoxAnswerPayload.DISABLE_WEB_PAGE_PREVIEW;
 import static dev.struchkov.godfather.telegram.main.sender.util.KeyBoardConvert.convertInlineKeyBoard;
 import static dev.struchkov.haiti.utils.Checker.checkNotNull;
+import static java.lang.Boolean.TRUE;
 
 public class TelegramSender implements TelegramSending {
 
@@ -147,6 +150,18 @@ public class TelegramSender implements TelegramSending {
                             sendMessage.setChatId(telegramId);
                             sendMessage.setText(boxAnswer.getMessage());
                             sendMessage.setReplyMarkup(KeyBoardConvert.convertKeyBoard(boxAnswer.getKeyBoard()));
+
+                            boxAnswer.getPayLoad(DISABLE_NOTIFICATION).ifPresent(
+                                    isDisable -> {
+                                        if (TRUE.equals(isDisable)) sendMessage.disableNotification();
+                                    }
+                            );
+
+                            boxAnswer.getPayLoad(DISABLE_WEB_PAGE_PREVIEW).ifPresent(
+                                    isDisable -> {
+                                        if (TRUE.equals(isDisable)) sendMessage.disableWebPagePreview();
+                                    }
+                            );
 
                             try {
                                 return absSender.execute(sendMessage);
