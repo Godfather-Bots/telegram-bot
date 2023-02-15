@@ -8,7 +8,7 @@ import dev.struchkov.godfather.telegram.domain.attachment.DocumentAttachment;
 import dev.struchkov.godfather.telegram.domain.attachment.LinkAttachment;
 import dev.struchkov.godfather.telegram.domain.attachment.Picture;
 import dev.struchkov.godfather.telegram.domain.attachment.PictureGroupAttachment;
-import dev.struchkov.godfather.telegram.main.context.MessagePayload;
+import dev.struchkov.godfather.telegram.main.context.MailPayload;
 import dev.struchkov.haiti.utils.Checker;
 import dev.struchkov.haiti.utils.Strings;
 import org.telegram.telegrambots.meta.api.objects.Chat;
@@ -49,7 +49,7 @@ public final class MessageMailConvert {
         final Chat chat = message.getChat();
         mail.setFirstName(chat.getFirstName());
         mail.setLastName(chat.getLastName());
-        mail.setPayload(MessagePayload.USERNAME, chat.getUserName());
+        mail.setPayload(MailPayload.USERNAME, chat.getUserName());
 
         convertDocument(message.getDocument()).ifPresent(mail::addAttachment);
         convertContact(message.getContact()).ifPresent(mail::addAttachment);
