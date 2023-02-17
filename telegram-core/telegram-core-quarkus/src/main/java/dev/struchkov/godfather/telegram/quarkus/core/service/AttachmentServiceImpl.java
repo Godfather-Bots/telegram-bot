@@ -5,6 +5,8 @@ import dev.struchkov.godfather.telegram.domain.attachment.Picture;
 import dev.struchkov.godfather.telegram.domain.files.ByteContainer;
 import dev.struchkov.godfather.telegram.domain.files.FileContainer;
 import dev.struchkov.godfather.telegram.main.context.TelegramConnect;
+import dev.struchkov.godfather.telegram.quarkus.context.service.AttachmentService;
+import io.smallrye.mutiny.Uni;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
@@ -13,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,11 +24,13 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 import static dev.struchkov.haiti.utils.Inspector.isNotNull;
+import static java.util.concurrent.CompletableFuture.completedFuture;
 
-public class AttachmentServiceImpl {
+public class AttachmentServiceImpl implements AttachmentService {
 
     private static final Logger log = LoggerFactory.getLogger(AttachmentServiceImpl.class);
 
@@ -56,73 +61,92 @@ public class AttachmentServiceImpl {
         }
     }
 
-    public FileContainer uploadFile(@NotNull DocumentAttachment documentAttachment) {
+    @Override
+    public Uni<FileContainer> uploadFile(@NotNull DocumentAttachment documentAttachment) {
         isNotNull(documentAttachment);
-        try {
-            final File file = downloadFile(documentAttachment);
-            return new FileContainer(documentAttachment.getFileName(), documentAttachment.getMimeType(), file);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
-        return FileContainer.empty();
+        return downloadFile(documentAttachment)
+                .onItem().ifNotNull().transform(file -> new FileContainer(documentAttachment.getFileName(), documentAttachment.getMimeType(), file));
     }
 
-    public ByteContainer uploadBytes(@NotNull DocumentAttachment documentAttachment) {
+    @Override
+    public Uni<ByteContainer> uploadBytes(@NotNull DocumentAttachment documentAttachment) {
         isNotNull(documentAttachment);
-        try {
-            final byte[] bytes = downloadBytes(documentAttachment);
-            return new ByteContainer(documentAttachment.getFileName(), documentAttachment.getMimeType(), bytes);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
-        return ByteContainer.empty();
+        return downloadBytes(documentAttachment)
+                .onItem().ifNotNull().transform(bytes -> new ByteContainer(documentAttachment.getFileName(), documentAttachment.getMimeType(), bytes));
     }
 
-    public ByteContainer uploadBytes(@NotNull Picture picture) {
+    @Override
+    public Uni<ByteContainer> uploadBytes(@NotNull Picture picture) {
         isNotNull(picture);
-        try {
-            final byte[] bytes = downloadBytes(picture);
-            return new ByteContainer(null, "image/jpeg", bytes);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
-        return ByteContainer.empty();
+        return downloadBytes(picture)
+                .onItem().ifNotNull().transform(bytes -> new ByteContainer(null, "image/jpeg", bytes));
     }
 
-    private byte[] downloadBytes(Picture picture) throws TelegramApiException, IOException {
+    private Uni<byte[]> downloadBytes(Picture picture) {
         return telegramDownloadBytes(picture.getFileId());
     }
 
-    private byte[] downloadBytes(DocumentAttachment documentAttachment) throws TelegramApiException, IOException {
+    private Uni<byte[]> downloadBytes(DocumentAttachment documentAttachment) {
         return telegramDownloadBytes(documentAttachment.getFileId());
     }
 
-    private byte[] telegramDownloadBytes(String fileId) throws TelegramApiException, IOException {
-        final String fileUrl = getFileUrl(fileId);
-        return IOUtils.toByteArray(new URL(fileUrl));
+    private Uni<byte[]> telegramDownloadBytes(String fileId) {
+        return getFileUrl(fileId)
+                .onItem().ifNotNull().transformToUni(
+                        fileUrl -> Uni.createFrom().completionStage(
+                                CompletableFuture.supplyAsync(
+                                        () -> {
+                                            final URL url;
+                                            try {
+                                                url = new URL(fileUrl);
+                                                return IOUtils.toByteArray(url);
+                                            } catch (IOException e) {
+                                                log.error(e.getMessage(), e);
+                                            }
+                                            return null;
+                                        }
+                                )
+                        )
+                );
     }
 
-    private File downloadFile(DocumentAttachment documentAttachment) throws IOException, TelegramApiException {
-        final String fileUrl = getFileUrl(documentAttachment.getFileId());
+    private Uni<File> downloadFile(DocumentAttachment documentAttachment) {
+        return getFileUrl(documentAttachment.getFileId())
+                .onItem().ifNotNull().transformToUni(fileUrl -> Uni.createFrom().completionStage(
+                        CompletableFuture.supplyAsync(() -> {
+                                    final StringBuilder filePath = new StringBuilder();
+                                    if (folderPathForFiles != null) {
+                                        filePath.append(folderPathForFiles);
+                                    }
+                                    filePath.append(UUID.randomUUID()).append("_").append(documentAttachment.getFileName());
+                                    final File localFile = new File(filePath.toString());
+                                    final InputStream is;
+                                    try {
+                                        is = new URL(fileUrl).openStream();
+                                        FileUtils.copyInputStreamToFile(is, localFile);
+                                    } catch (IOException e) {
+                                        log.error(e.getMessage(), e);
+                                    }
+                                    return localFile;
+                                }
+                        )
+                ));
+    }
 
-        final StringBuilder filePath = new StringBuilder();
-        if (folderPathForFiles != null) {
-            filePath.append(folderPathForFiles);
+    private Uni<String> getFileUrl(String fileId) {
+        return Uni.createFrom().completionStage(getFileCompletableFuture(fileId))
+                .onItem().ifNotNull().transform(file -> file.getFileUrl(botToken));
+    }
+
+    private CompletableFuture<org.telegram.telegrambots.meta.api.objects.File> getFileCompletableFuture(String fileId) {
+        try {
+            return absSender.executeAsync(GetFile.builder().fileId(fileId).build());
+        } catch (TelegramApiRequestException e) {
+            log.error(e.getApiResponse());
+        } catch (TelegramApiException e) {
+            log.error(e.getMessage());
         }
-        filePath.append(UUID.randomUUID());
-        filePath.append("_");
-        filePath.append(documentAttachment.getFileName());
-
-        final File localFile = new File(filePath.toString());
-        final InputStream is = new URL(fileUrl).openStream();
-        FileUtils.copyInputStreamToFile(is, localFile);
-        return localFile;
-    }
-
-    private String getFileUrl(String fileId) throws TelegramApiException {
-        final GetFile getFile = new GetFile();
-        getFile.setFileId(fileId);
-        return absSender.execute(getFile).getFileUrl(botToken);
+        return completedFuture(null);
     }
 
 }
