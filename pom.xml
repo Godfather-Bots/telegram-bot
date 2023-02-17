@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>dev.struchkov.godfather.telegram</groupId>
@@ -54,7 +55,17 @@
         <dependencies>
             <dependency>
                 <groupId>dev.struchkov.godfather.telegram</groupId>
-                <artifactId>telegram-domain</artifactId>
+                <artifactId>telegram-domain-main</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>dev.struchkov.godfather.telegram</groupId>
+                <artifactId>telegram-domain-simple</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>dev.struchkov.godfather.telegram</groupId>
+                <artifactId>telegram-domain-quarkus</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -153,6 +164,16 @@
             <dependency>
                 <groupId>dev.struchkov.godfather</groupId>
                 <artifactId>bot-domain-main</artifactId>
+                <version>${godfather.core.ver}</version>
+            </dependency>
+            <dependency>
+                <groupId>dev.struchkov.godfather</groupId>
+                <artifactId>bot-domain-quarkus</artifactId>
+                <version>${godfather.core.ver}</version>
+            </dependency>
+            <dependency>
+                <groupId>dev.struchkov.godfather</groupId>
+                <artifactId>bot-domain-simple</artifactId>
                 <version>${godfather.core.ver}</version>
             </dependency>
 

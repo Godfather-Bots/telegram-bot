@@ -13,7 +13,7 @@
     <dependencies>
         <dependency>
             <groupId>dev.struchkov.godfather.telegram</groupId>
-            <artifactId>telegram-domain</artifactId>
+            <artifactId>telegram-domain-main</artifactId>
         </dependency>
         <dependency>
             <groupId>dev.struchkov.godfather.telegram</groupId>

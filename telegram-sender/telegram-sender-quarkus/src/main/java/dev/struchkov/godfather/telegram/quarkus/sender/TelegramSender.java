@@ -1,9 +1,9 @@
 package dev.struchkov.godfather.telegram.quarkus.sender;
 
-import dev.struchkov.godfather.main.domain.BoxAnswer;
 import dev.struchkov.godfather.main.domain.SendType;
-import dev.struchkov.godfather.main.domain.SentBox;
-import dev.struchkov.godfather.quarkus.context.service.PreSendProcessing;
+import dev.struchkov.godfather.quarkus.domain.BoxAnswer;
+import dev.struchkov.godfather.quarkus.domain.SentBox;
+import dev.struchkov.godfather.quarkus.domain.action.PreSendProcessing;
 import dev.struchkov.godfather.telegram.domain.keyboard.InlineKeyBoard;
 import dev.struchkov.godfather.telegram.main.context.TelegramConnect;
 import dev.struchkov.godfather.telegram.main.sender.util.KeyBoardConvert;

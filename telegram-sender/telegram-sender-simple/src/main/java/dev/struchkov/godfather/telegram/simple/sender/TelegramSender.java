@@ -1,12 +1,11 @@
 package dev.struchkov.godfather.telegram.simple.sender;
 
-import dev.struchkov.godfather.main.domain.BoxAnswer;
 import dev.struchkov.godfather.main.domain.SendType;
-import dev.struchkov.godfather.main.domain.SentBox;
-import dev.struchkov.godfather.simple.context.service.PreSendProcessing;
+import dev.struchkov.godfather.simple.domain.BoxAnswer;
+import dev.struchkov.godfather.simple.domain.SentBox;
+import dev.struchkov.godfather.simple.domain.action.PreSendProcessing;
 import dev.struchkov.godfather.telegram.domain.keyboard.InlineKeyBoard;
 import dev.struchkov.godfather.telegram.main.context.TelegramConnect;
-import dev.struchkov.godfather.telegram.main.sender.util.KeyBoardConvert;
 import dev.struchkov.godfather.telegram.simple.context.repository.SenderRepository;
 import dev.struchkov.godfather.telegram.simple.context.service.TelegramSending;
 import org.jetbrains.annotations.NotNull;
@@ -26,9 +25,12 @@ import java.util.Optional;
 
 import static dev.struchkov.godfather.telegram.main.context.BoxAnswerPayload.DISABLE_NOTIFICATION;
 import static dev.struchkov.godfather.telegram.main.context.BoxAnswerPayload.DISABLE_WEB_PAGE_PREVIEW;
+import static dev.struchkov.godfather.telegram.main.sender.util.KeyBoardConvert.convertInlineKeyBoard;
+import static dev.struchkov.godfather.telegram.main.sender.util.KeyBoardConvert.convertKeyBoard;
 import static dev.struchkov.haiti.utils.Checker.checkNotNull;
 import static dev.struchkov.haiti.utils.Inspector.isNotNull;
 import static java.lang.Boolean.TRUE;
+import static java.lang.Integer.parseInt;
 
 public class TelegramSender implements TelegramSending {
 
@@ -63,7 +65,7 @@ public class TelegramSender implements TelegramSending {
     public void deleteMessage(@NotNull String personId, @NotNull String messageId) {
         final DeleteMessage deleteMessage = new DeleteMessage();
         deleteMessage.setChatId(personId);
-        deleteMessage.setMessageId(Integer.parseInt(messageId));
+        deleteMessage.setMessageId(parseInt(messageId));
         try {
             absSender.execute(deleteMessage);
         } catch (TelegramApiException e) {
@@ -115,10 +117,10 @@ public class TelegramSender implements TelegramSending {
     private Optional<SentBox> replace(@NotNull String telegramId, @NotNull String replaceMessageId, @NotNull BoxAnswer boxAnswer, BoxAnswer preparedAnswer, boolean saveMessageId) {
         final EditMessageText editMessageText = new EditMessageText();
         editMessageText.setChatId(telegramId);
-        editMessageText.setMessageId(Integer.parseInt(replaceMessageId));
+        editMessageText.setMessageId(parseInt(replaceMessageId));
         editMessageText.enableMarkdown(true);
         editMessageText.setText(boxAnswer.getMessage());
-        editMessageText.setReplyMarkup(KeyBoardConvert.convertInlineKeyBoard((InlineKeyBoard) boxAnswer.getKeyBoard()));
+        editMessageText.setReplyMarkup(convertInlineKeyBoard((InlineKeyBoard) boxAnswer.getKeyBoard()));
         try {
             absSender.execute(editMessageText);
             return SentBox.optional(telegramId, replaceMessageId, preparedAnswer, boxAnswer);
@@ -138,7 +140,7 @@ public class TelegramSender implements TelegramSending {
         sendMessage.enableMarkdown(true);
         sendMessage.setChatId(telegramId);
         sendMessage.setText(boxAnswer.getMessage());
-        sendMessage.setReplyMarkup(KeyBoardConvert.convertKeyBoard(boxAnswer.getKeyBoard()));
+        sendMessage.setReplyMarkup(convertKeyBoard(boxAnswer.getKeyBoard()));
 
         boxAnswer.getPayLoad(DISABLE_WEB_PAGE_PREVIEW).ifPresent(isDisable -> {
             if (TRUE.equals(isDisable)) sendMessage.disableWebPagePreview();

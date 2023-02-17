@@ -1,8 +1,8 @@
-package dev.struchkov.godfather.telegram.domain;
+package dev.struchkov.godfather.telegram.simple.domain;
 
-import dev.struchkov.godfather.main.domain.BoxAnswer;
 import dev.struchkov.godfather.main.domain.keyboard.KeyBoardButton;
 import dev.struchkov.godfather.main.domain.keyboard.KeyBoardLine;
+import dev.struchkov.godfather.simple.domain.BoxAnswer;
 import dev.struchkov.godfather.telegram.domain.keyboard.InlineKeyBoard;
 import dev.struchkov.haiti.utils.Inspector;
 

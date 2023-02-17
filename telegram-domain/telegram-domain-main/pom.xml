@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>dev.struchkov.godfather.telegram</groupId>
-        <artifactId>telegram-context</artifactId>
+        <artifactId>telegram-domain</artifactId>
         <version>0.0.49-SNAPSHOT</version>
     </parent>
 
-    <artifactId>telegram-context-quarkus</artifactId>
+    <artifactId>telegram-domain-main</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -19,16 +20,7 @@
     <dependencies>
         <dependency>
             <groupId>dev.struchkov.godfather</groupId>
-            <artifactId>bot-context-quarkus</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>dev.struchkov.godfather.telegram</groupId>
-            <artifactId>telegram-context-main</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.telegram</groupId>
-            <artifactId>telegrambots-meta</artifactId>
+            <artifactId>bot-domain-main</artifactId>
         </dependency>
     </dependencies>
 
