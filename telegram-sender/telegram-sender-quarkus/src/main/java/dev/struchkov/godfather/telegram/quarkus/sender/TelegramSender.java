@@ -16,17 +16,21 @@ import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
+import java.io.Serializable;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static dev.struchkov.godfather.telegram.main.context.BoxAnswerPayload.DISABLE_NOTIFICATION;
 import static dev.struchkov.godfather.telegram.main.context.BoxAnswerPayload.DISABLE_WEB_PAGE_PREVIEW;
 import static dev.struchkov.godfather.telegram.main.sender.util.KeyBoardConvert.convertInlineKeyBoard;
 import static dev.struchkov.haiti.utils.Checker.checkNotNull;
 import static java.lang.Boolean.TRUE;
+import static java.util.concurrent.CompletableFuture.completedFuture;
 
 public class TelegramSender implements TelegramSending {
 
@@ -125,25 +129,27 @@ public class TelegramSender implements TelegramSending {
                             editMessageText.enableMarkdown(true);
                             editMessageText.setText(boxAnswer.getMessage());
                             editMessageText.setReplyMarkup(convertInlineKeyBoard((InlineKeyBoard) boxAnswer.getKeyBoard()));
-                            try {
-                                absSender.execute(editMessageText);
-                                return Uni.createFrom().optional(SentBox.optional(telegramId, lastMessageId, boxAnswer, boxAnswer));
-                            } catch (TelegramApiRequestException e) {
-                                log.error(e.getApiResponse());
-                                if (ERROR_REPLACE_MESSAGE.equals(e.getApiResponse())) {
-                                    return sendMessage(telegramId, boxAnswer, saveMessageId);
-                                }
-                            } catch (TelegramApiException e) {
-                                log.error(e.getMessage(), e);
-                            }
-                            return Uni.createFrom().nullItem();
+
+                            return Uni.createFrom().completionStage(executeAsync(editMessageText))
+                                    .onItem().ifNotNull().transformToUni(t -> Uni.createFrom().optional(SentBox.optional(telegramId, lastMessageId, boxAnswer, boxAnswer)))
+                                    .onFailure(TelegramApiRequestException.class).recoverWithUni(
+                                            ex -> {
+                                                final TelegramApiRequestException exception = (TelegramApiRequestException) ex;
+                                                final String apiResponse = exception.getApiResponse();
+                                                log.error(apiResponse, exception);
+                                                if (ERROR_REPLACE_MESSAGE.equals(apiResponse)) {
+                                                    return sendMessage(telegramId, boxAnswer, saveMessageId);
+                                                }
+                                                return Uni.createFrom().nullItem();
+                                            }
+                                    );
                         }
                 );
     }
 
     private Uni<SentBox> sendMessage(@NotNull String telegramId, @NotNull BoxAnswer boxAnswer, boolean saveMessageId) {
         return Uni.createFrom().voidItem()
-                .onItem().transform(
+                .onItem().transformToUni(
                         v -> {
                             final SendMessage sendMessage = new SendMessage();
                             sendMessage.enableMarkdown(true);
@@ -162,25 +168,37 @@ public class TelegramSender implements TelegramSending {
                                         if (TRUE.equals(isDisable)) sendMessage.disableWebPagePreview();
                                     }
                             );
-
-                            try {
-                                return absSender.execute(sendMessage);
-                            } catch (TelegramApiRequestException e) {
-                                log.error(e.getApiResponse());
-                            } catch (TelegramApiException e) {
-                                log.error(e.getMessage());
-                            }
-                            return null;
+                            return Uni.createFrom().completionStage(executeAsync(sendMessage))
+                                    .onFailure(TelegramApiRequestException.class).invoke(t -> log.error(((TelegramApiRequestException) t).getApiResponse()))
+                                    .onFailure().invoke(t -> log.error(t.getMessage(), t));
                         }
                 ).onItem().ifNotNull().call(answerMessage -> {
                     if (checkNotNull(senderRepository) && saveMessageId) {
                         return senderRepository.saveLastSendMessage(telegramId, answerMessage.getMessageId().toString());
                     }
-                    return null;
+                    return Uni.createFrom().nullItem();
                 })
                 .onItem().ifNotNull().transformToUni(
                         answerMessage -> Uni.createFrom().optional(SentBox.optional(telegramId, answerMessage.getMessageId().toString(), boxAnswer, boxAnswer))
                 );
+    }
+
+    private CompletableFuture<Message> executeAsync(SendMessage sendMessage) {
+        try {
+            return absSender.executeAsync(sendMessage);
+        } catch (TelegramApiException e) {
+            log.error(e.getMessage(), e);
+        }
+        return completedFuture(null);
+    }
+
+    private CompletableFuture<Serializable> executeAsync(EditMessageText editMessageText) {
+        try {
+            return absSender.executeAsync(editMessageText);
+        } catch (TelegramApiException e) {
+            log.error(e.getMessage(), e);
+        }
+        return completedFuture(null);
     }
 
     @Override
