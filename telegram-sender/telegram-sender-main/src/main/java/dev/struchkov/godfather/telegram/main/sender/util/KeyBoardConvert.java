@@ -12,7 +12,6 @@ import dev.struchkov.godfather.telegram.domain.keyboard.button.UrlButton;
 import dev.struchkov.godfather.telegram.domain.keyboard.button.WebAppButton;
 import dev.struchkov.haiti.context.exception.ConvertException;
 import dev.struchkov.haiti.utils.Exceptions;
-import dev.struchkov.haiti.utils.Inspector;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -24,6 +23,10 @@ import org.telegram.telegrambots.meta.api.objects.webapp.WebAppInfo;
 
 import java.util.List;
 
+import static dev.struchkov.haiti.context.exception.ConvertException.convertException;
+import static dev.struchkov.haiti.utils.Checker.checkNotNull;
+import static dev.struchkov.haiti.utils.Inspector.isNull;
+
 public final class KeyBoardConvert {
 
     private KeyBoardConvert() {
@@ -31,14 +34,17 @@ public final class KeyBoardConvert {
     }
 
     public static ReplyKeyboard convertKeyBoard(KeyBoard keyBoard) {
-        if (keyBoard != null) {
+        if (checkNotNull(keyBoard)) {
             switch (keyBoard.getType()) {
-                case InlineKeyBoard.TYPE:
+                case InlineKeyBoard.TYPE -> {
                     return convertInlineKeyBoard((InlineKeyBoard) keyBoard);
-                case MarkupKeyBoard.TYPE:
+                }
+                case MarkupKeyBoard.TYPE -> {
                     return convertMarkupKeyBoard((MarkupKeyBoard) keyBoard);
-                case SimpleKeyBoard.TYPE:
+                }
+                case SimpleKeyBoard.TYPE -> {
                     return convertSimpleKeyBoard((SimpleKeyBoard) keyBoard);
+                }
             }
         }
         return null;
@@ -130,7 +136,7 @@ public final class KeyBoardConvert {
             case SimpleButton.TYPE -> {
                 final SimpleButton simpleButton = (SimpleButton) keyBoardButton;
                 button.setText(simpleButton.getLabel());
-                Inspector.isNull(simpleButton.getCallbackData(), ConvertException.convertException("CallbackData поддерживает только Inline клавитаура"));
+                isNull(simpleButton.getCallbackData(), convertException("CallbackData поддерживает только Inline клавитаура"));
             }
             case WebAppButton.TYPE -> {
                 final WebAppButton webAppButton = (WebAppButton) keyBoardButton;

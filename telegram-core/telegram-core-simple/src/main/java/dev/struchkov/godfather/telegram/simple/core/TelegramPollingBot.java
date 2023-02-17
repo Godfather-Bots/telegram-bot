@@ -9,6 +9,8 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
+import static dev.struchkov.haiti.utils.Checker.checkNotNull;
+
 /**
  * TODO: Добавить описание класса.
  *
@@ -30,7 +32,7 @@ public class TelegramPollingBot extends TelegramLongPollingBot implements Telegr
 
     @Override
     public void onUpdateReceived(Update update) {
-        if (update != null && eventDistributor != null) {
+        if (checkNotNull(update) && checkNotNull(eventDistributor)) {
             eventDistributor.processing(update);
         }
     }

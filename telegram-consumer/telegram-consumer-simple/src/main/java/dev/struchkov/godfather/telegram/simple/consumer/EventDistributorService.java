@@ -42,26 +42,22 @@ public class EventDistributorService implements EventDistributor {
         final CallbackQuery callbackQuery = update.getCallbackQuery();
         if (message != null) {
             if (!isEvent(message)) {
-                getHandler(Mail.TYPE)
-                        .ifPresent(eventProviders -> eventProviders.forEach(eventProvider -> eventProvider.handle(MessageMailConvert.apply(message))));
+                getHandler(Mail.TYPE).ifPresent(eventProviders -> eventProviders.forEach(eventProvider -> eventProvider.handle(MessageMailConvert.apply(message))));
                 return;
             }
         }
         if (callbackQuery != null) {
-            getHandler(Mail.TYPE)
-                    .ifPresent(eventProviders -> eventProviders.forEach(eventProvider -> eventProvider.handle(CallbackQueryConvert.apply(callbackQuery))));
+            getHandler(Mail.TYPE).ifPresent(eventProviders -> eventProviders.forEach(eventProvider -> eventProvider.handle(CallbackQueryConvert.apply(callbackQuery))));
             return;
         }
         if (update.getMyChatMember() != null) {
             final ChatMemberUpdated chatMember = update.getMyChatMember();
             if ("kicked".equals(chatMember.getNewChatMember().getStatus())) {
-                getHandler(Unsubscribe.TYPE)
-                        .ifPresent(providers -> providers.forEach(provider -> provider.handle(UnsubscribeConvert.apply(chatMember))));
+                getHandler(Unsubscribe.TYPE).ifPresent(providers -> providers.forEach(provider -> provider.handle(UnsubscribeConvert.apply(chatMember))));
                 return;
             }
             if ("member".equals(chatMember.getNewChatMember().getStatus())) {
-                getHandler(Subscribe.TYPE)
-                        .ifPresent(eventProviders -> eventProviders.forEach(eventProvider -> eventProvider.handle(SubscribeConvert.apply(chatMember))));
+                getHandler(Subscribe.TYPE).ifPresent(eventProviders -> eventProviders.forEach(eventProvider -> eventProvider.handle(SubscribeConvert.apply(chatMember))));
                 return;
             }
         }
