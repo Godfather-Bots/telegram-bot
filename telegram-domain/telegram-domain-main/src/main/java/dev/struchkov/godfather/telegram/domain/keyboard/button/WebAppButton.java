@@ -1,7 +1,8 @@
 package dev.struchkov.godfather.telegram.domain.keyboard.button;
 
 import dev.struchkov.godfather.main.domain.keyboard.KeyBoardButton;
-import org.jetbrains.annotations.NotNull;
+
+import static dev.struchkov.haiti.utils.Inspector.isNotNull;
 
 public class WebAppButton implements KeyBoardButton {
 
@@ -15,7 +16,8 @@ public class WebAppButton implements KeyBoardButton {
         this.url = url;
     }
 
-    public static WebAppButton webAppButton(@NotNull String label, @NotNull String url) {
+    public static WebAppButton webAppButton(String label, String url) {
+        isNotNull(label, url);
         return new WebAppButton(label, url);
     }
 

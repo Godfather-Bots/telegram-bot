@@ -1,7 +1,9 @@
 package dev.struchkov.godfather.telegram.domain.keyboard.button;
 
 import dev.struchkov.godfather.main.domain.keyboard.KeyBoardButton;
-import org.jetbrains.annotations.NotNull;
+
+import static dev.struchkov.haiti.utils.Inspector.Utils.nullPointer;
+import static dev.struchkov.haiti.utils.Inspector.isNotNull;
 
 /**
  * Запрашивает у пользователя его контактный номер.
@@ -16,7 +18,8 @@ public class ContactButton implements KeyBoardButton {
         this.label = label;
     }
 
-    public static ContactButton contactButton(@NotNull String label) {
+    public static ContactButton contactButton(String label) {
+        isNotNull(label, nullPointer("label"));
         return new ContactButton(label);
     }
 

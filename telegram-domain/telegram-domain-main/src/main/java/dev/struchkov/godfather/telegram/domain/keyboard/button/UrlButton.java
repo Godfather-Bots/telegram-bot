@@ -1,7 +1,8 @@
 package dev.struchkov.godfather.telegram.domain.keyboard.button;
 
 import dev.struchkov.godfather.main.domain.keyboard.KeyBoardButton;
-import org.jetbrains.annotations.NotNull;
+
+import static dev.struchkov.haiti.utils.Inspector.isNotNull;
 
 public class UrlButton implements KeyBoardButton {
 
@@ -15,7 +16,8 @@ public class UrlButton implements KeyBoardButton {
         this.url = url;
     }
 
-    public static UrlButton urlButton(@NotNull String label, @NotNull String url) {
+    public static UrlButton urlButton(String label, String url) {
+        isNotNull(label, url);
         return new UrlButton(label, url);
     }
 
@@ -31,4 +33,5 @@ public class UrlButton implements KeyBoardButton {
     public String getUrl() {
         return url;
     }
+
 }
