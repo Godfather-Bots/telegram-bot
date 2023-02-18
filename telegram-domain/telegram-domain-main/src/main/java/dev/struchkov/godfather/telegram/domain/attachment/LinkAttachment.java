@@ -2,7 +2,7 @@ package dev.struchkov.godfather.telegram.domain.attachment;
 
 import dev.struchkov.godfather.main.domain.content.Attachment;
 import dev.struchkov.haiti.utils.Parser;
-import dev.struchkov.haiti.utils.domain.CompositeUrl;
+import dev.struchkov.haiti.utils.container.CompositeUrl;
 
 public class LinkAttachment extends Attachment {
 

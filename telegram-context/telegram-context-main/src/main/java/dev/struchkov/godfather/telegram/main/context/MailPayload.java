@@ -1,7 +1,7 @@
 package dev.struchkov.godfather.telegram.main.context;
 
-import dev.struchkov.godfather.main.domain.ContextKey;
 import dev.struchkov.haiti.utils.Exceptions;
+import dev.struchkov.haiti.utils.container.ContextKey;
 
 public final class MailPayload {
 

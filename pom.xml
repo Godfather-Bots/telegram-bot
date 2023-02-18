@@ -38,16 +38,24 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <godfather.core.ver>0.0.51-SNAPSHOT</godfather.core.ver>
+        <godfather.core.ver>0.0.51</godfather.core.ver>
+
+        <!-- https://mvnrepository.com/artifact/org.telegram/telegrambots -->
         <telegrambots.ver>6.3.0</telegrambots.ver>
 
-        <haiti.version>2.0.0</haiti.version>
+        <haiti.version>2.6.0</haiti.version>
 
+        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
         <plugin.maven.compiler.ver>3.10.1</plugin.maven.compiler.ver>
+        <!-- https://mvnrepository.com/artifact/org.sonatype.plugins/nexus-staging-maven-plugin -->
         <plugin.nexus.staging.ver>1.6.13</plugin.nexus.staging.ver>
+        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-source-plugin -->
         <plugin.maven.source.ver>3.2.1</plugin.maven.source.ver>
-        <plugin.maven.javadoc.ver>3.4.0</plugin.maven.javadoc.ver>
+        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-javadoc-plugin -->
+        <plugin.maven.javadoc.ver>3.5.0</plugin.maven.javadoc.ver>
+        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-gpg-plugin -->
         <plugin.maven.gpg.ver>3.0.1</plugin.maven.gpg.ver>
+        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-release-plugin -->
         <plugin.maven.release.ver>3.0.0-M7</plugin.maven.release.ver>
     </properties>
 
