@@ -38,7 +38,7 @@ public class TelegramPollingBot extends TelegramLongPollingBot implements Telegr
 
     @Override
     public String getBotUsername() {
-        return telegramBotConfig.getName();
+        return telegramBotConfig.getUsername();
     }
 
     @Override

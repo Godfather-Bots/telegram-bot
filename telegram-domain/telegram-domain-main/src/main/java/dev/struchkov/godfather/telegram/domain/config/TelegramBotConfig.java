@@ -7,29 +7,29 @@ package dev.struchkov.godfather.telegram.domain.config;
  */
 public class TelegramBotConfig {
 
-    private String name;
+    private String username;
     private String token;
 
     private ProxyConfig proxyConfig;
 
-    public TelegramBotConfig(String name, String token) {
-        this.name = name;
+    public TelegramBotConfig(String username, String token) {
+        this.username = username;
         this.token = token;
     }
 
     public TelegramBotConfig() {
     }
 
-    public void setBotUsername(String botUsername) {
-        this.name = botUsername;
+    public void setUsername(String botUsername) {
+        this.username = botUsername;
     }
 
-    public void setBotToken(String botToken) {
+    public void setToken(String botToken) {
         this.token = botToken;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
     public String getToken() {
