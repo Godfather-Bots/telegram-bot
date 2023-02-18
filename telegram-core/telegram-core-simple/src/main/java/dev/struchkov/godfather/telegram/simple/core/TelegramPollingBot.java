@@ -1,6 +1,6 @@
 package dev.struchkov.godfather.telegram.simple.core;
 
-import dev.struchkov.godfather.telegram.domain.config.TelegramConnectConfig;
+import dev.struchkov.godfather.telegram.domain.config.TelegramBotConfig;
 import dev.struchkov.godfather.telegram.simple.context.service.EventDistributor;
 import dev.struchkov.godfather.telegram.simple.context.service.TelegramBot;
 import org.jetbrains.annotations.NotNull;
@@ -18,16 +18,16 @@ import static dev.struchkov.haiti.utils.Checker.checkNotNull;
  */
 public class TelegramPollingBot extends TelegramLongPollingBot implements TelegramBot {
 
-    private final TelegramConnectConfig telegramConnectConfig;
+    private final TelegramBotConfig telegramBotConfig;
     private EventDistributor eventDistributor;
 
-    public TelegramPollingBot(TelegramConnectConfig telegramConnectConfig, DefaultBotOptions defaultBotOptions) {
+    public TelegramPollingBot(TelegramBotConfig telegramBotConfig, DefaultBotOptions defaultBotOptions) {
         super(defaultBotOptions);
-        this.telegramConnectConfig = telegramConnectConfig;
+        this.telegramBotConfig = telegramBotConfig;
     }
 
-    public TelegramPollingBot(TelegramConnectConfig telegramConnectConfig) {
-        this.telegramConnectConfig = telegramConnectConfig;
+    public TelegramPollingBot(TelegramBotConfig telegramBotConfig) {
+        this.telegramBotConfig = telegramBotConfig;
     }
 
     @Override
@@ -39,12 +39,12 @@ public class TelegramPollingBot extends TelegramLongPollingBot implements Telegr
 
     @Override
     public String getBotUsername() {
-        return telegramConnectConfig.getBotUsername();
+        return telegramBotConfig.getName();
     }
 
     @Override
     public String getBotToken() {
-        return telegramConnectConfig.getBotToken();
+        return telegramBotConfig.getToken();
     }
 
     @Override

@@ -1,7 +1,7 @@
 package dev.struchkov.godfather.telegram.main.core;
 
 import dev.struchkov.godfather.telegram.domain.config.ProxyConfig;
-import dev.struchkov.godfather.telegram.domain.config.TelegramConnectConfig;
+import dev.struchkov.godfather.telegram.domain.config.TelegramBotConfig;
 import dev.struchkov.godfather.telegram.main.context.TelegramConnect;
 import org.jetbrains.annotations.NotNull;
 import org.telegram.telegrambots.bots.DefaultAbsSender;
@@ -18,13 +18,13 @@ public class TelegramDefaultConnect implements TelegramConnect {
     private final String botToken;
     private final AbsSender absSender;
 
-    public TelegramDefaultConnect(TelegramConnectConfig connectConfig) {
-        this.botToken = connectConfig.getBotToken();
+    public TelegramDefaultConnect(TelegramBotConfig connectConfig) {
+        this.botToken = connectConfig.getToken();
         this.absSender = createAbsSender(connectConfig);
     }
 
     @NotNull
-    private DefaultAbsSender createAbsSender(TelegramConnectConfig connectConfig) {
+    private DefaultAbsSender createAbsSender(TelegramBotConfig connectConfig) {
         final DefaultBotOptions botOptions = new DefaultBotOptions();
 
         final ProxyConfig proxyConfig = connectConfig.getProxyConfig();

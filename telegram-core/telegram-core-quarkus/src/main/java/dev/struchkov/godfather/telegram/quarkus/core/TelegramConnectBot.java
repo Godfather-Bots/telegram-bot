@@ -2,7 +2,7 @@ package dev.struchkov.godfather.telegram.quarkus.core;
 
 import dev.struchkov.godfather.telegram.domain.config.ProxyConfig;
 import dev.struchkov.godfather.telegram.domain.config.ProxyConfig.Type;
-import dev.struchkov.godfather.telegram.domain.config.TelegramConnectConfig;
+import dev.struchkov.godfather.telegram.domain.config.TelegramBotConfig;
 import dev.struchkov.godfather.telegram.main.context.TelegramConnect;
 import dev.struchkov.godfather.telegram.quarkus.context.service.EventDistributor;
 import dev.struchkov.godfather.telegram.quarkus.context.service.TelegramBot;
@@ -29,11 +29,11 @@ public class TelegramConnectBot implements TelegramConnect {
     private static final Logger log = LoggerFactory.getLogger(TelegramConnectBot.class);
 
     private TelegramBot telegramBot;
-    private final TelegramConnectConfig telegramConnectConfig;
+    private final TelegramBotConfig telegramBotConfig;
 
-    public TelegramConnectBot(TelegramConnectConfig telegramConnectConfig) {
-        this.telegramConnectConfig = telegramConnectConfig;
-        initLongPolling(telegramConnectConfig);
+    public TelegramConnectBot(TelegramBotConfig telegramBotConfig) {
+        this.telegramBotConfig = telegramBotConfig;
+        initLongPolling(telegramBotConfig);
     }
 
 //    public TelegramConnect(TelegramWebHookConfig telegramWebHookConfig) {
@@ -51,9 +51,9 @@ public class TelegramConnectBot implements TelegramConnect {
 //        }
 //    }
 
-    private void initLongPolling(TelegramConnectConfig telegramConnectConfig) {
+    private void initLongPolling(TelegramBotConfig telegramBotConfig) {
 
-        final ProxyConfig proxyConfig = telegramConnectConfig.getProxyConfig();
+        final ProxyConfig proxyConfig = telegramBotConfig.getProxyConfig();
         if (checkNotNull(proxyConfig) && proxyConfig.isEnable() && checkNotNull(proxyConfig.getPassword()) && !"".equals(proxyConfig.getPassword())) {
             try {
                 Authenticator.setDefault(new Authenticator() {
@@ -82,13 +82,13 @@ public class TelegramConnectBot implements TelegramConnect {
                 botOptions.setProxyType(convertProxyType(proxyConfig.getType()));
 
 
-                final TelegramPollingBot bot = new TelegramPollingBot(telegramConnectConfig, botOptions);
+                final TelegramPollingBot bot = new TelegramPollingBot(telegramBotConfig, botOptions);
 
                 botapi = new TelegramBotsApi(DefaultBotSession.class);
                 botapi.registerBot(bot);
                 this.telegramBot = bot;
             } else {
-                final TelegramPollingBot bot = new TelegramPollingBot(telegramConnectConfig);
+                final TelegramPollingBot bot = new TelegramPollingBot(telegramBotConfig);
                 botapi = new TelegramBotsApi(DefaultBotSession.class);
                 botapi.registerBot(bot);
                 this.telegramBot = bot;
@@ -111,7 +111,7 @@ public class TelegramConnectBot implements TelegramConnect {
     }
 
     public String getToken() {
-        return telegramConnectConfig.getBotToken();
+        return telegramBotConfig.getToken();
     }
 
     @Override
