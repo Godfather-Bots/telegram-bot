@@ -104,7 +104,8 @@ name: create-docs-site
 
 trigger:
   branch:
-    - develop
+    - docs
+    - master
 
 steps:
   - name: build site
@@ -134,6 +135,6 @@ steps:
 
 ---
 kind: signature
-hmac: 5117104fe42363c05bf4f261dcf492aaa4613eb267543ec6f457cfeb3a200973
+hmac: 09512add0dd3f8aeabb73e8b80b5b7fdc5ed902569a6b652e2b6584d8de415fd
 
 ...
