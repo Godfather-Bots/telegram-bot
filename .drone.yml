@@ -124,13 +124,14 @@ steps:
       - which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )
       - eval $(ssh-agent -s)
       - echo "$SSH_DEPLOY_KEY" >> ssh-add -
-      #      - mkdir -p ~/.ssh
-      #      - chmod 700 ~/.ssh
-      #      - ssh-keyscan $SSH_DEPLOY_HOST >> ~/.ssh/known_hosts
-      #      - chmod 644 ~/.ssh/known_hosts
+      - mkdir -p ~/.ssh
+      - chmod 700 ~/.ssh
+      - ssh-keyscan $SSH_DEPLOY_HOST -p $SSH_DEPLOY_PORT >> ~/.ssh/known_hosts
+      - chmod 644 ~/.ssh/known_hosts
       - scp -r -P $SSH_DEPLOY_PORT -o StrictHostKeyChecking=no ./site $SSH_DEPLOY_USER@$SSH_DEPLOY_HOST:$SSH_DEPLOY_PATH
+
 ---
 kind: signature
-hmac: 27a215d8369b1a55bdd4ded143feb91efd37b18b9a30621db635345813f59547
+hmac: d26c3a293c2a988f507aea3671dc3862447a198ec53664339132c9671740ca31
 
 ...
