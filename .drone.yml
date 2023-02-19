@@ -111,7 +111,7 @@ steps:
   - name: build site
     image: upagge/mkdocs-material
     environment:
-      $SSH_DEPLOY_KEY:
+      SSH_DEPLOY_KEY:
         from_secret: SSH_DEPLOY_KEY
       SSH_DEPLOY_HOST:
         from_secret: SSH_DEPLOY_HOST
@@ -134,6 +134,6 @@ steps:
 
 ---
 kind: signature
-hmac: 46de63e8abef4efcbcf103c5bf2c394dcb2fedf60a030a1bde2fe62dd1598545
+hmac: b90377d867d5e3705dd2f78ab4c2cede0e97baf4329d755fcdebd8fadf1bf2b4
 
 ...
