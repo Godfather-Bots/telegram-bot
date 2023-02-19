@@ -2,10 +2,19 @@ site_name: GodFather Telegram
 
 repo_url: https://github.com/Godfather-Bots/telegram-bot
 repo_name: Godfather-Bots/telegram-bot
+
+copyright: Copyright &copy; 2018 - 2023 Struchkov Mark
 #edit_uri: edit/master/documentation/docs
 
 nav:
   - 'index.md'
+  - 'Быстрый старт':
+      - 'getting-started/installing-dependencies.md'
+      - 'getting-started/configuration.md'
+#  - 'Гайды':
+  - 'Архитектура':
+      - 'architecture/concept.md'
+#  - 'ChangeLog':
 
 theme:
   name: material
@@ -33,17 +42,17 @@ theme:
     - navigation.tracking
     - navigation.tabs
     - navigation.tabs.sticky
+    - navigation.footer
     - search
     - search.suggest
     - search.highlight
     - content.action.edit
+    - content.code.copy
     - toc.follow
   plugins:
     - meta
     - tags
     - social
-    - blog:
-        blog_dir: ./blog
     - search:
         lang: ru
     - git-revision-date-localized:
@@ -53,6 +62,23 @@ markdown_extensions:
       permalink: true
       toc_depth: 3
       title: Содержание
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.snippets
+  - pymdownx.inlinehilite
+  - pymdownx.details
+  - pymdownx.smartsymbols
+  - pymdownx.betterem
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
 
 extra:
   generator: false
