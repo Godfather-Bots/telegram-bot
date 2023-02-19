@@ -121,7 +121,7 @@ steps:
       - mkdocs build
       - which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )
       - eval $(ssh-agent -s)
-      - echo "$SSH_DEPLOY_KEY" | ssh-add -
+      - echo "$SSH_DEPLOY_KEY" >> ssh-add -
       - mkdir -p ~/.ssh
       - chmod 700 ~/.ssh
       - ssh-keyscan $SSH_DEPLOY_HOST >> ~/.ssh/known_hosts
