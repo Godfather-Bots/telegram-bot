@@ -2,7 +2,10 @@ site_name: GodFather Telegram
 
 repo_url: https://github.com/Godfather-Bots/telegram-bot
 repo_name: Godfather-Bots/telegram-bot
-#edit_uri: blob/develop/docs/
+#edit_uri: edit/master/documentation/docs
+
+nav:
+  - 'index.md'
 
 theme:
   name: material
@@ -11,28 +14,28 @@ theme:
     logo: simple/telegram
     repo: fontawesome/brands/github
   palette:
-    # Palette toggle for light mode
     - scheme: default
       primary: light blue
       accent: indigo
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
-
-    # Palette toggle for dark mode
     - scheme: slate
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
 
   features:
+    - navigation.instant
+    - navigation.indexes
     - navigation.sections
+    - navigation.tracking
     - navigation.tabs
     - navigation.tabs.sticky
-    - content.action.edit
     - search
     - search.suggest
     - search.highlight
+    - content.action.edit
     - toc.follow
   plugins:
     - meta
@@ -52,6 +55,8 @@ markdown_extensions:
 
 extra:
   generator: false
+  version:
+    provider: mike
 #  alternate:
 #    - name: Русский
 #      link: /ru/
