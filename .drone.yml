@@ -110,7 +110,7 @@ steps:
   - name: build site
     image: upagge/mkdocs-material
     commands:
-      - mkdocs gh-deploy --force
+      - mkdocs build
 ---
 kind: signature
 hmac: 3e4badb68ae8e0fc102b948d3383ca67155ad0e733bbbdb43560862c5de4fdd6
