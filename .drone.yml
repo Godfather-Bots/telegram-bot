@@ -129,11 +129,11 @@ steps:
       - ssh-keyscan -p $SSH_DEPLOY_PORT $SSH_DEPLOY_HOST >> ~/.ssh/known_hosts
       - chmod 644 ~/.ssh/known_hosts
       - mkdocs build
-      - mv site godfather-telegram-bot
+      - mv site godfather-telegram
       - scp -r -P $SSH_DEPLOY_PORT ./godfather-telegram $SSH_DEPLOY_USER@$SSH_DEPLOY_HOST:$SSH_DEPLOY_PATH
 
 ---
 kind: signature
-hmac: 8b702ec5869930b1fa64819a41e1ab8feeb2b4e75ddcf87299377ede4a22b0e6
+hmac: 5117104fe42363c05bf4f261dcf492aaa4613eb267543ec6f457cfeb3a200973
 
 ...
