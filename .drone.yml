@@ -123,18 +123,17 @@ steps:
       - ssh -V
       - apt-get install openssl
       - mkdocs build
-      - which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )
       - eval $(ssh-agent -s)
       - mkdir -p ~/.ssh
-      - echo "$SSH_DEPLOY_KEY" > ~/.ssh/id_rsa
+      - echo "$SSH_DEPLOY_KEY" >> ~/.ssh/id_rsa
       - chmod 700 ~/.ssh
       - chmod 600 ~/.ssh/id_rsa
       - ssh-keyscan -p $SSH_DEPLOY_PORT $SSH_DEPLOY_HOST >> ~/.ssh/known_hosts
       - chmod 644 ~/.ssh/known_hosts
-      - scp -r -P $SSH_DEPLOY_PORT ./site $SSH_DEPLOY_USER@$SSH_DEPLOY_HOST:$SSH_DEPLOY_PATH
+      - scp -r -P $SSH_DEPLOY_PORT -i ~/.ssh/id_rsa ./site $SSH_DEPLOY_USER@$SSH_DEPLOY_HOST:$SSH_DEPLOY_PATH
 
 ---
 kind: signature
-hmac: c09d21a1217a0b5155d5c2a84487d93e6ebcaeff707c0e5e20908fd3d627a5a2
+hmac: 103bcca1fbab3b841b5a454b82fa7b6460894989304fe48b912b18c595adcdd6
 
 ...
