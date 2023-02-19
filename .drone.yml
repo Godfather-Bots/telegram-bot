@@ -98,7 +98,21 @@ steps:
       - mvn --settings maven-settings.xml -U -P ossrh,release-struchkov-nexus clean deploy
 
 ---
+kind: pipeline
+type: docker
+name: create-docs-site
+
+trigger:
+  branch:
+    - develop
+
+steps:
+  - name: build site
+    image: upagge/mkdocs-material
+    commands:
+      - mkdocs gh-deploy --force
+---
 kind: signature
-hmac: 207203c0c4287898e7eacea14dbff38618650430e07a10438832e36eb501ab52
+hmac: 3e4badb68ae8e0fc102b948d3383ca67155ad0e733bbbdb43560862c5de4fdd6
 
 ...
