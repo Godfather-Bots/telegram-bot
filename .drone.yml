@@ -123,7 +123,7 @@ steps:
       - mkdocs build
       - which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )
       - eval $(ssh-agent -s)
-      - echo "$SSH_DEPLOY_KEY" >> $HOME/.ssh/id_rsa
+      - echo "$SSH_DEPLOY_KEY" >> ssh-add -
       #      - mkdir -p ~/.ssh
       #      - chmod 700 ~/.ssh
       #      - ssh-keyscan $SSH_DEPLOY_HOST >> ~/.ssh/known_hosts
@@ -131,6 +131,6 @@ steps:
       - scp -r -P $SSH_DEPLOY_PORT -o StrictHostKeyChecking=no ./site $SSH_DEPLOY_USER@$SSH_DEPLOY_HOST:$SSH_DEPLOY_PATH
 ---
 kind: signature
-hmac: 00598b37fa3f1f31f1348b9ed45683cfdf9585a2790f28e070bebbab1b6d72d6
+hmac: 27a215d8369b1a55bdd4ded143feb91efd37b18b9a30621db635345813f59547
 
 ...
