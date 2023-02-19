@@ -1,6 +1,7 @@
 ---
 hide:
   - navigation
+  - commants
 title: Home
 
 ---
