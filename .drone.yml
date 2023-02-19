@@ -120,6 +120,7 @@ steps:
       SSH_DEPLOY_USER:
         from_secret: SSH_DEPLOY_USER
     commands:
+      - ssh -v
       - mkdocs build
       - which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )
       - eval $(ssh-agent -s)
@@ -133,6 +134,6 @@ steps:
 
 ---
 kind: signature
-hmac: 7bd0d9874606373145ebf82f0ca38310649b7e8b5ad9eb951f4cc04a1723592b
+hmac: ff6451d85044170193614c5b4e353477598e8c078a0634295e02ed8c15b941ae
 
 ...
