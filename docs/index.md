@@ -1,6 +1,8 @@
 ---
 hide:
   - navigation
-title: Godfather Telegram – Фреймворк для создания Telegram ботов на Java
+title: Home
 
 ---
+
+# Godfather Telegram – Фреймворк для создания Telegram ботов
