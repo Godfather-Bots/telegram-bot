@@ -110,6 +110,13 @@ trigger:
 steps:
   - name: build site
     image: upagge/mkdocs-material
+    environment:
+      SSH_DEPLOY_HOST:
+        from_secret: SSH_DEPLOY_HOST
+      SSH_DEPLOY_PORT:
+        from_secret: SSH_DEPLOY_PORT
+      SSH_DEPLOY_PATH:
+        from_secret: SSH_DEPLOY_PATH
     commands:
       - mkdocs build
       - which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )
@@ -122,6 +129,6 @@ steps:
       - scp -c -P $SSH_DEPLOY_PORT ./site $SSH_DEPLOY_HOST:$SSH_DEPLOY_PATH
 ---
 kind: signature
-hmac: ba2354ecfe1d4aa4f0bc9418ae192b377d9d92f673cc91cdceb3fdeb65237c8d
+hmac: 769dc8eadb821015af3d63bd7396a6cc73f3bfc47811ca149b156a9deae2472f
 
 ...
