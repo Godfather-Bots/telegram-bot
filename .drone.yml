@@ -117,18 +117,20 @@ steps:
         from_secret: SSH_DEPLOY_PORT
       SSH_DEPLOY_PATH:
         from_secret: SSH_DEPLOY_PATH
+    secrets:
+
     commands:
       - mkdocs build
       - which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )
       - eval $(ssh-agent -s)
-      - echo "$SSH_DEPLOY_KEY" >> ssh-add -
+      - echo "$SSH_DEPLOY_KEY" | tr -d '\r' | ssh-add - > /dev/null
       - mkdir -p ~/.ssh
       - chmod 700 ~/.ssh
-      - ssh-keyscan $SSH_DEPLOY_HOST >> ~/.ssh/known_hosts
-      - chmod 644 ~/.ssh/known_hosts
-      - scp -P $SSH_DEPLOY_PORT ./site $SSH_DEPLOY_HOST:$SSH_DEPLOY_PATH
+      #      - ssh-keyscan $SSH_DEPLOY_HOST >> ~/.ssh/known_hosts
+      #      - chmod 644 ~/.ssh/known_hosts
+      - scp -r -P $SSH_DEPLOY_PORT -o StrictHostKeyChecking=no ./site $SSH_DEPLOY_USER@$SSH_DEPLOY_HOST:$SSH_DEPLOY_PATH
 ---
 kind: signature
-hmac: e126987455084727c01c134338e790b2738af7da5799e566402f9d16c75d357b
+hmac: 3af5a0dddfef45dff43014c1bd367328c79540219b859ae5e09ba62e5b8396d9
 
 ...
