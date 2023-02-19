@@ -37,6 +37,7 @@ theme:
   plugins:
     - meta
     - tags
+    - social
     - blog:
         blog_dir: ./blog
     - search:
@@ -49,7 +50,8 @@ markdown_extensions:
       toc_depth: 3
       title: Содержание
 
-#extra:
+extra:
+  generator: false
 #  alternate:
 #    - name: Русский
 #      link: /ru/
