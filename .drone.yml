@@ -122,7 +122,6 @@ steps:
       SSH_DEPLOY_USER:
         from_secret: SSH_DEPLOY_USER
     commands:
-      - mkdocs build
       - eval $(ssh-agent -s)
       - mkdir -p ~/.ssh
       - echo "$SSH_DEPLOY_KEY" >> ~/.ssh/id_rsa
@@ -130,10 +129,12 @@ steps:
       - chmod 600 ~/.ssh/id_rsa
       - ssh-keyscan -p $SSH_DEPLOY_PORT $SSH_DEPLOY_HOST >> ~/.ssh/known_hosts
       - chmod 644 ~/.ssh/known_hosts
-      - scp -r -P $SSH_DEPLOY_PORT -i ~/.ssh/id_rsa ./site $SSH_DEPLOY_USER@$SSH_DEPLOY_HOST:$SSH_DEPLOY_PATH
+      - mkdocs build
+      - mv site godfather-telegram-bot
+      - scp -r -P $SSH_DEPLOY_PORT ./godfather-telegram-bot $SSH_DEPLOY_USER@$SSH_DEPLOY_HOST:$SSH_DEPLOY_PATH
 
 ---
 kind: signature
-hmac: b90377d867d5e3705dd2f78ab4c2cede0e97baf4329d755fcdebd8fadf1bf2b4
+hmac: 5ccd08faa991103f2e92eb005fb7b41f5be0b0d575b2573947efca4dcfadb28a
 
 ...
