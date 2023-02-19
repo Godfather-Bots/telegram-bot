@@ -51,9 +51,9 @@ theme:
     - content.code.copy
     - toc.follow
   plugins:
+    - social
     - meta
     - tags
-    - social
     - search:
         lang: ru
     - git-revision-date-localized:
