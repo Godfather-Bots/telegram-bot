@@ -1,34 +1,33 @@
 ---
-#---
-#kind: pipeline
-#type: docker
-#name: snapshot-publish
-#
-#trigger:
-#  branch:
-#    - develop
-#
-#volumes:
-#  - name: m2
-#    host:
-#      path: /drone/volume/m2
-#
-#steps:
-#
-#  - name: publish
-#    image: maven:3.8.5-openjdk-17
-#    privileged: true
-#    volumes:
-#      - name: m2
-#        path: /root/.m2/repository
-#    environment:
-#      MAVEN_SETTINGS:
-#        from_secret: MAVEN_SETTINGS
-#    commands:
-#      - echo "$MAVEN_SETTINGS" >> maven-settings.xml
-#      - mvn --settings maven-settings.xml -U -P snapshot clean deploy
-#
-#---
+kind: pipeline
+type: docker
+name: snapshot-publish
+
+trigger:
+  branch:
+    - develop
+
+volumes:
+  - name: m2
+    host:
+      path: /drone/volume/m2
+
+steps:
+
+  - name: publish
+    image: maven:3.8.5-openjdk-17
+    privileged: true
+    volumes:
+      - name: m2
+        path: /root/.m2/repository
+    environment:
+      MAVEN_SETTINGS:
+        from_secret: MAVEN_SETTINGS
+    commands:
+      - echo "$MAVEN_SETTINGS" >> maven-settings.xml
+      - mvn --settings maven-settings.xml -U -P snapshot clean deploy
+
+---
 kind: pipeline
 type: docker
 name: release-maven-central
@@ -135,6 +134,6 @@ steps:
 
 ---
 kind: signature
-hmac: 5ccd08faa991103f2e92eb005fb7b41f5be0b0d575b2573947efca4dcfadb28a
+hmac: 3e85763cdcfa2ee020e2809d193132e3dc9521050464f3279731ff9d27f78600
 
 ...
