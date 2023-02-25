@@ -8,4 +8,8 @@ public interface TelegramService {
 
     Uni<Void> executeAction(@NotNull String personId, ChatAction chatAction);
 
+    Uni<Void> pinMessage(@NotNull String personId, @NotNull String messageId);
+
+    Uni<Void> unPinMessage(@NotNull String personId, @NotNull String messageId);
+
 }

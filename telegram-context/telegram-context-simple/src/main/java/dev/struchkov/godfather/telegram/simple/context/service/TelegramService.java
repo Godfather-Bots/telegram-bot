@@ -7,4 +7,8 @@ public interface TelegramService {
 
     void executeAction(@NotNull String personId, ChatAction chatAction);
 
+    void pinMessage(@NotNull String personId, @NotNull String messageId);
+
+    void unPinMessage(@NotNull String personId, @NotNull String messageId);
+
 }
