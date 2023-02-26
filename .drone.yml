@@ -97,45 +97,45 @@ steps:
       - gpg --pinentry-mode loopback --passphrase $GPG_PASSPHRASE --import gpg.key
       - mvn --settings maven-settings.xml -U -P ossrh,release-struchkov-nexus clean deploy
 
----
-kind: pipeline
-type: docker
-name: create-docs-site
-
-trigger:
-  branch:
-    - docs
-    - master
-
-steps:
-  - name: build site
-    image: upagge/mkdocs-material
-    environment:
-      SSH_DEPLOY_KEY:
-        from_secret: SSH_DEPLOY_KEY
-      SSH_DEPLOY_HOST:
-        from_secret: SSH_DEPLOY_HOST
-      SSH_DEPLOY_PORT:
-        from_secret: SSH_DEPLOY_PORT
-      SSH_DEPLOY_PATH:
-        from_secret: SSH_DEPLOY_PATH
-      SSH_DEPLOY_USER:
-        from_secret: SSH_DEPLOY_USER
-    commands:
-      - eval $(ssh-agent -s)
-      - mkdir -p ~/.ssh
-      - echo "$SSH_DEPLOY_KEY" >> ~/.ssh/id_rsa
-      - chmod 700 ~/.ssh
-      - chmod 600 ~/.ssh/id_rsa
-      - ssh-keyscan -p $SSH_DEPLOY_PORT $SSH_DEPLOY_HOST >> ~/.ssh/known_hosts
-      - chmod 644 ~/.ssh/known_hosts
-      - cd documentation
-      - mkdocs build
-      - mv site godfather-telegram
-      - scp -r -P $SSH_DEPLOY_PORT ./godfather-telegram $SSH_DEPLOY_USER@$SSH_DEPLOY_HOST:$SSH_DEPLOY_PATH
+#---
+#kind: pipeline
+#type: docker
+#name: create-docs-site
+#
+#trigger:
+#  branch:
+#    - docs
+#    - master
+#
+#steps:
+#  - name: build site
+#    image: upagge/mkdocs-material
+#    environment:
+#      SSH_DEPLOY_KEY:
+#        from_secret: SSH_DEPLOY_KEY
+#      SSH_DEPLOY_HOST:
+#        from_secret: SSH_DEPLOY_HOST
+#      SSH_DEPLOY_PORT:
+#        from_secret: SSH_DEPLOY_PORT
+#      SSH_DEPLOY_PATH:
+#        from_secret: SSH_DEPLOY_PATH
+#      SSH_DEPLOY_USER:
+#        from_secret: SSH_DEPLOY_USER
+#    commands:
+#      - eval $(ssh-agent -s)
+#      - mkdir -p ~/.ssh
+#      - echo "$SSH_DEPLOY_KEY" >> ~/.ssh/id_rsa
+#      - chmod 700 ~/.ssh
+#      - chmod 600 ~/.ssh/id_rsa
+#      - ssh-keyscan -p $SSH_DEPLOY_PORT $SSH_DEPLOY_HOST >> ~/.ssh/known_hosts
+#      - chmod 644 ~/.ssh/known_hosts
+#      - cd documentation
+#      - mkdocs build
+#      - mv site godfather-telegram
+#      - scp -r -P $SSH_DEPLOY_PORT ./godfather-telegram $SSH_DEPLOY_USER@$SSH_DEPLOY_HOST:$SSH_DEPLOY_PATH
 
 ---
 kind: signature
-hmac: f572c63a70de0e0b94dda125006e3fc0e2b29ccd318034c7e4193c0c2bee70b2
+hmac: bdeec02d3273fc1640c972d68cc52bffa2319ea53470d0c273f42125a1dec127
 
 ...
