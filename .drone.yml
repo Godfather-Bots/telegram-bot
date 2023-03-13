@@ -142,7 +142,7 @@ image_pull_secrets:
 volumes:
   - name: mkdocs_cache
     host:
-      path: /drone/volume/mkdocs_cache/gitlab_notification/ru
+      path: /drone/volume/mkdocs_cache/godfather_telegram/ru
 ---
 kind: signature
 hmac: cd3c224e44b9365e48c67be987d21461f7988ca31fd7b634e0384fdc75f02071
