@@ -131,7 +131,7 @@ steps:
       - chmod 644 ~/.ssh/known_hosts
       - git config --global user.name "${DRONE_COMMIT_AUTHOR_NAME}"
       - git config --global user.email "${DRONE_COMMIT_AUTHOR_EMAIL}"
-      - git clone ssh://${DRONE_GIT_SSH_URL} .
+      - git clone ${DRONE_GIT_SSH_URL} .
       - git checkout $DRONE_COMMIT
       - cd documentation/ru
       - mike deploy --prefix gitlab-notification/ru --branch docs-deploy --push --update-aliases develop
@@ -145,6 +145,6 @@ volumes:
       path: /drone/volume/mkdocs_cache/gitlab_notification/ru
 ---
 kind: signature
-hmac: c4c4d3180b76dae2482832e2be6d574463130cdc89c9b390be85cb2c5bc48fdc
+hmac: 9a7307ec678bb8c8f76b1bbfd8cafb1494803dbf077e08485fbb61cdde55e7c4
 
 ...
