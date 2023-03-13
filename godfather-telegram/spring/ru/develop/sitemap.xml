@@ -11,7 +11,22 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://docs.struchkov.dev/godfather-telegram/spring/ru/develop/architecture/concept/</loc>
+         <loc>https://docs.struchkov.dev/godfather-telegram/spring/ru/develop/architecture/general/</loc>
+         <lastmod>2023-03-13</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://docs.struchkov.dev/godfather-telegram/spring/ru/develop/architecture/unit/</loc>
+         <lastmod>2023-03-13</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://docs.struchkov.dev/godfather-telegram/spring/ru/develop/architecture/unit/answer-check/</loc>
+         <lastmod>2023-03-13</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://docs.struchkov.dev/godfather-telegram/spring/ru/develop/architecture/unit/answer-text/</loc>
          <lastmod>2023-03-13</lastmod>
          <changefreq>daily</changefreq>
     </url>
