@@ -134,7 +134,7 @@ steps:
       - git clone ${DRONE_GIT_SSH_URL} .
       - git checkout $DRONE_COMMIT
       - cd documentation/ru
-      - mike deploy --prefix gitlab-notification/ru --branch docs-deploy --push --update-aliases develop
+      - mike deploy --prefix godfather-telegram/ru --branch docs-deploy --push --update-aliases develop
 
 image_pull_secrets:
   - DOCKER_AUTH
@@ -145,6 +145,6 @@ volumes:
       path: /drone/volume/mkdocs_cache/gitlab_notification/ru
 ---
 kind: signature
-hmac: 9a7307ec678bb8c8f76b1bbfd8cafb1494803dbf077e08485fbb61cdde55e7c4
+hmac: cd3c224e44b9365e48c67be987d21461f7988ca31fd7b634e0384fdc75f02071
 
 ...
