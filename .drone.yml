@@ -145,6 +145,6 @@ volumes:
       path: /drone/volume/mkdocs_cache/godfather_telegram/ru
 ---
 kind: signature
-hmac: cd3c224e44b9365e48c67be987d21461f7988ca31fd7b634e0384fdc75f02071
+hmac: 5562bbc661205e22431151399cb3898fbf7dd96b69ca59aeaf161910b8d64f89
 
 ...
