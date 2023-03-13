@@ -97,45 +97,54 @@ steps:
       - gpg --pinentry-mode loopback --passphrase $GPG_PASSPHRASE --import gpg.key
       - mvn --settings maven-settings.xml -U -P ossrh,release-struchkov-nexus clean deploy
 
-#---
-#kind: pipeline
-#type: docker
-#name: create-docs-site
-#
-#trigger:
-#  branch:
-#    - docs
-#    - master
-#
-#steps:
-#  - name: build site
-#    image: upagge/mkdocs-material
-#    environment:
-#      SSH_DEPLOY_KEY:
-#        from_secret: SSH_DEPLOY_KEY
-#      SSH_DEPLOY_HOST:
-#        from_secret: SSH_DEPLOY_HOST
-#      SSH_DEPLOY_PORT:
-#        from_secret: SSH_DEPLOY_PORT
-#      SSH_DEPLOY_PATH:
-#        from_secret: SSH_DEPLOY_PATH
-#      SSH_DEPLOY_USER:
-#        from_secret: SSH_DEPLOY_USER
-#    commands:
-#      - eval $(ssh-agent -s)
-#      - mkdir -p ~/.ssh
-#      - echo "$SSH_DEPLOY_KEY" >> ~/.ssh/id_rsa
-#      - chmod 700 ~/.ssh
-#      - chmod 600 ~/.ssh/id_rsa
-#      - ssh-keyscan -p $SSH_DEPLOY_PORT $SSH_DEPLOY_HOST >> ~/.ssh/known_hosts
-#      - chmod 644 ~/.ssh/known_hosts
-#      - cd documentation
-#      - mkdocs build
-#      - mv site godfather-telegram
-#      - scp -r -P $SSH_DEPLOY_PORT ./godfather-telegram $SSH_DEPLOY_USER@$SSH_DEPLOY_HOST:$SSH_DEPLOY_PATH
+---
+kind: pipeline
+type: docker
+name: create-develop-docs-site
 
+trigger:
+  branch:
+    - develop
+    - docs
+
+clone:
+  disable: true
+
+steps:
+
+  - name: build docs
+    image: git.struchkov.dev/upagge/mkdocs-material-insiders:latest
+    volumes:
+      - name: mkdocs_cache
+        path: ${DRONE_WORKSPACE}/documentation/ru/.cache
+    environment:
+      GIT_SSH:
+        from_secret: GIT_SSH
+      GIT_SSH_COMMAND: "ssh -i ~/.ssh/id_rsa -p 222"
+    commands:
+      - eval $(ssh-agent -s)
+      - mkdir -p ~/.ssh
+      - chmod 700 ~/.ssh
+      - echo "$GIT_SSH" >> ~/.ssh/id_rsa
+      - chmod 600 ~/.ssh/id_rsa
+      - ssh-keyscan -p 222 git.struchkov.dev >> ~/.ssh/known_hosts
+      - chmod 644 ~/.ssh/known_hosts
+      - git config --global user.name "${DRONE_COMMIT_AUTHOR_NAME}"
+      - git config --global user.email "${DRONE_COMMIT_AUTHOR_EMAIL}"
+      - git clone ssh://git@git.struchkov.dev:222/Telegram-Bots/gitlab-notification.git .
+      - git checkout $DRONE_COMMIT
+      - cd documentation/ru
+      - mike deploy --prefix gitlab-notification/ru --branch docs-deploy --push --update-aliases develop
+
+image_pull_secrets:
+  - DOCKER_AUTH
+
+volumes:
+  - name: mkdocs_cache
+    host:
+      path: /drone/volume/mkdocs_cache/gitlab_notification/ru
 ---
 kind: signature
-hmac: bdeec02d3273fc1640c972d68cc52bffa2319ea53470d0c273f42125a1dec127
+hmac: 07fb69338d4ebdd3bc98cbef5bcd99e5be057f783e6c92844f3fe556d411267b
 
 ...

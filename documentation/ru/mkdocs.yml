@@ -1,5 +1,5 @@
 site_name: GodFather Telegram
-site_url: https://docs.struchkov.dev/godfather-telegram/
+site_url: https://docs.struchkov.dev/godfather-telegram/ru
 
 repo_url: https://github.com/Godfather-Bots/telegram-bot
 repo_name: Godfather-Bots/telegram-bot
@@ -26,62 +26,92 @@ theme:
     logo: simple/telegram
     repo: fontawesome/brands/github
   palette:
-    - scheme: default
+    - media: "(prefers-color-scheme)"
+      primary: light blue
+      accent: indigo
+      scheme: default
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
       primary: light blue
       accent: indigo
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
-    - scheme: slate
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
       toggle:
         icon: material/brightness-4
-        name: Switch to light mode
+        name: Switch to system preference
 
   features:
     - navigation.instant
     - navigation.indexes
     - navigation.sections
     - navigation.tracking
-    - navigation.tabs
-    - navigation.tabs.sticky
     - navigation.footer
+    - navigation.prune
     - search
     - search.suggest
     - search.highlight
     - content.action.edit
     - content.code.copy
+    - content.code.annotate
+    - content.tooltips
     - toc.follow
-  plugins:
-    - social
-    - meta
-    - tags
-    - search:
-        lang: ru
-    - git-revision-date-localized:
-        enable_creation_date: true
+    - toc.integrate
+plugins:
+  - social
+  - typeset
+  #  - blog:
+  #      blog_toc: true
+  #      post_date_format: short
+  #      post_url_format: "{slug}"
+  #      archive_toc: true
+  #      categories: false
+  #      authors: false
+  #  - optimize:
+  #      optimize_jpg_quality: 90
+  - tags
+  - search:
+      lang: ru
 markdown_extensions:
-  - toc:
-      permalink: true
-      toc_depth: 3
-      title: Содержание
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - pymdownx.snippets:
+      auto_append:
+        - includes/abbreviations.md
+  - pymdownx.critic
+  - pymdownx.caret
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.tilde
+  - attr_list
+  - def_list
+  - pymdownx.tasklist:
+      custom_checkbox: true
   - pymdownx.highlight:
       anchor_linenums: true
-  - pymdownx.superfences:
-      custom_fences:
-        - name: mermaid
-          class: mermaid
-          format: !!python/name:pymdownx.superfences.fence_code_format
-  - pymdownx.snippets
-  - pymdownx.inlinehilite
-  - pymdownx.details
-  - pymdownx.smartsymbols
-  - pymdownx.betterem
+      line_spans: __span
+      pygments_lang_class: true
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.emoji:
       emoji_index: !!python/name:materialx.emoji.twemoji
       emoji_generator: !!python/name:materialx.emoji.to_svg
+  - admonition
+  - abbr
+  - md_in_html
+  - footnotes
+  - toc:
+      toc_depth: 3
+      title: Содержание
+      permalink: ⚓︎
 
+extra_css:
+  - stylesheets/extra.css
 extra:
   generator: false
   analytics:
