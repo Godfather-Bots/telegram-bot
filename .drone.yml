@@ -35,6 +35,6 @@ image_pull_secrets:
   - DOCKER_AUTH
 ---
 kind: signature
-hmac: 9145f38510354457ad0c41f59d3e06791fdfcb020511d602081b45cf03b67536
+hmac: cce0a879234d3e4b0a19e835506c5ec7834711ca21acac4cb755605d56371291
 
 ...
