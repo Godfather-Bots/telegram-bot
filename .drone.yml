@@ -133,7 +133,7 @@ steps:
       - git config --global user.email "${DRONE_COMMIT_AUTHOR_EMAIL}"
       - git clone ${DRONE_GIT_SSH_URL} .
       - git checkout $DRONE_COMMIT
-      - cd documentation/ru
+      - cd documentation/spring/ru
       - mike deploy --prefix godfather-telegram/spring/ru --branch docs-deploy --push --update-aliases develop
 
 image_pull_secrets:
