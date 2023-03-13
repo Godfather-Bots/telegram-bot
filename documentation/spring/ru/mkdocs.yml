@@ -1,5 +1,5 @@
 site_name: GodFather Telegram
-site_url: https://docs.struchkov.dev/godfather-telegram/ru
+site_url: https://docs.struchkov.dev/godfather-telegram/spring/ru
 
 repo_url: https://github.com/Godfather-Bots/telegram-bot
 repo_name: Godfather-Bots/telegram-bot
@@ -8,14 +8,12 @@ copyright: Copyright &copy; 2018 - 2023 Struchkov Mark
 #edit_uri: edit/master/documentation/docs
 
 nav:
-  - 'index.md'
-  - 'Быстрый старт':
-      - 'getting-started/installing-dependencies.md'
-      - 'getting-started/configuration.md'
-#  - 'Гайды':
-  - 'Архитектура':
-      - 'architecture/concept.md'
-#  - 'ChangeLog':
+  - О проекте:
+    - index.md
+    - Hello World!: getting-started/hello-godfather.md
+    - Поддержать разработку: support-development.md
+    - ChangeLog:
+      - changelog/index.md
 
 theme:
   name: material
@@ -51,6 +49,8 @@ theme:
     - navigation.sections
     - navigation.tracking
     - navigation.footer
+    - navigation.tabs
+    - navigation.tabs.sticky
     - navigation.prune
     - search
     - search.suggest

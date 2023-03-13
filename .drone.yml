@@ -134,7 +134,7 @@ steps:
       - git clone ${DRONE_GIT_SSH_URL} .
       - git checkout $DRONE_COMMIT
       - cd documentation/ru
-      - mike deploy --prefix godfather-telegram/ru --branch docs-deploy --push --update-aliases develop
+      - mike deploy --prefix godfather-telegram/spring/ru --branch docs-deploy --push --update-aliases develop
 
 image_pull_secrets:
   - DOCKER_AUTH
@@ -145,6 +145,6 @@ volumes:
       path: /drone/volume/mkdocs_cache/godfather_telegram/ru
 ---
 kind: signature
-hmac: 5562bbc661205e22431151399cb3898fbf7dd96b69ca59aeaf161910b8d64f89
+hmac: 0a56908deb231df7e12f012c94abeea4545f8ad6b19d66f2321036af88afebc7
 
 ...
