@@ -142,9 +142,9 @@ image_pull_secrets:
 volumes:
   - name: mkdocs_cache
     host:
-      path: /drone/volume/mkdocs_cache/godfather_telegram/ru
+      path: /drone/volume/mkdocs_cache/godfather_telegram/spring/ru
 ---
 kind: signature
-hmac: 0a56908deb231df7e12f012c94abeea4545f8ad6b19d66f2321036af88afebc7
+hmac: 9f9e027ab5183b4e689fe710eab31672eb20be156ef13c2e31849517d825de5f
 
 ...
