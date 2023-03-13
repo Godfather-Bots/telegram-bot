@@ -145,6 +145,6 @@ volumes:
       path: /drone/volume/mkdocs_cache/gitlab_notification/ru
 ---
 kind: signature
-hmac: 07fb69338d4ebdd3bc98cbef5bcd99e5be057f783e6c92844f3fe556d411267b
+hmac: c4c4d3180b76dae2482832e2be6d574463130cdc89c9b390be85cb2c5bc48fdc
 
 ...
