@@ -1,10 +1,11 @@
 ---
 hide:
     - comments
+    - navigation
 
 ---
 
-# Фреймворк для создания Telegram ботов
+# GodFather Bot - Фреймворк для создания Telegram ботов
 
 Данный фреймворк обладает мощным API для создания диалоговых Telegram ботов.
 
@@ -29,5 +30,7 @@ public class GeneralMenu implements UnitConfiguration {
 ```
 
 ## Добавляем зависимости
+
+Чтобы начать, выберете свой сборщик вкладку и добавьте зависимости в проект.
 
 --8<-- ".dependencies.md"

@@ -10,16 +10,20 @@ copyright: Copyright &copy; 2018 - 2023 Struchkov Mark
 nav:
   - О проекте:
     - index.md
-    - Hello World!: getting-started/hello-godfather.md
-    - Поддержать разработку: support-development.md
-    - ChangeLog:
-      - changelog/index.md
+  - Конфигурация:
+      - Hello World!: getting-started/hello-godfather.md
+      - Юниты:
+          - architecture/unit.md
+          - architecture/unit/answer-text.md
+          - architecture/unit/answer-check.md
+  - Гайды:
+      - Безопасность: guides/security.md
+      - Циклическая зависимость: guides/cyclic.md
   - Архитектура:
     - Основная идея: architecture/general.md
-    - Юниты:
-      - architecture/unit.md
-      - architecture/unit/answer-text.md
-      - architecture/unit/answer-check.md
+  - ChangeLog: changelog/index.md
+  - Поддержать: support-development.md
+
 
 theme:
   name: material
