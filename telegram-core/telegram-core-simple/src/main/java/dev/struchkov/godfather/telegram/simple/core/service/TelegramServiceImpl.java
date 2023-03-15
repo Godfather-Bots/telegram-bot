@@ -94,7 +94,10 @@ public class TelegramServiceImpl implements TelegramService {
 
         final List<@NotNull BotCommand> noLangCommands = botCommands.stream()
                 .filter(command -> checkNull(command.getLang()))
-                .map(clientCommand -> BotCommand.builder().command(clientCommand.getKey()).description(clientCommand.getDescription()).build())
+                .map(clientCommand -> BotCommand.builder()
+                        .command(clientCommand.getKey())
+                        .description(clientCommand.getDescription())
+                        .build())
                 .toList();
 
         try {

@@ -24,7 +24,7 @@ public class CallbackQueryConvert {
         mail.addAttachment(convertToButtonClick(callbackData, callbackQuery.getMessage().getMessageId()));
 
         final Long chatId = callbackQuery.getMessage().getChatId();
-        mail.setPersonId(chatId != null ? chatId.toString() : null);
+        mail.setFromPersonId(chatId != null ? chatId.toString() : null);
 
         final User user = callbackQuery.getFrom();
         mail.setFirstName(user.getFirstName());

@@ -1,10 +1,12 @@
 package dev.struchkov.godfather.telegram.simple.consumer;
 
+import dev.struchkov.godfather.main.domain.content.ChatMail;
 import dev.struchkov.godfather.main.domain.content.Mail;
 import dev.struchkov.godfather.simple.context.service.EventHandler;
 import dev.struchkov.godfather.telegram.domain.event.Subscribe;
 import dev.struchkov.godfather.telegram.domain.event.Unsubscribe;
 import dev.struchkov.godfather.telegram.main.consumer.CallbackQueryConvert;
+import dev.struchkov.godfather.telegram.main.consumer.MessageChatMailConvert;
 import dev.struchkov.godfather.telegram.main.consumer.MessageMailConvert;
 import dev.struchkov.godfather.telegram.main.consumer.SubscribeConvert;
 import dev.struchkov.godfather.telegram.main.consumer.UnsubscribeConvert;
@@ -42,24 +44,45 @@ public class EventDistributorService implements EventDistributor {
         final CallbackQuery callbackQuery = update.getCallbackQuery();
         if (message != null) {
             if (!isEvent(message)) {
-                getHandler(Mail.TYPE).ifPresent(eventProviders -> eventProviders.forEach(eventProvider -> eventProvider.handle(MessageMailConvert.apply(message))));
+                processionMessage(message);
                 return;
             }
         }
         if (callbackQuery != null) {
-            getHandler(Mail.TYPE).ifPresent(eventProviders -> eventProviders.forEach(eventProvider -> eventProvider.handle(CallbackQueryConvert.apply(callbackQuery))));
+            processionCallback(callbackQuery);
             return;
         }
         if (update.getMyChatMember() != null) {
             final ChatMemberUpdated chatMember = update.getMyChatMember();
             if ("kicked".equals(chatMember.getNewChatMember().getStatus())) {
-                getHandler(Unsubscribe.TYPE).ifPresent(providers -> providers.forEach(provider -> provider.handle(UnsubscribeConvert.apply(chatMember))));
+                getHandler(Unsubscribe.TYPE).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(UnsubscribeConvert.apply(chatMember))));
                 return;
             }
             if ("member".equals(chatMember.getNewChatMember().getStatus())) {
-                getHandler(Subscribe.TYPE).ifPresent(eventProviders -> eventProviders.forEach(eventProvider -> eventProvider.handle(SubscribeConvert.apply(chatMember))));
+                getHandler(Subscribe.TYPE).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(SubscribeConvert.apply(chatMember))));
                 return;
             }
+        }
+    }
+
+    private void processionCallback(CallbackQuery callbackQuery) {
+        final Long fromId = callbackQuery.getMessage().getChat().getId();
+        if (fromId < 0) {
+
+        } else {
+            final Mail mail = CallbackQueryConvert.apply(callbackQuery);
+            getHandler(Mail.TYPE).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(mail)));
+        }
+    }
+
+    private void processionMessage(Message message) {
+        final Long fromId = message.getChat().getId();
+        if (fromId < 0) {
+            final ChatMail chatMail = MessageChatMailConvert.apply(message);
+            getHandler(ChatMail.TYPE).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(chatMail)));
+        } else {
+            final Mail mail = MessageMailConvert.apply(message);
+            getHandler(Mail.TYPE).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(mail)));
         }
     }
 
