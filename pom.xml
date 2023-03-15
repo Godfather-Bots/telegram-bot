@@ -37,7 +37,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <godfather.core.ver>0.0.52</godfather.core.ver>
+        <godfather.core.ver>0.0.53-SNAPSHOT</godfather.core.ver>
 
         <!-- https://mvnrepository.com/artifact/org.telegram/telegrambots -->
         <telegrambots.ver>6.3.0</telegrambots.ver>
@@ -247,6 +247,15 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+            <version>1.18.26</version>
+        </dependency>
+    </dependencies>
 
     <build>
         <pluginManagement>

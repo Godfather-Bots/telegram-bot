@@ -19,6 +19,8 @@ nav:
   - Гайды:
       - Безопасность: guides/security.md
       - Циклическая зависимость: guides/cyclic.md
+      - Обработка ошибок: guides/event-handler.md
+      - Обработка событий: guides/event-handler.md
   - Архитектура:
     - Основная идея: architecture/general.md
   - ChangeLog: changelog/index.md
