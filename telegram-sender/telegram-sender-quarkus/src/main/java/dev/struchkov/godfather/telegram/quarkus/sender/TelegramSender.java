@@ -5,14 +5,16 @@ import dev.struchkov.godfather.quarkus.domain.BoxAnswer;
 import dev.struchkov.godfather.quarkus.domain.SentBox;
 import dev.struchkov.godfather.quarkus.domain.action.PreSendProcessing;
 import dev.struchkov.godfather.telegram.domain.keyboard.InlineKeyBoard;
-import dev.struchkov.godfather.telegram.main.context.TelegramConnect;
+import dev.struchkov.godfather.telegram.main.context.BoxAnswerPayload;
 import dev.struchkov.godfather.telegram.main.sender.util.KeyBoardConvert;
 import dev.struchkov.godfather.telegram.quarkus.context.repository.SenderRepository;
+import dev.struchkov.godfather.telegram.quarkus.context.service.TelegramConnect;
 import dev.struchkov.godfather.telegram.quarkus.context.service.TelegramSending;
 import io.smallrye.mutiny.Uni;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.telegram.telegrambots.meta.api.methods.invoices.SendInvoice;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
@@ -23,6 +25,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import static dev.struchkov.godfather.telegram.main.context.BoxAnswerPayload.DISABLE_NOTIFICATION;
@@ -95,26 +98,34 @@ public class TelegramSender implements TelegramSending {
                 .onItem().transformToUni(
                         v -> {
                             final String recipientTelegramId = boxAnswer.getRecipientPersonId();
-                            if (boxAnswer.isReplace()) {
-                                final String replaceMessageId = boxAnswer.getReplaceMessageId();
-                                if (checkNotNull(replaceMessageId)) {
-                                    return replace(recipientTelegramId, replaceMessageId, boxAnswer, saveMessageId);
-                                } else {
-                                    if (checkNotNull(senderRepository)) {
-                                        return senderRepository.getLastSendMessage(recipientTelegramId)
-                                                .onItem().transformToUni(
-                                                        lastId -> {
-                                                            if (checkNotNull(lastId)) {
-                                                                return replace(recipientTelegramId, lastId, boxAnswer, saveMessageId);
-                                                            } else {
-                                                                return sendMessage(recipientTelegramId, boxAnswer, saveMessageId);
+
+                            final Optional<SendInvoice> optInvoice = boxAnswer.getPayLoad(BoxAnswerPayload.INVOICE);
+                            if (optInvoice.isPresent()) {
+                                final SendInvoice sendInvoice = optInvoice.get();
+                                return Uni.createFrom().completionStage(executeAsync(sendInvoice))
+                                        .onItem().transform(ignore -> null);
+                            } else {
+                                if (boxAnswer.isReplace()) {
+                                    final String replaceMessageId = boxAnswer.getReplaceMessageId();
+                                    if (checkNotNull(replaceMessageId)) {
+                                        return replace(recipientTelegramId, replaceMessageId, boxAnswer, saveMessageId);
+                                    } else {
+                                        if (checkNotNull(senderRepository)) {
+                                            return senderRepository.getLastSendMessage(recipientTelegramId)
+                                                    .onItem().transformToUni(
+                                                            lastId -> {
+                                                                if (checkNotNull(lastId)) {
+                                                                    return replace(recipientTelegramId, lastId, boxAnswer, saveMessageId);
+                                                                } else {
+                                                                    return sendMessage(recipientTelegramId, boxAnswer, saveMessageId);
+                                                                }
                                                             }
-                                                        }
-                                                );
+                                                    );
+                                        }
                                     }
                                 }
+                                return sendMessage(recipientTelegramId, boxAnswer, saveMessageId);
                             }
-                            return sendMessage(recipientTelegramId, boxAnswer, saveMessageId);
                         }
                 );
     }
@@ -195,6 +206,15 @@ public class TelegramSender implements TelegramSending {
     private CompletableFuture<Serializable> executeAsync(EditMessageText editMessageText) {
         try {
             return absSender.executeAsync(editMessageText);
+        } catch (TelegramApiException e) {
+            log.error(e.getMessage(), e);
+        }
+        return completedFuture(null);
+    }
+
+    private CompletableFuture<Message> executeAsync(SendInvoice sendInvoice) {
+        try {
+            return absSender.executeAsync(sendInvoice);
         } catch (TelegramApiException e) {
             log.error(e.getMessage(), e);
         }

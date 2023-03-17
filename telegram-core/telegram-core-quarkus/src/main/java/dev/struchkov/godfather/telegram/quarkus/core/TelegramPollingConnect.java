@@ -3,11 +3,9 @@ package dev.struchkov.godfather.telegram.quarkus.core;
 import dev.struchkov.godfather.telegram.domain.config.ProxyConfig;
 import dev.struchkov.godfather.telegram.domain.config.ProxyConfig.Type;
 import dev.struchkov.godfather.telegram.domain.config.TelegramBotConfig;
-import dev.struchkov.godfather.telegram.main.context.TelegramConnect;
 import dev.struchkov.godfather.telegram.quarkus.context.service.EventDistributor;
-import dev.struchkov.godfather.telegram.quarkus.context.service.TelegramBot;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import dev.struchkov.godfather.telegram.quarkus.context.service.TelegramConnect;
+import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.bots.AbsSender;
@@ -24,35 +22,16 @@ import static dev.struchkov.haiti.utils.Checker.checkNotNull;
  *
  * @author upagge [30.01.2020]
  */
-public class TelegramConnectBot implements TelegramConnect {
+@Slf4j
+public class TelegramPollingConnect implements TelegramConnect {
 
-    private static final Logger log = LoggerFactory.getLogger(TelegramConnectBot.class);
+    private TelegramPollingBot pollingBot;
 
-    private TelegramBot telegramBot;
-    private final TelegramBotConfig telegramBotConfig;
-
-    public TelegramConnectBot(TelegramBotConfig telegramBotConfig) {
-        this.telegramBotConfig = telegramBotConfig;
+    public TelegramPollingConnect(TelegramBotConfig telegramBotConfig) {
         initLongPolling(telegramBotConfig);
     }
 
-//    public TelegramConnect(TelegramWebHookConfig telegramWebHookConfig) {
-//        initWebHook(telegramWebHookConfig);
-//    }
-//
-//    private void initWebHook(TelegramWebHookConfig telegramWebHookConfig) {
-//        TelegramBotsApi botapi = new TelegramBotsApi();
-//        final TelegramWebhookBot telegramWebhookBot = new TelegramHookBot(telegramWebHookConfig);
-//        try {
-//            botapi.registerBot(telegramWebhookBot);
-//            this.telegramBot = (TelegramBot) telegramWebhookBot;
-//        } catch (TelegramApiRequestException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
     private void initLongPolling(TelegramBotConfig telegramBotConfig) {
-
         final ProxyConfig proxyConfig = telegramBotConfig.getProxyConfig();
         if (checkNotNull(proxyConfig) && proxyConfig.isEnable() && checkNotNull(proxyConfig.getPassword()) && !"".equals(proxyConfig.getPassword())) {
             try {
@@ -86,12 +65,12 @@ public class TelegramConnectBot implements TelegramConnect {
 
                 botapi = new TelegramBotsApi(DefaultBotSession.class);
                 botapi.registerBot(bot);
-                this.telegramBot = bot;
+                this.pollingBot = bot;
             } else {
                 final TelegramPollingBot bot = new TelegramPollingBot(telegramBotConfig);
                 botapi = new TelegramBotsApi(DefaultBotSession.class);
                 botapi.registerBot(bot);
-                this.telegramBot = bot;
+                this.pollingBot = bot;
             }
         } catch (TelegramApiException e) {
             log.error(e.getMessage());
@@ -106,17 +85,19 @@ public class TelegramConnectBot implements TelegramConnect {
         };
     }
 
-    public void initEventDistributor(EventDistributor eventDistributor) {
-        telegramBot.initEventDistributor(eventDistributor);
+    @Override
+    public String getToken() {
+        return pollingBot.getBotToken();
     }
 
-    public String getToken() {
-        return telegramBotConfig.getToken();
+    @Override
+    public void initEventDistributor(EventDistributor eventDistributorService) {
+        pollingBot.initEventDistributor(eventDistributorService);
     }
 
     @Override
     public AbsSender getAbsSender() {
-        return telegramBot.getAdsSender();
+        return pollingBot.getAdsSender();
     }
 
 }

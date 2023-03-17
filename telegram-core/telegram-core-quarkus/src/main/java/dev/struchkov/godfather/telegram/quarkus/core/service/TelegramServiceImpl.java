@@ -2,7 +2,7 @@ package dev.struchkov.godfather.telegram.quarkus.core.service;
 
 import dev.struchkov.godfather.telegram.domain.ChatAction;
 import dev.struchkov.godfather.telegram.domain.ClientBotCommand;
-import dev.struchkov.godfather.telegram.main.context.TelegramConnect;
+import dev.struchkov.godfather.telegram.quarkus.context.service.TelegramConnect;
 import dev.struchkov.godfather.telegram.quarkus.context.service.TelegramService;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;

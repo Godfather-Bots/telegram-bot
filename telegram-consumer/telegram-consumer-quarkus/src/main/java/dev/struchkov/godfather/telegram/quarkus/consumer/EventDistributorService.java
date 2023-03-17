@@ -9,7 +9,7 @@ import dev.struchkov.godfather.telegram.main.consumer.MessageMailConvert;
 import dev.struchkov.godfather.telegram.main.consumer.SubscribeConvert;
 import dev.struchkov.godfather.telegram.main.consumer.UnsubscribeConvert;
 import dev.struchkov.godfather.telegram.quarkus.context.service.EventDistributor;
-import dev.struchkov.godfather.telegram.quarkus.core.TelegramConnectBot;
+import dev.struchkov.godfather.telegram.quarkus.context.service.TelegramConnect;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import org.jetbrains.annotations.NotNull;
@@ -18,6 +18,7 @@ import org.telegram.telegrambots.meta.api.objects.ChatMemberUpdated;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
+import org.telegram.telegrambots.meta.api.objects.payments.PreCheckoutQuery;
 
 import java.util.List;
 import java.util.Map;
@@ -35,9 +36,9 @@ public class EventDistributorService implements EventDistributor {
 
     private final Map<String, List<EventHandler>> eventHandlerMap;
 
-    public EventDistributorService(TelegramConnectBot telegramConnectBot, List<EventHandler> eventProviders) {
+    public EventDistributorService(TelegramConnect telegramConnect, List<EventHandler> eventProviders) {
         this.eventHandlerMap = eventProviders.stream().collect(Collectors.groupingBy(EventHandler::getEventType));
-        telegramConnectBot.initEventDistributor(this);
+        telegramConnect.initEventDistributor(this);
     }
 
     @Override
@@ -47,52 +48,66 @@ public class EventDistributorService implements EventDistributor {
                         v -> {
                             final Message message = update.getMessage();
                             final CallbackQuery callbackQuery = update.getCallbackQuery();
-                            if (checkNotNull(message)) {
-                                if (!isEvent(message)) {
-                                    final Optional<List<EventHandler>> optHandlers = getHandler(Mail.TYPE);
-                                    if (optHandlers.isPresent()) {
-                                        return Multi.createFrom().iterable(optHandlers.get())
-                                                .onItem().transformToUni(
-                                                        eventHandler -> eventHandler.handle(MessageMailConvert.apply(message))
-                                                ).concatenate().toUni().replaceWithVoid();
-                                    }
-                                    return Uni.createFrom().voidItem();
+                            final PreCheckoutQuery preCheckoutQuery = update.getPreCheckoutQuery();
+
+                            if (checkNotNull(preCheckoutQuery)) {
+                                final Optional<List<EventHandler>> optHandlers = getHandler(preCheckoutQuery.getClass().getName());
+                                if (optHandlers.isPresent()) {
+                                    return Multi.createFrom().iterable(optHandlers.get())
+                                            .onItem().transformToUni(
+                                                    eventHandler -> eventHandler.handle(preCheckoutQuery)
+                                            ).concatenate().collect().asList().replaceWithVoid();
                                 }
+                                return Uni.createFrom().voidItem();
                             }
+
+                            if (checkNotNull(message) && (!isEvent(message))) {
+                                final Optional<List<EventHandler>> optHandlers = getHandler(Mail.class.getName());
+                                if (optHandlers.isPresent()) {
+                                    return Multi.createFrom().iterable(optHandlers.get())
+                                            .onItem().transformToUni(
+                                                    eventHandler -> eventHandler.handle(MessageMailConvert.apply(message))
+                                            ).concatenate().collect().asList().replaceWithVoid();
+                                }
+                                return Uni.createFrom().voidItem();
+                            }
+
                             if (checkNotNull(callbackQuery)) {
-                                final Optional<List<EventHandler>> optHandlers = getHandler(Mail.TYPE);
+                                final Optional<List<EventHandler>> optHandlers = getHandler(Mail.class.getName());
                                 if (optHandlers.isPresent()) {
                                     return Multi.createFrom().iterable(optHandlers.get())
                                             .onItem().transformToUni(
                                                     eventHandler -> eventHandler.handle(CallbackQueryConvert.apply(callbackQuery))
-                                            ).concatenate().toUni().replaceWithVoid();
+                                            ).concatenate().collect().asList().replaceWithVoid();
                                 }
                                 return Uni.createFrom().voidItem();
                             }
+
                             if (checkNotNull(update.getMyChatMember())) {
                                 final ChatMemberUpdated chatMember = update.getMyChatMember();
                                 if ("kicked".equals(chatMember.getNewChatMember().getStatus())) {
 
-                                    final Optional<List<EventHandler>> optHandlers = getHandler(Unsubscribe.TYPE);
+                                    final Optional<List<EventHandler>> optHandlers = getHandler(Unsubscribe.class.getName());
                                     if (optHandlers.isPresent()) {
                                         return Multi.createFrom().iterable(optHandlers.get())
                                                 .onItem().transformToUni(
                                                         eventHandler -> eventHandler.handle(UnsubscribeConvert.apply(chatMember))
-                                                ).concatenate().toUni().replaceWithVoid();
+                                                ).concatenate().collect().asList().replaceWithVoid();
                                     }
                                     return Uni.createFrom().voidItem();
                                 }
                                 if ("member".equals(chatMember.getNewChatMember().getStatus())) {
-                                    final Optional<List<EventHandler>> optHandlers = getHandler(Subscribe.TYPE);
+                                    final Optional<List<EventHandler>> optHandlers = getHandler(Subscribe.class.getName());
                                     if (optHandlers.isPresent()) {
                                         return Multi.createFrom().iterable(optHandlers.get())
                                                 .onItem().transformToUni(
                                                         eventHandler -> eventHandler.handle(SubscribeConvert.apply(chatMember))
-                                                ).concatenate().toUni().replaceWithVoid();
+                                                ).concatenate().collect().asList().replaceWithVoid();
                                     }
                                     return Uni.createFrom().voidItem();
                                 }
                             }
+
                             return Uni.createFrom().voidItem();
                         }
                 );

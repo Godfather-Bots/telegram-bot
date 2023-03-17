@@ -2,7 +2,7 @@ package dev.struchkov.godfather.telegram.simple.core.service;
 
 import dev.struchkov.godfather.telegram.domain.ChatAction;
 import dev.struchkov.godfather.telegram.domain.ClientBotCommand;
-import dev.struchkov.godfather.telegram.main.context.TelegramConnect;
+import dev.struchkov.godfather.telegram.simple.context.service.TelegramConnect;
 import dev.struchkov.godfather.telegram.simple.context.service.TelegramService;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;

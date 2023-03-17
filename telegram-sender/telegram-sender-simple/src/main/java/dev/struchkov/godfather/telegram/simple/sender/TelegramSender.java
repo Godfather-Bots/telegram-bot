@@ -5,12 +5,14 @@ import dev.struchkov.godfather.simple.domain.BoxAnswer;
 import dev.struchkov.godfather.simple.domain.SentBox;
 import dev.struchkov.godfather.simple.domain.action.PreSendProcessing;
 import dev.struchkov.godfather.telegram.domain.keyboard.InlineKeyBoard;
-import dev.struchkov.godfather.telegram.main.context.TelegramConnect;
+import dev.struchkov.godfather.telegram.main.context.BoxAnswerPayload;
 import dev.struchkov.godfather.telegram.simple.context.repository.SenderRepository;
+import dev.struchkov.godfather.telegram.simple.context.service.TelegramConnect;
 import dev.struchkov.godfather.telegram.simple.context.service.TelegramSending;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.telegram.telegrambots.meta.api.methods.invoices.SendInvoice;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
@@ -92,6 +94,19 @@ public class TelegramSender implements TelegramSending {
     private Optional<SentBox> sendBoxAnswer(BoxAnswer boxAnswer, boolean saveMessageId) {
         final String recipientTelegramId = boxAnswer.getRecipientPersonId();
         isNotNull(recipientTelegramId);
+
+        final Optional<SendInvoice> optInvoice = boxAnswer.getPayLoad(BoxAnswerPayload.INVOICE);
+        if (optInvoice.isPresent()) {
+            final SendInvoice sendInvoice = optInvoice.get();
+            try {
+                sendInvoice.validate();
+                absSender.execute(sendInvoice);
+                return Optional.empty();
+            } catch (TelegramApiException e) {
+                log.error(e.getMessage(), e);
+                return Optional.empty();
+            }
+        }
 
         BoxAnswer preparedAnswer = boxAnswer;
         for (PreSendProcessing preSendProcessor : preSendProcessors) {

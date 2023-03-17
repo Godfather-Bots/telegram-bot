@@ -11,13 +11,15 @@ import dev.struchkov.godfather.telegram.main.consumer.MessageMailConvert;
 import dev.struchkov.godfather.telegram.main.consumer.SubscribeConvert;
 import dev.struchkov.godfather.telegram.main.consumer.UnsubscribeConvert;
 import dev.struchkov.godfather.telegram.simple.context.service.EventDistributor;
-import dev.struchkov.godfather.telegram.simple.core.TelegramConnectBot;
+import dev.struchkov.godfather.telegram.simple.context.service.TelegramConnect;
+import dev.struchkov.haiti.utils.Checker;
 import org.jetbrains.annotations.NotNull;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.ChatMemberUpdated;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
+import org.telegram.telegrambots.meta.api.objects.payments.PreCheckoutQuery;
 
 import java.util.List;
 import java.util.Map;
@@ -33,20 +35,25 @@ public class EventDistributorService implements EventDistributor {
 
     private final Map<String, List<EventHandler>> eventProviderMap;
 
-    public EventDistributorService(TelegramConnectBot telegramConnectBot, List<EventHandler> eventProviders) {
+    public EventDistributorService(TelegramConnect telegramConnect, List<EventHandler> eventProviders) {
         this.eventProviderMap = eventProviders.stream().collect(Collectors.groupingBy(EventHandler::getEventType));
-        telegramConnectBot.initEventDistributor(this);
+        telegramConnect.initEventDistributor(this);
     }
 
     @Override
     public void processing(@NotNull Update update) {
         final Message message = update.getMessage();
         final CallbackQuery callbackQuery = update.getCallbackQuery();
-        if (message != null) {
-            if (!isEvent(message)) {
-                processionMessage(message);
-                return;
-            }
+        final PreCheckoutQuery preCheckoutQuery = update.getPreCheckoutQuery();
+
+        if (Checker.checkNotNull(preCheckoutQuery)) {
+            getHandler(preCheckoutQuery.getClass().getName()).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(preCheckoutQuery)));
+            return;
+        }
+
+        if (message != null && (!isEvent(message))) {
+            processionMessage(message);
+            return;
         }
         if (callbackQuery != null) {
             processionCallback(callbackQuery);
@@ -55,11 +62,11 @@ public class EventDistributorService implements EventDistributor {
         if (update.getMyChatMember() != null) {
             final ChatMemberUpdated chatMember = update.getMyChatMember();
             if ("kicked".equals(chatMember.getNewChatMember().getStatus())) {
-                getHandler(Unsubscribe.TYPE).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(UnsubscribeConvert.apply(chatMember))));
+                getHandler(Unsubscribe.class.getName()).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(UnsubscribeConvert.apply(chatMember))));
                 return;
             }
             if ("member".equals(chatMember.getNewChatMember().getStatus())) {
-                getHandler(Subscribe.TYPE).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(SubscribeConvert.apply(chatMember))));
+                getHandler(Subscribe.class.getName()).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(SubscribeConvert.apply(chatMember))));
                 return;
             }
         }
@@ -71,7 +78,7 @@ public class EventDistributorService implements EventDistributor {
 
         } else {
             final Mail mail = CallbackQueryConvert.apply(callbackQuery);
-            getHandler(Mail.TYPE).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(mail)));
+            getHandler(Mail.class.getName()).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(mail)));
         }
     }
 
@@ -79,10 +86,10 @@ public class EventDistributorService implements EventDistributor {
         final Long fromId = message.getChat().getId();
         if (fromId < 0) {
             final ChatMail chatMail = MessageChatMailConvert.apply(message);
-            getHandler(ChatMail.TYPE).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(chatMail)));
+            getHandler(ChatMail.class.getName()).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(chatMail)));
         } else {
             final Mail mail = MessageMailConvert.apply(message);
-            getHandler(Mail.TYPE).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(mail)));
+            getHandler(Mail.class.getName()).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(mail)));
         }
     }
 

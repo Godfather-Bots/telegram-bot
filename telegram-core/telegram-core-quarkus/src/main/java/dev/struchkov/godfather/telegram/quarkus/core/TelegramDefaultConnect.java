@@ -1,8 +1,9 @@
-package dev.struchkov.godfather.telegram.main.core;
+package dev.struchkov.godfather.telegram.quarkus.core;
 
 import dev.struchkov.godfather.telegram.domain.config.ProxyConfig;
 import dev.struchkov.godfather.telegram.domain.config.TelegramBotConfig;
-import dev.struchkov.godfather.telegram.main.context.TelegramConnect;
+import dev.struchkov.godfather.telegram.quarkus.context.service.EventDistributor;
+import dev.struchkov.godfather.telegram.quarkus.context.service.TelegramConnect;
 import org.jetbrains.annotations.NotNull;
 import org.telegram.telegrambots.bots.DefaultAbsSender;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
@@ -78,6 +79,11 @@ public class TelegramDefaultConnect implements TelegramConnect {
     @Override
     public String getToken() {
         return botToken;
+    }
+
+    @Override
+    public void initEventDistributor(EventDistributor eventDistributorService) {
+        throw new IllegalStateException();
     }
 
 }

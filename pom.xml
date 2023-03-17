@@ -14,6 +14,7 @@
         <module>telegram-consumer</module>
         <module>telegram-context</module>
         <module>telegram-simple</module>
+        <module>telegram-webhook</module>
     </modules>
 
     <name>Telegram Bot</name>
@@ -37,10 +38,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <godfather.core.ver>0.0.53</godfather.core.ver>
+        <godfather.core.ver>0.0.54-SNAPSHOT</godfather.core.ver>
 
         <!-- https://mvnrepository.com/artifact/org.telegram/telegrambots -->
         <telegrambots.ver>6.3.0</telegrambots.ver>
+
+        <!-- https://mvnrepository.com/artifact/io.smallrye.reactive/smallrye-mutiny-vertx-core -->
+        <smallrye.mutiny.vertx.core.version>2.30.1</smallrye.mutiny.vertx.core.version>
 
         <haiti.version>2.6.0</haiti.version>
 
@@ -244,6 +248,24 @@
                 <groupId>org.telegram</groupId>
                 <artifactId>telegrambotsextensions</artifactId>
                 <version>${telegrambots.ver}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.spec.javax.ws.rs</groupId>
+                <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
+                <version>2.0.1.Final</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.smallrye.reactive</groupId>
+                <artifactId>smallrye-mutiny-vertx-core</artifactId>
+                <version>${smallrye.mutiny.vertx.core.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.smallrye.reactive</groupId>
+                <artifactId>smallrye-mutiny-vertx-core</artifactId>
+                <version>${smallrye.mutiny.vertx.core.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

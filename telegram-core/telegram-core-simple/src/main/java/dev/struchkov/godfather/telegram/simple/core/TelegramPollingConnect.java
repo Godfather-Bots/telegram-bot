@@ -3,9 +3,9 @@ package dev.struchkov.godfather.telegram.simple.core;
 import dev.struchkov.godfather.telegram.domain.config.ProxyConfig;
 import dev.struchkov.godfather.telegram.domain.config.ProxyConfig.Type;
 import dev.struchkov.godfather.telegram.domain.config.TelegramBotConfig;
-import dev.struchkov.godfather.telegram.main.context.TelegramConnect;
 import dev.struchkov.godfather.telegram.simple.context.service.EventDistributor;
 import dev.struchkov.godfather.telegram.simple.context.service.TelegramBot;
+import dev.struchkov.godfather.telegram.simple.context.service.TelegramConnect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
@@ -24,14 +24,14 @@ import static dev.struchkov.haiti.utils.Checker.checkNotNull;
  *
  * @author upagge [30.01.2020]
  */
-public class TelegramConnectBot implements TelegramConnect {
+public class TelegramPollingConnect implements TelegramConnect {
 
-    private static final Logger log = LoggerFactory.getLogger(TelegramConnectBot.class);
+    private static final Logger log = LoggerFactory.getLogger(TelegramPollingConnect.class);
 
     private TelegramBot telegramBot;
     private final TelegramBotConfig telegramBotConfig;
 
-    public TelegramConnectBot(TelegramBotConfig telegramBotConfig) {
+    public TelegramPollingConnect(TelegramBotConfig telegramBotConfig) {
         this.telegramBotConfig = telegramBotConfig;
         initLongPolling(telegramBotConfig);
     }

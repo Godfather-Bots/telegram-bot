@@ -4,7 +4,7 @@ import dev.struchkov.godfather.telegram.domain.attachment.DocumentAttachment;
 import dev.struchkov.godfather.telegram.domain.attachment.Picture;
 import dev.struchkov.godfather.telegram.domain.files.ByteContainer;
 import dev.struchkov.godfather.telegram.domain.files.FileContainer;
-import dev.struchkov.godfather.telegram.main.context.TelegramConnect;
+import dev.struchkov.godfather.telegram.simple.context.service.TelegramConnect;
 import dev.struchkov.godfather.telegram.simple.context.service.AttachmentService;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
