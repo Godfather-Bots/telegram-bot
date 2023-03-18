@@ -1,53 +1,24 @@
 package dev.struchkov.godfather.telegram.domain.event;
 
-import dev.struchkov.godfather.main.domain.event.Event;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-public class Unsubscribe implements Event {
-
-    public static final String TYPE = "UNSUBSCRIBE";
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+public class Unsubscribe {
 
     private String telegramId;
     private String firstName;
     private String lastName;
     private LocalDateTime subscriptionDate;
-
-    public String getTelegramId() {
-        return telegramId;
-    }
-
-    public void setTelegramId(String telegramId) {
-        this.telegramId = telegramId;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public LocalDateTime getSubscriptionDate() {
-        return subscriptionDate;
-    }
-
-    public void setSubscriptionDate(LocalDateTime subscriptionDate) {
-        this.subscriptionDate = subscriptionDate;
-    }
-
-    @Override
-    public String getEventType() {
-        return TYPE;
-    }
 
 }

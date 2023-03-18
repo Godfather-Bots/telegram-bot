@@ -30,7 +30,7 @@ public class PreCheckoutQueryHandler implements EventHandler<PreCheckoutQuery> {
 
     @Override
     public String getEventType() {
-        return PreCheckoutQuery.class.getName();
+        return PreCheckoutQuery.class.getSimpleName();
     }
 
 }

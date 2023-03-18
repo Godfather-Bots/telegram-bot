@@ -47,7 +47,7 @@ public class EventDistributorService implements EventDistributor {
         final PreCheckoutQuery preCheckoutQuery = update.getPreCheckoutQuery();
 
         if (Checker.checkNotNull(preCheckoutQuery)) {
-            getHandler(preCheckoutQuery.getClass().getName()).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(preCheckoutQuery)));
+            getHandler(preCheckoutQuery.getClass().getSimpleName()).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(preCheckoutQuery)));
             return;
         }
 
@@ -62,11 +62,11 @@ public class EventDistributorService implements EventDistributor {
         if (update.getMyChatMember() != null) {
             final ChatMemberUpdated chatMember = update.getMyChatMember();
             if ("kicked".equals(chatMember.getNewChatMember().getStatus())) {
-                getHandler(Unsubscribe.class.getName()).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(UnsubscribeConvert.apply(chatMember))));
+                getHandler(Unsubscribe.class.getSimpleName()).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(UnsubscribeConvert.apply(chatMember))));
                 return;
             }
             if ("member".equals(chatMember.getNewChatMember().getStatus())) {
-                getHandler(Subscribe.class.getName()).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(SubscribeConvert.apply(chatMember))));
+                getHandler(Subscribe.class.getSimpleName()).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(SubscribeConvert.apply(chatMember))));
                 return;
             }
         }
@@ -78,7 +78,7 @@ public class EventDistributorService implements EventDistributor {
 
         } else {
             final Mail mail = CallbackQueryConvert.apply(callbackQuery);
-            getHandler(Mail.class.getName()).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(mail)));
+            getHandler(Mail.class.getSimpleName()).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(mail)));
         }
     }
 
@@ -86,10 +86,10 @@ public class EventDistributorService implements EventDistributor {
         final Long fromId = message.getChat().getId();
         if (fromId < 0) {
             final ChatMail chatMail = MessageChatMailConvert.apply(message);
-            getHandler(ChatMail.class.getName()).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(chatMail)));
+            getHandler(ChatMail.class.getSimpleName()).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(chatMail)));
         } else {
             final Mail mail = MessageMailConvert.apply(message);
-            getHandler(Mail.class.getName()).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(mail)));
+            getHandler(Mail.class.getSimpleName()).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(mail)));
         }
     }
 
