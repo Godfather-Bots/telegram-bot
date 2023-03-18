@@ -18,6 +18,7 @@ import org.telegram.telegrambots.meta.api.objects.ChatMemberUpdated;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
+import org.telegram.telegrambots.meta.api.objects.inlinequery.InlineQuery;
 import org.telegram.telegrambots.meta.api.objects.payments.PreCheckoutQuery;
 
 import java.util.List;
@@ -49,6 +50,19 @@ public class EventDistributorService implements EventDistributor {
                             final Message message = update.getMessage();
                             final CallbackQuery callbackQuery = update.getCallbackQuery();
                             final PreCheckoutQuery preCheckoutQuery = update.getPreCheckoutQuery();
+                            final InlineQuery inlineQuery = update.getInlineQuery();
+
+                            // запросы к боту из чатов: https://core.telegram.org/bots/inline
+                            if (checkNotNull(inlineQuery)) {
+                                final Optional<List<EventHandler>> optHandlers = getHandler(inlineQuery.getClass().getSimpleName());
+                                if (optHandlers.isPresent()) {
+                                    return Multi.createFrom().iterable(optHandlers.get())
+                                            .onItem().transformToUni(
+                                                    eventHandler -> eventHandler.handle(inlineQuery)
+                                            ).concatenate().collect().asList().replaceWithVoid();
+                                }
+                                return Uni.createFrom().voidItem();
+                            }
 
                             if (checkNotNull(preCheckoutQuery)) {
                                 final Optional<List<EventHandler>> optHandlers = getHandler(preCheckoutQuery.getClass().getName());

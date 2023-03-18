@@ -12,6 +12,7 @@ public class Subscribe {
     private String telegramId;
     private String firstName;
     private String lastName;
+    private String login;
     private LocalDateTime subscriptionDate;
 
 }

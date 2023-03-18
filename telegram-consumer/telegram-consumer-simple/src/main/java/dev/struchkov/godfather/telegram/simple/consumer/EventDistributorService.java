@@ -12,19 +12,21 @@ import dev.struchkov.godfather.telegram.main.consumer.SubscribeConvert;
 import dev.struchkov.godfather.telegram.main.consumer.UnsubscribeConvert;
 import dev.struchkov.godfather.telegram.simple.context.service.EventDistributor;
 import dev.struchkov.godfather.telegram.simple.context.service.TelegramConnect;
-import dev.struchkov.haiti.utils.Checker;
 import org.jetbrains.annotations.NotNull;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.ChatMemberUpdated;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
+import org.telegram.telegrambots.meta.api.objects.inlinequery.InlineQuery;
 import org.telegram.telegrambots.meta.api.objects.payments.PreCheckoutQuery;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static dev.struchkov.haiti.utils.Checker.checkNotNull;
 
 /**
  * TODO: Добавить описание класса.
@@ -45,8 +47,14 @@ public class EventDistributorService implements EventDistributor {
         final Message message = update.getMessage();
         final CallbackQuery callbackQuery = update.getCallbackQuery();
         final PreCheckoutQuery preCheckoutQuery = update.getPreCheckoutQuery();
+        final InlineQuery inlineQuery = update.getInlineQuery();
 
-        if (Checker.checkNotNull(preCheckoutQuery)) {
+        if (checkNotNull(inlineQuery)) {
+            getHandler(inlineQuery.getClass().getSimpleName()).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(inlineQuery)));
+            return;
+        }
+
+        if (checkNotNull(preCheckoutQuery)) {
             getHandler(preCheckoutQuery.getClass().getSimpleName()).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(preCheckoutQuery)));
             return;
         }

@@ -1,8 +1,8 @@
 package dev.struchkov.godfather.telegram.main.consumer;
 
 import dev.struchkov.godfather.telegram.domain.event.Subscribe;
-import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.ChatMemberUpdated;
+import org.telegram.telegrambots.meta.api.objects.User;
 
 import java.time.LocalDateTime;
 
@@ -15,13 +15,14 @@ public final class SubscribeConvert {
     }
 
     public static Subscribe apply(ChatMemberUpdated updated) {
-        final Chat chat = updated.getChat();
+        final User user = updated.getNewChatMember().getUser();
 
         final Subscribe subscribe = new Subscribe();
-        subscribe.setTelegramId(chat.getId().toString());
-        subscribe.setLastName(chat.getLastName());
-        subscribe.setFirstName(chat.getFirstName());
+        subscribe.setTelegramId(user.getId().toString());
+        subscribe.setLastName(user.getLastName());
+        subscribe.setFirstName(user.getFirstName());
         subscribe.setSubscriptionDate(LocalDateTime.now());
+        subscribe.setLogin(user.getUserName());
         return subscribe;
     }
 
