@@ -9,9 +9,9 @@ import java.util.function.Predicate;
 
 import static dev.struchkov.haiti.utils.Exceptions.utilityClass;
 
-public class TriggerChecks {
+public class UnitTrigger {
 
-    private TriggerChecks() {
+    private UnitTrigger() {
         utilityClass();
     }
 
