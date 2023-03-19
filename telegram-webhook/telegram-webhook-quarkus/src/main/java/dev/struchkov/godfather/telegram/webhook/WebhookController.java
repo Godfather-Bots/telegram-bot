@@ -12,38 +12,49 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import static dev.struchkov.haiti.context.exception.AccessException.accessException;
+import static dev.struchkov.haiti.utils.Inspector.isTrue;
+
 @Slf4j
-@Path("callback")
 public class WebhookController {
 
     private final String pathKey;
+    private final String accessKey;
     private final EventDistributor eventDistributor;
 
     public WebhookController(TelegramBotConfig telegramBotConfig, EventDistributor eventDistributor) {
+        this.accessKey = telegramBotConfig.getWebhookConfig().getAccessKey();
         this.eventDistributor = eventDistributor;
-        this.pathKey = telegramBotConfig.getWebHookUrl().split("callback")[1];
+        this.pathKey = telegramBotConfig.getWebhookConfig().getPath();
     }
 
     @POST
-    @Path("/{botPath}")
+    @Path("{webhookPath}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Uni<Response> updateReceived(@PathParam("botPath") String botPath, Update update) {
+    public Uni<Response> updateReceived(@PathParam("webhookPath") String botPath, @QueryParam("webhookAccessKey") String webhookAccessKey, Update update) {
         return Uni.createFrom().voidItem()
-//                .onItem().invoke(() -> isTrue(pathKey.equals(botPath), accessException("В доступе отказано!")))
+                .onItem().invoke(() -> {
+                    isTrue(pathKey.equals(botPath), accessException("В доступе отказано!"));
+                    isTrue(accessKey.equals(webhookAccessKey), accessException("В доступе отказано!"));
+                })
                 .onItem().ignore().andSwitchTo(() -> eventDistributor.processing(update))
                 .onItem().transform(ignore -> Response.ok().build());
     }
 
     @GET
-    @Path("/{botPath}")
+    @Path("{webhookPath}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Uni<String> testReceived(@PathParam("botPath") String botPath) {
+    public Uni<String> testReceived(@PathParam("webhookPath") String botPath, @QueryParam("webhookAccessKey") String webhookAccessKey) {
         return Uni.createFrom().voidItem()
-//                .onItem().invoke(() -> isTrue(pathKey.equals(botPath), accessException("В доступе отказано!")))
+                .onItem().invoke(() -> {
+                    isTrue(pathKey.equals(botPath), accessException("В доступе отказано!"));
+                    isTrue(accessKey.equals(webhookAccessKey), accessException("В доступе отказано!"));
+                })
                 .onItem().transform(ignore -> "Hi there " + botPath + "!");
     }
 

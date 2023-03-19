@@ -16,9 +16,9 @@ public class TelegramBotConfig {
 
     private String username;
     private String token;
-    private String webHookUrl;
 
     private ProxyConfig proxyConfig;
+    private WebhookConfig webhookConfig;
 
     public TelegramBotConfig(String username, String token) {
         this.username = username;

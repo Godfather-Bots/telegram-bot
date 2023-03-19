@@ -1,6 +1,7 @@
 package dev.struchkov.godfather.telegram.simple.core;
 
 import dev.struchkov.godfather.telegram.domain.config.TelegramBotConfig;
+import dev.struchkov.godfather.telegram.domain.config.WebhookConfig;
 import dev.struchkov.godfather.telegram.simple.context.service.EventDistributor;
 import dev.struchkov.godfather.telegram.simple.context.service.TelegramConnect;
 import lombok.extern.slf4j.Slf4j;
@@ -20,11 +21,14 @@ public class TelegramWebhookConnect implements TelegramConnect {
     private void initWebHook(TelegramBotConfig telegramBotConfig) {
         try {
             final TelegramWebhookBot bot = new TelegramWebhookBot(telegramBotConfig);
-            final SetWebhook setWebhook = SetWebhook.builder()
-                    .url(telegramBotConfig.getWebHookUrl())
-                    .build();
-            bot.setWebhook(setWebhook);
-            webhookBot = bot;
+            final WebhookConfig webhookConfig = telegramBotConfig.getWebhookConfig();
+            if (webhookConfig.isEnable()) {
+                final SetWebhook setWebhook = SetWebhook.builder()
+                        .url(webhookConfig.getRootUrl() + "/" + webhookConfig.getRootUrl() + "?webhookAccessKey=" + webhookConfig.getAccessKey())
+                        .build();
+                bot.setWebhook(setWebhook);
+                webhookBot = bot;
+            }
         } catch (TelegramApiException e) {
             log.error(e.getMessage());
         }
