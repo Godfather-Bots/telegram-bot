@@ -25,7 +25,7 @@ public class TelegramWebhookConnect implements TelegramConnect {
             if (webhookConfig.isEnable()) {
                 log.info("Инициализация webhook соединения. {}", telegramBotConfig.getWebhookConfig());
                 final SetWebhook setWebhook = SetWebhook.builder()
-                        .url(webhookConfig.getRootUrl() + "/" + webhookConfig.getRootUrl() + "callback" + "?webhookAccessKey=" + webhookConfig.getAccessKey())
+                        .url(webhookConfig.getRootUrl() + "/" + webhookConfig.getControllerPath() + "/" + webhookConfig.getPath() + "?webhookAccessKey=" + webhookConfig.getAccessKey())
                         .build();
                 bot.setWebhook(setWebhook);
                 webhookBot = bot;

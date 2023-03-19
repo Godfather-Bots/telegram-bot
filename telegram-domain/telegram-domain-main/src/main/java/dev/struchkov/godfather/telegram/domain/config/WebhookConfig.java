@@ -15,6 +15,9 @@ public class WebhookConfig {
     private String rootUrl;
 
     @ToString.Exclude
+    private String controllerPath;
+
+    @ToString.Exclude
     private String path;
 
     @ToString.Exclude
