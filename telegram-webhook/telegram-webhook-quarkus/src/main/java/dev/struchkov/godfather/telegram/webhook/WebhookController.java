@@ -22,6 +22,7 @@ import static dev.struchkov.haiti.utils.Inspector.isTrue;
 @Slf4j
 public class WebhookController {
 
+    public static final String ERROR_ACCESS = "В доступе отказано!";
     private final String pathKey;
     private final String accessKey;
     private final EventDistributor eventDistributor;
@@ -38,12 +39,14 @@ public class WebhookController {
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Response> updateReceived(@PathParam("webhookPath") String botPath, @QueryParam("webhookAccessKey") String webhookAccessKey, Update update) {
         return Uni.createFrom().voidItem()
-                .onItem().invoke(() -> {
-                    isTrue(pathKey.equals(botPath), accessException("В доступе отказано!"));
-                    isTrue(accessKey.equals(webhookAccessKey), accessException("В доступе отказано!"));
+                .invoke(() -> log.trace("Получено webhook событие"))
+                .invoke(() -> {
+                    isTrue(pathKey.equals(botPath), accessException(ERROR_ACCESS));
+                    isTrue(accessKey.equals(webhookAccessKey), accessException(ERROR_ACCESS));
                 })
                 .onItem().ignore().andSwitchTo(() -> eventDistributor.processing(update))
-                .onItem().transform(ignore -> Response.ok().build());
+                .invoke(() -> log.trace("Webhook событие успешно обработано"))
+                .replaceWith(Response.ok().build());
     }
 
     @GET
@@ -52,8 +55,8 @@ public class WebhookController {
     public Uni<String> testReceived(@PathParam("webhookPath") String botPath, @QueryParam("webhookAccessKey") String webhookAccessKey) {
         return Uni.createFrom().voidItem()
                 .onItem().invoke(() -> {
-                    isTrue(pathKey.equals(botPath), accessException("В доступе отказано!"));
-                    isTrue(accessKey.equals(webhookAccessKey), accessException("В доступе отказано!"));
+                    isTrue(pathKey.equals(botPath), accessException(ERROR_ACCESS));
+                    isTrue(accessKey.equals(webhookAccessKey), accessException(ERROR_ACCESS));
                 })
                 .onItem().transform(ignore -> "Hi there " + botPath + "!");
     }
