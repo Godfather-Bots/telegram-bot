@@ -2,67 +2,67 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://docs.struchkov.dev/godfather-telegram/spring/ru/develop/</loc>
-         <lastmod>2023-03-18</lastmod>
+         <lastmod>2023-03-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.struchkov.dev/godfather-telegram/spring/ru/develop/support-development/</loc>
-         <lastmod>2023-03-18</lastmod>
+         <lastmod>2023-03-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.struchkov.dev/godfather-telegram/spring/ru/develop/architecture/general/</loc>
-         <lastmod>2023-03-18</lastmod>
+         <lastmod>2023-03-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.struchkov.dev/godfather-telegram/spring/ru/develop/architecture/unit/</loc>
-         <lastmod>2023-03-18</lastmod>
+         <lastmod>2023-03-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.struchkov.dev/godfather-telegram/spring/ru/develop/architecture/unit/answer-check/</loc>
-         <lastmod>2023-03-18</lastmod>
+         <lastmod>2023-03-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.struchkov.dev/godfather-telegram/spring/ru/develop/architecture/unit/answer-text/</loc>
-         <lastmod>2023-03-18</lastmod>
+         <lastmod>2023-03-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.struchkov.dev/godfather-telegram/spring/ru/develop/blog/</loc>
-         <lastmod>2023-03-18</lastmod>
+         <lastmod>2023-03-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.struchkov.dev/godfather-telegram/spring/ru/develop/changelog/</loc>
-         <lastmod>2023-03-18</lastmod>
+         <lastmod>2023-03-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.struchkov.dev/godfather-telegram/spring/ru/develop/getting-started/hello-godfather/</loc>
-         <lastmod>2023-03-18</lastmod>
+         <lastmod>2023-03-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.struchkov.dev/godfather-telegram/spring/ru/develop/guides/cyclic/</loc>
-         <lastmod>2023-03-18</lastmod>
+         <lastmod>2023-03-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.struchkov.dev/godfather-telegram/spring/ru/develop/guides/event-handler/</loc>
-         <lastmod>2023-03-18</lastmod>
+         <lastmod>2023-03-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.struchkov.dev/godfather-telegram/spring/ru/develop/guides/exception-handling/</loc>
-         <lastmod>2023-03-18</lastmod>
+         <lastmod>2023-03-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.struchkov.dev/godfather-telegram/spring/ru/develop/guides/security/</loc>
-         <lastmod>2023-03-18</lastmod>
+         <lastmod>2023-03-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
