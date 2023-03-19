@@ -12,15 +12,9 @@ public class WebhookConfig {
     private boolean enable = false;
 
     @ToString.Exclude
-    private String rootUrl;
+    private String url;
 
     @ToString.Exclude
-    private String controllerPath;
-
-    @ToString.Exclude
-    private String path;
-
-    @ToString.Exclude
-    private String accessKey;
+    private String secretToken;
 
 }
