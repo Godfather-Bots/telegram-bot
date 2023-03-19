@@ -15,10 +15,7 @@ public class TelegramWebhookConnect implements TelegramConnect {
     private TelegramWebhookBot webhookBot;
 
     public TelegramWebhookConnect(TelegramBotConfig telegramBotConfig) {
-        initWebHook(telegramBotConfig);
-    }
-
-    private void initWebHook(TelegramBotConfig telegramBotConfig) {
+        log.info("Инициализация webhook соединения. {}", telegramBotConfig.getWebhookConfig());
         try {
             final TelegramWebhookBot bot = new TelegramWebhookBot(telegramBotConfig);
             final WebhookConfig webhookConfig = telegramBotConfig.getWebhookConfig();
@@ -28,6 +25,7 @@ public class TelegramWebhookConnect implements TelegramConnect {
                         .build();
                 bot.setWebhook(setWebhook);
                 webhookBot = bot;
+                log.info("Инициализация webhook соединения прошла успешно.");
             }
         } catch (TelegramApiException e) {
             log.error(e.getMessage());

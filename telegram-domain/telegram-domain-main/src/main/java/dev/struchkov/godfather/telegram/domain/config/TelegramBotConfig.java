@@ -3,6 +3,7 @@ package dev.struchkov.godfather.telegram.domain.config;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * TODO: Добавить описание класса.
@@ -11,10 +12,13 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 public class TelegramBotConfig {
 
     private String username;
+
+    @ToString.Exclude
     private String token;
 
     private ProxyConfig proxyConfig;
