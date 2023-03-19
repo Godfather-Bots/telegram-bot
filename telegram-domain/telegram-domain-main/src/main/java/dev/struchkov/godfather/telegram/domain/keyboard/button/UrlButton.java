@@ -1,15 +1,21 @@
 package dev.struchkov.godfather.telegram.domain.keyboard.button;
 
 import dev.struchkov.godfather.main.domain.keyboard.KeyBoardButton;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import static dev.struchkov.haiti.utils.Inspector.isNotNull;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class UrlButton implements KeyBoardButton {
 
     public static final String TYPE = "URL";
 
-    private final String label;
-    private final String url;
+    private String label;
+    private String url;
 
     public UrlButton(String label, String url) {
         this.label = label;
@@ -24,14 +30,6 @@ public class UrlButton implements KeyBoardButton {
     @Override
     public String getType() {
         return TYPE;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public String getUrl() {
-        return url;
     }
 
 }
