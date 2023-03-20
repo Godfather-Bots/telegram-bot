@@ -50,7 +50,7 @@ public final class MessageMailConvert {
         final Chat chat = message.getChat();
         mail.setFirstName(chat.getFirstName());
         mail.setLastName(chat.getLastName());
-        mail.setPayload(MailPayload.USERNAME, chat.getUserName());
+        mail.addPayload(MailPayload.USERNAME, chat.getUserName());
 
         convertDocument(message.getDocument()).ifPresent(mail::addAttachment);
         convertContact(message.getContact()).ifPresent(mail::addAttachment);
