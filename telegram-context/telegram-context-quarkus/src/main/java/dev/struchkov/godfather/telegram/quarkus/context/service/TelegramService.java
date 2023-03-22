@@ -17,4 +17,6 @@ public interface TelegramService {
 
     Uni<Void> addCommand(@NotNull Collection<ClientBotCommand> botCommands);
 
+    Uni<Boolean> checkChatMember(@NotNull String personId, @NotNull String chatIdOrChannelId);
+
 }

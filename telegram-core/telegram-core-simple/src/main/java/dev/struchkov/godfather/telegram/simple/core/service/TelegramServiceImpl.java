@@ -9,9 +9,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.api.methods.ActionType;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
+import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChatMember;
 import org.telegram.telegrambots.meta.api.methods.pinnedmessages.PinChatMessage;
 import org.telegram.telegrambots.meta.api.methods.pinnedmessages.UnpinChatMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendChatAction;
+import org.telegram.telegrambots.meta.api.objects.chatmember.ChatMember;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -113,6 +115,27 @@ public class TelegramServiceImpl implements TelegramService {
         } catch (TelegramApiException e) {
             log.error(e.getMessage());
         }
+    }
+
+    @Override
+    public boolean checkChatMember(@NotNull String personId, @NotNull String chatIdOrChannelId) {
+        final GetChatMember chatMember = GetChatMember.builder()
+                .userId(Long.parseLong(personId))
+                .chatId(chatIdOrChannelId)
+                .build();
+        try {
+            final ChatMember member = absSender.execute(chatMember);
+            if (checkNotNull(member)) {
+                final String status = member.getStatus();
+                return "member".equals(status);
+            }
+            return false;
+        } catch (TelegramApiRequestException e) {
+            log.error(e.getApiResponse());
+        } catch (TelegramApiException e) {
+            log.error(e.getMessage());
+        }
+        return false;
     }
 
 }
