@@ -1,8 +1,8 @@
 package dev.struchkov.godfather.telegram.main.consumer;
 
 import dev.struchkov.godfather.telegram.domain.event.Unsubscribe;
-import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.ChatMemberUpdated;
+import org.telegram.telegrambots.meta.api.objects.User;
 
 import java.time.LocalDateTime;
 
@@ -15,13 +15,13 @@ public final class UnsubscribeConvert {
     }
 
     public static Unsubscribe apply(ChatMemberUpdated updated) {
-        final Chat chat = updated.getChat();
+        final User user = updated.getFrom();
 
         final Unsubscribe unsubscribe = new Unsubscribe();
-        unsubscribe.setTelegramId(chat.getId().toString());
-        unsubscribe.setLastName(chat.getLastName());
-        unsubscribe.setFirstName(chat.getFirstName());
-        unsubscribe.setSubscriptionDate(LocalDateTime.now());
+        unsubscribe.setTelegramId(user.getId().toString());
+        unsubscribe.setLastName(user.getLastName());
+        unsubscribe.setFirstName(user.getFirstName());
+        unsubscribe.setUnsubscriptionDate(LocalDateTime.now());
         return unsubscribe;
     }
 

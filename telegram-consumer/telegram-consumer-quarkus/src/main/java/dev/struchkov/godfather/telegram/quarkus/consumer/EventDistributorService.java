@@ -53,7 +53,7 @@ public class EventDistributorService implements EventDistributor {
                             final InlineQuery inlineQuery = update.getInlineQuery();
 
                             // запросы к боту из чатов: https://core.telegram.org/bots/inline
-                            if (checkNotNull(inlineQuery)) {
+                            if (update.hasInlineQuery()) {
                                 final Optional<List<EventHandler>> optHandlers = getHandler(inlineQuery.getClass().getSimpleName());
                                 if (optHandlers.isPresent()) {
                                     return Multi.createFrom().iterable(optHandlers.get())
@@ -64,7 +64,7 @@ public class EventDistributorService implements EventDistributor {
                                 return Uni.createFrom().voidItem();
                             }
 
-                            if (checkNotNull(preCheckoutQuery)) {
+                            if (update.hasPreCheckoutQuery()) {
                                 final Optional<List<EventHandler>> optHandlers = getHandler(preCheckoutQuery.getClass().getName());
                                 if (optHandlers.isPresent()) {
                                     return Multi.createFrom().iterable(optHandlers.get())
@@ -75,7 +75,7 @@ public class EventDistributorService implements EventDistributor {
                                 return Uni.createFrom().voidItem();
                             }
 
-                            if (checkNotNull(message) && (!isEvent(message))) {
+                            if (update.hasMessage()) {
                                 final Optional<List<EventHandler>> optHandlers = getHandler(Mail.class.getName());
                                 if (optHandlers.isPresent()) {
                                     return Multi.createFrom().iterable(optHandlers.get())
@@ -86,7 +86,7 @@ public class EventDistributorService implements EventDistributor {
                                 return Uni.createFrom().voidItem();
                             }
 
-                            if (checkNotNull(callbackQuery)) {
+                            if (update.hasCallbackQuery()) {
                                 final Optional<List<EventHandler>> optHandlers = getHandler(Mail.class.getName());
                                 if (optHandlers.isPresent()) {
                                     return Multi.createFrom().iterable(optHandlers.get())
@@ -97,7 +97,7 @@ public class EventDistributorService implements EventDistributor {
                                 return Uni.createFrom().voidItem();
                             }
 
-                            if (checkNotNull(update.getMyChatMember())) {
+                            if (update.hasMyChatMember()) {
                                 final ChatMemberUpdated chatMember = update.getMyChatMember();
                                 if ("kicked".equals(chatMember.getNewChatMember().getStatus())) {
 

@@ -15,7 +15,7 @@ public final class SubscribeConvert {
     }
 
     public static Subscribe apply(ChatMemberUpdated updated) {
-        final User user = updated.getNewChatMember().getUser();
+        final User user = updated.getFrom();
 
         final Subscribe subscribe = new Subscribe();
         subscribe.setTelegramId(user.getId().toString());

@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static dev.struchkov.haiti.utils.Checker.checkNotBlank;
 import static dev.struchkov.haiti.utils.Checker.checkNotNull;
 
 /**
@@ -49,25 +50,25 @@ public class EventDistributorService implements EventDistributor {
         final PreCheckoutQuery preCheckoutQuery = update.getPreCheckoutQuery();
         final InlineQuery inlineQuery = update.getInlineQuery();
 
-        if (checkNotNull(inlineQuery)) {
+        if (update.hasInlineQuery()) {
             getHandler(inlineQuery.getClass().getSimpleName()).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(inlineQuery)));
             return;
         }
 
-        if (checkNotNull(preCheckoutQuery)) {
+        if (update.hasPreCheckoutQuery()) {
             getHandler(preCheckoutQuery.getClass().getSimpleName()).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(preCheckoutQuery)));
             return;
         }
 
-        if (message != null && (!isEvent(message))) {
+        if (update.hasMessage()) {
             processionMessage(message);
             return;
         }
-        if (callbackQuery != null) {
+        if (update.hasCallbackQuery()) {
             processionCallback(callbackQuery);
             return;
         }
-        if (update.getMyChatMember() != null) {
+        if (update.hasMyChatMember()) {
             final ChatMemberUpdated chatMember = update.getMyChatMember();
             if ("kicked".equals(chatMember.getNewChatMember().getStatus())) {
                 getHandler(Unsubscribe.class.getSimpleName()).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(UnsubscribeConvert.apply(chatMember))));
@@ -81,12 +82,19 @@ public class EventDistributorService implements EventDistributor {
     }
 
     private void processionCallback(CallbackQuery callbackQuery) {
-        final Long fromId = callbackQuery.getMessage().getChat().getId();
-        if (fromId < 0) {
+        final Message message = callbackQuery.getMessage();
+        if (checkNotBlank(callbackQuery.getInlineMessageId())) {
 
-        } else {
-            final Mail mail = CallbackQueryConvert.apply(callbackQuery);
-            getHandler(Mail.class.getSimpleName()).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(mail)));
+            return;
+        }
+        if (checkNotNull(message)) {
+            final Long fromId = message.getChat().getId();
+            if (fromId < 0) {
+
+            } else {
+                final Mail mail = CallbackQueryConvert.apply(callbackQuery);
+                getHandler(Mail.class.getSimpleName()).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(mail)));
+            }
         }
     }
 

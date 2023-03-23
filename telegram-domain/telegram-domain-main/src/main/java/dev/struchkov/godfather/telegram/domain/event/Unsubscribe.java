@@ -19,6 +19,6 @@ public class Unsubscribe {
     private String telegramId;
     private String firstName;
     private String lastName;
-    private LocalDateTime subscriptionDate;
+    private LocalDateTime unsubscriptionDate;
 
 }
