@@ -6,10 +6,10 @@ import dev.struchkov.godfather.quarkus.domain.SentBox;
 import dev.struchkov.godfather.quarkus.domain.action.PreSendProcessing;
 import dev.struchkov.godfather.telegram.domain.keyboard.InlineKeyBoard;
 import dev.struchkov.godfather.telegram.main.context.BoxAnswerPayload;
-import dev.struchkov.godfather.telegram.main.sender.util.KeyBoardConvert;
 import dev.struchkov.godfather.telegram.quarkus.context.repository.SenderRepository;
 import dev.struchkov.godfather.telegram.quarkus.context.service.TelegramConnect;
 import dev.struchkov.godfather.telegram.quarkus.context.service.TelegramSending;
+import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -24,13 +24,16 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import static dev.struchkov.godfather.telegram.main.context.BoxAnswerPayload.DISABLE_NOTIFICATION;
 import static dev.struchkov.godfather.telegram.main.context.BoxAnswerPayload.DISABLE_WEB_PAGE_PREVIEW;
+import static dev.struchkov.godfather.telegram.main.context.BoxAnswerPayload.ENABLE_MARKDOWN;
 import static dev.struchkov.godfather.telegram.main.sender.util.KeyBoardConvert.convertInlineKeyBoard;
+import static dev.struchkov.godfather.telegram.main.sender.util.KeyBoardConvert.convertKeyBoard;
 import static dev.struchkov.haiti.utils.Checker.checkNotNull;
 import static java.lang.Boolean.TRUE;
 import static java.util.concurrent.CompletableFuture.completedFuture;
@@ -100,9 +103,15 @@ public class TelegramSender implements TelegramSending {
                         v -> {
                             final EditMessageText editMessageText = new EditMessageText();
                             editMessageText.setInlineMessageId(inlineMessageId);
-                            editMessageText.enableMarkdown(true);
                             editMessageText.setText(boxAnswer.getMessage());
                             editMessageText.setReplyMarkup(convertInlineKeyBoard((InlineKeyBoard) boxAnswer.getKeyBoard()));
+
+                            boxAnswer.getPayLoad(ENABLE_MARKDOWN).ifPresent(editMessageText::enableMarkdown);
+                            boxAnswer.getPayLoad(DISABLE_WEB_PAGE_PREVIEW).ifPresent(
+                                    isDisable -> {
+                                        if (TRUE.equals(isDisable)) editMessageText.disableWebPagePreview();
+                                    }
+                            );
 
                             return Uni.createFrom().completionStage(executeAsync(editMessageText))
                                     .onFailure(TelegramApiRequestException.class).call(
@@ -184,38 +193,52 @@ public class TelegramSender implements TelegramSending {
 
     private Uni<SentBox> sendMessage(@NotNull String telegramId, @NotNull BoxAnswer boxAnswer, boolean saveMessageId) {
         return Uni.createFrom().voidItem()
+                .onItem().transformToMulti(v -> splitBoxAnswerByMessageLength(boxAnswer, 4000))
                 .onItem().transformToUni(
-                        v -> {
-                            final SendMessage sendMessage = new SendMessage();
-                            sendMessage.enableMarkdown(true);
-                            sendMessage.setChatId(telegramId);
-                            sendMessage.setText(boxAnswer.getMessage());
-                            sendMessage.setReplyMarkup(KeyBoardConvert.convertKeyBoard(boxAnswer.getKeyBoard()));
-
-                            boxAnswer.getPayLoad(DISABLE_NOTIFICATION).ifPresent(
-                                    isDisable -> {
-                                        if (TRUE.equals(isDisable)) sendMessage.disableNotification();
-                                    }
-                            );
-
-                            boxAnswer.getPayLoad(DISABLE_WEB_PAGE_PREVIEW).ifPresent(
-                                    isDisable -> {
-                                        if (TRUE.equals(isDisable)) sendMessage.disableWebPagePreview();
-                                    }
-                            );
-                            return Uni.createFrom().completionStage(executeAsync(sendMessage))
-                                    .onFailure(TelegramApiRequestException.class).invoke(t -> log.error(((TelegramApiRequestException) t).getApiResponse()))
-                                    .onFailure().invoke(t -> log.error(t.getMessage(), t));
-                        }
-                ).onItem().ifNotNull().call(answerMessage -> {
+                        sendMessage -> Uni.createFrom().completionStage(executeAsync(sendMessage))
+                                .onFailure(TelegramApiRequestException.class).invoke(t -> log.error(((TelegramApiRequestException) t).getApiResponse()))
+                                .onFailure().invoke(t -> log.error(t.getMessage(), t))
+                ).concatenate().collect().asList()
+                .call(answerMessages -> {
                     if (checkNotNull(senderRepository) && saveMessageId) {
-                        return senderRepository.saveLastSendMessage(telegramId, answerMessage.getMessageId().toString());
+                        return senderRepository.saveLastSendMessage(telegramId, answerMessages.get(answerMessages.size() - 1).getMessageId().toString());
                     }
                     return Uni.createFrom().nullItem();
                 })
                 .onItem().ifNotNull().transformToUni(
-                        answerMessage -> Uni.createFrom().optional(SentBox.optional(telegramId, answerMessage.getMessageId().toString(), boxAnswer, boxAnswer))
+                        answerMessages -> Uni.createFrom().optional(SentBox.optional(telegramId, answerMessages.get(answerMessages.size() - 1).getMessageId().toString(), boxAnswer, boxAnswer))
                 );
+    }
+
+    public Multi<SendMessage> splitBoxAnswerByMessageLength(BoxAnswer boxAnswer, int maxMessageLength) {
+        final List<SendMessage> split = new ArrayList<>();
+        String message = boxAnswer.getMessage();
+
+        while (message.length() > maxMessageLength) {
+            String subMessage = message.substring(0, maxMessageLength);
+            message = message.substring(maxMessageLength);
+            split.add(createNewBoxAnswer(boxAnswer, subMessage));
+        }
+
+        split.add(createNewBoxAnswer(boxAnswer, message));
+
+        return Multi.createFrom().iterable(split);
+    }
+
+    private SendMessage createNewBoxAnswer(BoxAnswer boxAnswer, String subMessage) {
+        final SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(boxAnswer.getRecipientPersonId());
+        sendMessage.setText(subMessage);
+        sendMessage.setReplyMarkup(convertKeyBoard(boxAnswer.getKeyBoard()));
+
+        boxAnswer.getPayLoad(ENABLE_MARKDOWN).ifPresent(sendMessage::enableMarkdown);
+        boxAnswer.getPayLoad(DISABLE_WEB_PAGE_PREVIEW).ifPresent(isDisable -> {
+            if (TRUE.equals(isDisable)) sendMessage.disableWebPagePreview();
+        });
+        boxAnswer.getPayLoad(DISABLE_NOTIFICATION).ifPresent(isDisable -> {
+            if (TRUE.equals(isDisable)) sendMessage.disableNotification();
+        });
+        return sendMessage;
     }
 
     private CompletableFuture<Message> executeAsync(SendMessage sendMessage) {

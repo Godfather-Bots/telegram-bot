@@ -27,6 +27,7 @@ import java.util.Optional;
 
 import static dev.struchkov.godfather.telegram.main.context.BoxAnswerPayload.DISABLE_NOTIFICATION;
 import static dev.struchkov.godfather.telegram.main.context.BoxAnswerPayload.DISABLE_WEB_PAGE_PREVIEW;
+import static dev.struchkov.godfather.telegram.main.context.BoxAnswerPayload.ENABLE_MARKDOWN;
 import static dev.struchkov.godfather.telegram.main.sender.util.KeyBoardConvert.convertInlineKeyBoard;
 import static dev.struchkov.godfather.telegram.main.sender.util.KeyBoardConvert.convertKeyBoard;
 import static dev.struchkov.haiti.utils.Checker.checkNotNull;
@@ -149,9 +150,14 @@ public class TelegramSender implements TelegramSending {
         final EditMessageText editMessageText = new EditMessageText();
         editMessageText.setChatId(telegramId);
         editMessageText.setMessageId(parseInt(replaceMessageId));
-        editMessageText.enableMarkdown(true);
         editMessageText.setText(boxAnswer.getMessage());
         editMessageText.setReplyMarkup(convertInlineKeyBoard((InlineKeyBoard) boxAnswer.getKeyBoard()));
+
+        boxAnswer.getPayLoad(ENABLE_MARKDOWN).ifPresent(editMessageText::enableMarkdown);
+        boxAnswer.getPayLoad(DISABLE_WEB_PAGE_PREVIEW).ifPresent(isDisable -> {
+            if (TRUE.equals(isDisable)) editMessageText.disableWebPagePreview();
+        });
+
         try {
             absSender.execute(editMessageText);
             return SentBox.optional(telegramId, replaceMessageId, preparedAnswer, boxAnswer);
@@ -167,31 +173,55 @@ public class TelegramSender implements TelegramSending {
     }
 
     private Optional<SentBox> sendMessage(@NotNull String telegramId, @NotNull BoxAnswer boxAnswer, BoxAnswer preparedAnswer, boolean saveMessageId) {
+        final List<SendMessage> sendMessages = splitBoxAnswerByMessageLength(boxAnswer, 4000);
+        Message execute = null;
+        for (SendMessage sendMessage : sendMessages) {
+            try {
+                execute = absSender.execute(sendMessage);
+            } catch (TelegramApiRequestException e) {
+                log.error(e.getApiResponse());
+            } catch (TelegramApiException e) {
+                log.error(e.getMessage());
+            }
+        }
+        if (checkNotNull(execute)) {
+            if (checkNotNull(senderRepository) && saveMessageId) {
+                senderRepository.saveLastSendMessage(telegramId, execute.getMessageId().toString());
+            }
+            return SentBox.optional(telegramId, execute.getMessageId().toString(), preparedAnswer, boxAnswer);
+        }
+        return Optional.empty();
+    }
+
+    public List<SendMessage> splitBoxAnswerByMessageLength(BoxAnswer boxAnswer, int maxMessageLength) {
+        final List<SendMessage> split = new ArrayList<>();
+        String message = boxAnswer.getMessage();
+
+        while (message.length() > maxMessageLength) {
+            String subMessage = message.substring(0, maxMessageLength);
+            message = message.substring(maxMessageLength);
+            split.add(createNewBoxAnswer(boxAnswer, subMessage));
+        }
+
+        split.add(createNewBoxAnswer(boxAnswer, message));
+
+        return split;
+    }
+
+    private SendMessage createNewBoxAnswer(BoxAnswer boxAnswer, String subMessage) {
         final SendMessage sendMessage = new SendMessage();
-        sendMessage.enableMarkdown(true);
-        sendMessage.setChatId(telegramId);
-        sendMessage.setText(boxAnswer.getMessage());
+        sendMessage.setChatId(boxAnswer.getRecipientPersonId());
+        sendMessage.setText(subMessage);
         sendMessage.setReplyMarkup(convertKeyBoard(boxAnswer.getKeyBoard()));
 
+        boxAnswer.getPayLoad(ENABLE_MARKDOWN).ifPresent(sendMessage::enableMarkdown);
         boxAnswer.getPayLoad(DISABLE_WEB_PAGE_PREVIEW).ifPresent(isDisable -> {
             if (TRUE.equals(isDisable)) sendMessage.disableWebPagePreview();
         });
         boxAnswer.getPayLoad(DISABLE_NOTIFICATION).ifPresent(isDisable -> {
             if (TRUE.equals(isDisable)) sendMessage.disableNotification();
         });
-
-        try {
-            final Message execute = absSender.execute(sendMessage);
-            if (checkNotNull(senderRepository) && saveMessageId) {
-                senderRepository.saveLastSendMessage(telegramId, execute.getMessageId().toString());
-            }
-            return SentBox.optional(telegramId, execute.getMessageId().toString(), preparedAnswer, boxAnswer);
-        } catch (TelegramApiRequestException e) {
-            log.error(e.getApiResponse());
-        } catch (TelegramApiException e) {
-            log.error(e.getMessage());
-        }
-        return Optional.empty();
+        return sendMessage;
     }
 
     @Override

@@ -8,6 +8,7 @@ public final class BoxAnswerPayload {
 
     public static final ContextKey<Boolean> DISABLE_WEB_PAGE_PREVIEW = ContextKey.of("DISABLE_WEB_PAGE_PREVIEW", Boolean.class);
     public static final ContextKey<Boolean> DISABLE_NOTIFICATION = ContextKey.of("DISABLE_NOTIFICATION", Boolean.class);
+    public static final ContextKey<Boolean> ENABLE_MARKDOWN = ContextKey.of("DISABLE_MARKDOWN", Boolean.class);
     public static final ContextKey<SendInvoice> INVOICE = ContextKey.of("INVOICE", SendInvoice.class);
 
     private BoxAnswerPayload() {
