@@ -84,7 +84,7 @@ public final class MessageChatMailConvert {
                         return picture;
                     }).toList();
 
-            attachment.setPictureSizes(pictures);
+            attachment.setPictures(pictures);
 
             return Optional.of(attachment);
         }

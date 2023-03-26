@@ -93,6 +93,30 @@ public class TelegramSender implements TelegramSending {
         return sendBoxAnswer(boxAnswer, false);
     }
 
+    @Override
+    public Uni<Void> replaceInlineMessage(String inlineMessageId, BoxAnswer boxAnswer) {
+        return Uni.createFrom().voidItem()
+                .onItem().transformToUni(
+                        v -> {
+                            final EditMessageText editMessageText = new EditMessageText();
+                            editMessageText.setInlineMessageId(inlineMessageId);
+                            editMessageText.enableMarkdown(true);
+                            editMessageText.setText(boxAnswer.getMessage());
+                            editMessageText.setReplyMarkup(convertInlineKeyBoard((InlineKeyBoard) boxAnswer.getKeyBoard()));
+
+                            return Uni.createFrom().completionStage(executeAsync(editMessageText))
+                                    .onFailure(TelegramApiRequestException.class).call(
+                                            ex -> {
+                                                final TelegramApiRequestException exception = (TelegramApiRequestException) ex;
+                                                final String apiResponse = exception.getApiResponse();
+                                                log.error(apiResponse, exception);
+                                                return Uni.createFrom().voidItem();
+                                            }
+                                    ).replaceWithVoid();
+                        }
+                );
+    }
+
     private Uni<SentBox> sendBoxAnswer(@NotNull BoxAnswer boxAnswer, boolean saveMessageId) {
         return Uni.createFrom().voidItem()
                 .onItem().transformToUni(

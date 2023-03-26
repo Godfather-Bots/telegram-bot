@@ -17,6 +17,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>dev.struchkov.godfather</groupId>
+            <artifactId>bot-core-quarkus</artifactId>
+        </dependency>
+        <dependency>
             <groupId>dev.struchkov.godfather.telegram</groupId>
             <artifactId>telegram-context-quarkus</artifactId>
         </dependency>
@@ -24,10 +28,6 @@
         <dependency>
             <groupId>dev.struchkov.godfather.telegram</groupId>
             <artifactId>telegram-core-main</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>dev.struchkov.godfather</groupId>
-            <artifactId>bot-core-quarkus</artifactId>
         </dependency>
     </dependencies>
 

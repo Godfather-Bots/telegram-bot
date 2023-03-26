@@ -91,6 +91,22 @@ public class TelegramSender implements TelegramSending {
         return sendBoxAnswer(boxAnswer, false);
     }
 
+    @Override
+    public void replaceInlineMessage(String inlineMessageId, BoxAnswer boxAnswer) {
+        final EditMessageText editMessageText = new EditMessageText();
+        editMessageText.setInlineMessageId(inlineMessageId);
+        editMessageText.enableMarkdown(true);
+        editMessageText.setText(boxAnswer.getMessage());
+        editMessageText.setReplyMarkup(convertInlineKeyBoard((InlineKeyBoard) boxAnswer.getKeyBoard()));
+        try {
+            absSender.execute(editMessageText);
+        } catch (TelegramApiRequestException e) {
+            log.error(e.getApiResponse());
+        } catch (TelegramApiException e) {
+            log.error(e.getMessage(), e);
+        }
+    }
+
     private Optional<SentBox> sendBoxAnswer(BoxAnswer boxAnswer, boolean saveMessageId) {
         final String recipientTelegramId = boxAnswer.getRecipientPersonId();
         isNotNull(recipientTelegramId);

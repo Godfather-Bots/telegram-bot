@@ -1,7 +1,11 @@
 package dev.struchkov.godfather.telegram.domain.attachment;
 
 import dev.struchkov.godfather.main.domain.content.Attachment;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class ContactAttachment extends Attachment {
 
     private String phoneNumber;
@@ -15,57 +19,8 @@ public class ContactAttachment extends Attachment {
      */
     private boolean owner;
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public boolean isOwner() {
-        return owner;
-    }
-
-    public void setOwner(boolean owner) {
-        this.owner = owner;
-    }
-
-    public String getVCard() {
-        return vCard;
-    }
-
-    public void setVCard(String vCard) {
-        this.vCard = vCard;
-    }
-
-    @Override
-    public String getType() {
-        return TelegramAttachmentType.CONTACT.name();
+    public ContactAttachment() {
+        super(TelegramAttachmentType.CONTACT.name());
     }
 
 }

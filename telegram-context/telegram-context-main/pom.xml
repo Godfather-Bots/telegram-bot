@@ -22,7 +22,7 @@
         </dependency>
         <dependency>
             <groupId>dev.struchkov.godfather</groupId>
-            <artifactId>bot-context-simple</artifactId>
+            <artifactId>bot-context-main</artifactId>
         </dependency>
 
         <dependency>

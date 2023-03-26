@@ -1,8 +1,9 @@
 package dev.struchkov.godfather.telegram.simple.consumer;
 
+import dev.struchkov.godfather.main.domain.EventContainer;
 import dev.struchkov.godfather.main.domain.content.ChatMail;
 import dev.struchkov.godfather.main.domain.content.Mail;
-import dev.struchkov.godfather.simple.context.service.EventHandler;
+import dev.struchkov.godfather.simple.context.service.EventDispatching;
 import dev.struchkov.godfather.telegram.domain.event.Subscribe;
 import dev.struchkov.godfather.telegram.domain.event.Unsubscribe;
 import dev.struchkov.godfather.telegram.main.consumer.CallbackQueryConvert;
@@ -18,13 +19,11 @@ import org.telegram.telegrambots.meta.api.objects.ChatMemberUpdated;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
+import org.telegram.telegrambots.meta.api.objects.inlinequery.ChosenInlineQuery;
 import org.telegram.telegrambots.meta.api.objects.inlinequery.InlineQuery;
 import org.telegram.telegrambots.meta.api.objects.payments.PreCheckoutQuery;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static dev.struchkov.haiti.utils.Checker.checkNotBlank;
 import static dev.struchkov.haiti.utils.Checker.checkNotNull;
@@ -36,10 +35,10 @@ import static dev.struchkov.haiti.utils.Checker.checkNotNull;
  */
 public class EventDistributorService implements EventDistributor {
 
-    private final Map<String, List<EventHandler>> eventProviderMap;
+    private final EventDispatching eventDispatching;
 
-    public EventDistributorService(TelegramConnect telegramConnect, List<EventHandler> eventProviders) {
-        this.eventProviderMap = eventProviders.stream().collect(Collectors.groupingBy(EventHandler::getEventType));
+    public EventDistributorService(TelegramConnect telegramConnect, EventDispatching eventDispatching) {
+        this.eventDispatching = eventDispatching;
         telegramConnect.initEventDistributor(this);
     }
 
@@ -51,12 +50,16 @@ public class EventDistributorService implements EventDistributor {
         final InlineQuery inlineQuery = update.getInlineQuery();
 
         if (update.hasInlineQuery()) {
-            getHandler(inlineQuery.getClass().getSimpleName()).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(inlineQuery)));
+            eventDispatching.dispatch(new EventContainer<>(InlineQuery.class, inlineQuery));
             return;
         }
 
+        if (update.hasChosenInlineQuery()) {
+            eventDispatching.dispatch(new EventContainer<>(ChosenInlineQuery.class, update.getChosenInlineQuery()));
+        }
+
         if (update.hasPreCheckoutQuery()) {
-            getHandler(preCheckoutQuery.getClass().getSimpleName()).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(preCheckoutQuery)));
+            eventDispatching.dispatch(new EventContainer<>(PreCheckoutQuery.class, preCheckoutQuery));
             return;
         }
 
@@ -71,11 +74,13 @@ public class EventDistributorService implements EventDistributor {
         if (update.hasMyChatMember()) {
             final ChatMemberUpdated chatMember = update.getMyChatMember();
             if ("kicked".equals(chatMember.getNewChatMember().getStatus())) {
-                getHandler(Unsubscribe.class.getSimpleName()).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(UnsubscribeConvert.apply(chatMember))));
+                final Unsubscribe unsubscribe = UnsubscribeConvert.apply(chatMember);
+                eventDispatching.dispatch(new EventContainer<>(Unsubscribe.class, unsubscribe));
                 return;
             }
             if ("member".equals(chatMember.getNewChatMember().getStatus())) {
-                getHandler(Subscribe.class.getSimpleName()).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(SubscribeConvert.apply(chatMember))));
+                final Subscribe subscribe = SubscribeConvert.apply(chatMember);
+                eventDispatching.dispatch(new EventContainer<>(Subscribe.class, subscribe));
                 return;
             }
         }
@@ -84,7 +89,6 @@ public class EventDistributorService implements EventDistributor {
     private void processionCallback(CallbackQuery callbackQuery) {
         final Message message = callbackQuery.getMessage();
         if (checkNotBlank(callbackQuery.getInlineMessageId())) {
-
             return;
         }
         if (checkNotNull(message)) {
@@ -93,7 +97,7 @@ public class EventDistributorService implements EventDistributor {
 
             } else {
                 final Mail mail = CallbackQueryConvert.apply(callbackQuery);
-                getHandler(Mail.class.getSimpleName()).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(mail)));
+                eventDispatching.dispatch(new EventContainer<>(Mail.class, mail));
             }
         }
     }
@@ -102,10 +106,10 @@ public class EventDistributorService implements EventDistributor {
         final Long fromId = message.getChat().getId();
         if (fromId < 0) {
             final ChatMail chatMail = MessageChatMailConvert.apply(message);
-            getHandler(ChatMail.class.getSimpleName()).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(chatMail)));
+            eventDispatching.dispatch(new EventContainer<>(ChatMail.class, chatMail));
         } else {
             final Mail mail = MessageMailConvert.apply(message);
-            getHandler(Mail.class.getSimpleName()).ifPresent(handlers -> handlers.forEach(handler -> handler.handle(mail)));
+            eventDispatching.dispatch(new EventContainer<>(Mail.class, mail));
         }
     }
 
@@ -128,10 +132,6 @@ public class EventDistributorService implements EventDistributor {
         } else {
             return !newChatMembers.isEmpty();
         }
-    }
-
-    private Optional<List<EventHandler>> getHandler(String type) {
-        return Optional.ofNullable(eventProviderMap.get(type));
     }
 
 }

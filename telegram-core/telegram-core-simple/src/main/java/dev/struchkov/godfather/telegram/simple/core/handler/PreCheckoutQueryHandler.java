@@ -1,5 +1,6 @@
 package dev.struchkov.godfather.telegram.simple.core.handler;
 
+import dev.struchkov.godfather.main.domain.EventContainer;
 import dev.struchkov.godfather.simple.context.service.EventHandler;
 import dev.struchkov.godfather.telegram.simple.context.service.TelegramConnect;
 import lombok.RequiredArgsConstructor;
@@ -15,9 +16,10 @@ public class PreCheckoutQueryHandler implements EventHandler<PreCheckoutQuery> {
     private final TelegramConnect telegramConnect;
 
     @Override
-    public void handle(PreCheckoutQuery event) {
+    public void handle(EventContainer<PreCheckoutQuery> event) {
+        final PreCheckoutQuery preCheckoutQuery = event.getObject();
         final AnswerPreCheckoutQuery answerPreCheckoutQuery = new AnswerPreCheckoutQuery();
-        answerPreCheckoutQuery.setPreCheckoutQueryId(event.getId());
+        answerPreCheckoutQuery.setPreCheckoutQueryId(preCheckoutQuery.getId());
         answerPreCheckoutQuery.setOk(true);
         try {
             answerPreCheckoutQuery.validate();
@@ -29,8 +31,8 @@ public class PreCheckoutQueryHandler implements EventHandler<PreCheckoutQuery> {
     }
 
     @Override
-    public String getEventType() {
-        return PreCheckoutQuery.class.getSimpleName();
+    public Class<PreCheckoutQuery> getEventClass() {
+        return PreCheckoutQuery.class;
     }
 
 }

@@ -10,4 +10,6 @@ public interface TelegramSending extends SendingService {
 
     Uni<SentBox> sendNotSave(@NotNull BoxAnswer boxAnswer);
 
+    Uni<Void> replaceInlineMessage(String inlineMessageId, BoxAnswer boxAnswer);
+
 }

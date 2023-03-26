@@ -1,8 +1,7 @@
 package dev.struchkov.godfather.telegram.simple.context.service;
 
+import org.jetbrains.annotations.NotNull;
 import org.telegram.telegrambots.meta.bots.AbsSender;
-
-import javax.validation.constraints.NotNull;
 
 /**
  * TODO: Добавить описание интерфейса.

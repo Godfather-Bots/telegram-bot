@@ -83,7 +83,7 @@ public final class MessageMailConvert {
                         return picture;
                     }).toList();
 
-            attachment.setPictureSizes(pictures);
+            attachment.setPictures(pictures);
 
             return Optional.of(attachment);
         }

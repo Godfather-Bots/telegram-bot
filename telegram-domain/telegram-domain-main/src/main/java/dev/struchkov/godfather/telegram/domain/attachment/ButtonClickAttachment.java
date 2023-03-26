@@ -1,6 +1,10 @@
 package dev.struchkov.godfather.telegram.domain.attachment;
 
 import dev.struchkov.godfather.main.domain.content.Attachment;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -10,6 +14,8 @@ import java.util.Optional;
 import static dev.struchkov.haiti.context.exception.NotFoundException.notFoundException;
 import static dev.struchkov.haiti.utils.Inspector.isNotNull;
 
+@Getter
+@Setter
 public class ButtonClickAttachment extends Attachment {
 
     /**
@@ -17,14 +23,10 @@ public class ButtonClickAttachment extends Attachment {
      */
     private String messageId;
     private String rawCallBackData;
-    private final Map<String, Arg> args = new HashMap<>();
+    private Map<String, Arg> args = new HashMap<>();
 
-    public String getRawCallBackData() {
-        return rawCallBackData;
-    }
-
-    public void setRawCallBackData(String rawCallBackData) {
-        this.rawCallBackData = rawCallBackData;
+    public ButtonClickAttachment() {
+        super(TelegramAttachmentType.BUTTON_CLICK.name());
     }
 
     public void addClickArg(String type, String value) {
@@ -46,40 +48,14 @@ public class ButtonClickAttachment extends Attachment {
         return args.values();
     }
 
-    public String getMessageId() {
-        return messageId;
-    }
-
-    public void setMessageId(String messageId) {
-        this.messageId = messageId;
-    }
-
-    public Map<String, Arg> getArgs() {
-        return args;
-    }
-
-    @Override
-    public String getType() {
-        return TelegramAttachmentType.BUTTON_CLICK.name();
-    }
-
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Arg {
 
-        private final String type;
-        private final String value;
-
-        private Arg(String type, String value) {
-            this.type = type;
-            this.value = value;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public String getValue() {
-            return value;
-        }
+        private String type;
+        private String value;
 
     }
 
