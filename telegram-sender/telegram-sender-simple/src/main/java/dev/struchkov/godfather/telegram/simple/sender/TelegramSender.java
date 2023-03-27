@@ -96,9 +96,14 @@ public class TelegramSender implements TelegramSending {
     public void replaceInlineMessage(String inlineMessageId, BoxAnswer boxAnswer) {
         final EditMessageText editMessageText = new EditMessageText();
         editMessageText.setInlineMessageId(inlineMessageId);
-        editMessageText.enableMarkdown(true);
         editMessageText.setText(boxAnswer.getMessage());
         editMessageText.setReplyMarkup(convertInlineKeyBoard((InlineKeyBoard) boxAnswer.getKeyBoard()));
+
+        boxAnswer.getPayLoad(ENABLE_MARKDOWN).ifPresent(editMessageText::enableMarkdown);
+        boxAnswer.getPayLoad(DISABLE_WEB_PAGE_PREVIEW).ifPresent(isDisable -> {
+            if (TRUE.equals(isDisable)) editMessageText.disableWebPagePreview();
+        });
+
         try {
             absSender.execute(editMessageText);
         } catch (TelegramApiRequestException e) {

@@ -170,9 +170,13 @@ public class TelegramSender implements TelegramSending {
                             final EditMessageText editMessageText = new EditMessageText();
                             editMessageText.setChatId(telegramId);
                             editMessageText.setMessageId(Integer.parseInt(lastMessageId));
-                            editMessageText.enableMarkdown(true);
                             editMessageText.setText(boxAnswer.getMessage());
                             editMessageText.setReplyMarkup(convertInlineKeyBoard((InlineKeyBoard) boxAnswer.getKeyBoard()));
+
+                            boxAnswer.getPayLoad(ENABLE_MARKDOWN).ifPresent(editMessageText::enableMarkdown);
+                            boxAnswer.getPayLoad(DISABLE_WEB_PAGE_PREVIEW).ifPresent(isDisable -> {
+                                if (TRUE.equals(isDisable)) editMessageText.disableWebPagePreview();
+                            });
 
                             return Uni.createFrom().completionStage(executeAsync(editMessageText))
                                     .onItem().ifNotNull().transformToUni(t -> Uni.createFrom().optional(SentBox.optional(telegramId, lastMessageId, boxAnswer, boxAnswer)))
