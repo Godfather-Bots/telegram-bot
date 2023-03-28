@@ -48,7 +48,7 @@ public final class UnitPaginationUtil {
      * @param countElements - общее количество элементов которое может вернуть запрос
      */
     public static Optional<KeyBoardLine> navigableLine(Integer currentOffset, Integer countElements) {
-        final SimpleKeyBoardLine.Builder lineBuilder = SimpleKeyBoardLine.builder();
+        final SimpleKeyBoardLine.SimpleKeyBoardLineBuilder lineBuilder = SimpleKeyBoardLine.builder();
 
         final Optional<KeyBoardButton> optPrevButton = getPrevPageButton(currentOffset);
         final Optional<KeyBoardButton> optNextButton = getNextPageButton(currentOffset, countElements);

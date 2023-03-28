@@ -4,7 +4,6 @@ import dev.struchkov.godfather.main.domain.keyboard.KeyBoard;
 import dev.struchkov.godfather.main.domain.keyboard.KeyBoardButton;
 import dev.struchkov.godfather.main.domain.keyboard.KeyBoardLine;
 import dev.struchkov.godfather.main.domain.keyboard.button.SimpleButton;
-import dev.struchkov.godfather.main.domain.keyboard.simple.SimpleKeyBoard;
 import dev.struchkov.godfather.telegram.domain.keyboard.InlineKeyBoard;
 import dev.struchkov.godfather.telegram.domain.keyboard.MarkupKeyBoard;
 import dev.struchkov.godfather.telegram.domain.keyboard.button.ContactButton;
@@ -42,22 +41,9 @@ public final class KeyBoardConvert {
                 case MarkupKeyBoard.TYPE -> {
                     return convertMarkupKeyBoard((MarkupKeyBoard) keyBoard);
                 }
-                case SimpleKeyBoard.TYPE -> {
-                    return convertSimpleKeyBoard((SimpleKeyBoard) keyBoard);
-                }
             }
         }
         return null;
-    }
-
-    public static ReplyKeyboard convertSimpleKeyBoard(SimpleKeyBoard keyBoard) {
-        final ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-        keyboardMarkup.setKeyboard(
-                keyBoard.getLines().stream()
-                        .map(KeyBoardConvert::convertMarkupLine)
-                        .toList()
-        );
-        return keyboardMarkup;
     }
 
     public static ReplyKeyboard convertMarkupKeyBoard(MarkupKeyBoard keyBoard) {

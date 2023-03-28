@@ -3,38 +3,32 @@ package dev.struchkov.godfather.telegram.domain.keyboard;
 import dev.struchkov.godfather.main.domain.keyboard.KeyBoard;
 import dev.struchkov.godfather.main.domain.keyboard.KeyBoardButton;
 import dev.struchkov.godfather.main.domain.keyboard.KeyBoardLine;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.Singular;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static dev.struchkov.godfather.main.domain.keyboard.simple.SimpleKeyBoardLine.simpleLine;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class InlineKeyBoard implements KeyBoard {
 
     public static final String TYPE = "INLINE";
 
+    @Singular
     protected List<KeyBoardLine> lines;
 
-    public InlineKeyBoard(List<KeyBoardLine> lines) {
-        this.lines = lines;
-    }
-
-    private InlineKeyBoard(Builder builder) {
-        this.lines = builder.lines;
-    }
-
-    public static Builder builder() {
-        return new Builder();
-    }
-
     public static InlineKeyBoard inlineKeyBoard(KeyBoardLine... keyBoardLine) {
-        final Builder builder = builder();
+        final InlineKeyBoardBuilder builder = builder();
         for (KeyBoardLine boardLine : keyBoardLine) {
             builder.line(boardLine);
         }
@@ -48,29 +42,6 @@ public class InlineKeyBoard implements KeyBoard {
     @Override
     public String getType() {
         return TYPE;
-    }
-
-    public static final class Builder {
-
-        private List<KeyBoardLine> lines = new ArrayList<>();
-
-        private Builder() {
-        }
-
-        public Builder lines(List<KeyBoardLine> val) {
-            lines = val;
-            return this;
-        }
-
-        public Builder line(KeyBoardLine val) {
-            lines.add(val);
-            return this;
-        }
-
-        public InlineKeyBoard build() {
-            return new InlineKeyBoard(this);
-        }
-
     }
 
 }

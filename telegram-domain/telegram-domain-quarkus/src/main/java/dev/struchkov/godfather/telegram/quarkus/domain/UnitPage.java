@@ -122,7 +122,7 @@ public class UnitPage<T> {
             final List<KeyBoardLine> lines = elements.stream()
                     .map(function)
                     .toList();
-            final InlineKeyBoard.Builder builder = InlineKeyBoard.builder();
+            final InlineKeyBoard.InlineKeyBoardBuilder builder = InlineKeyBoard.builder();
 
             lines.forEach(builder::line);
             if (!removeDefaultNavigableLine) {
