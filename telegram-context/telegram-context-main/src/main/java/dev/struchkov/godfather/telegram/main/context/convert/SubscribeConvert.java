@@ -1,4 +1,4 @@
-package dev.struchkov.godfather.telegram.main.consumer;
+package dev.struchkov.godfather.telegram.main.context.convert;
 
 import dev.struchkov.godfather.telegram.domain.event.Subscribe;
 import org.telegram.telegrambots.meta.api.objects.ChatMemberUpdated;

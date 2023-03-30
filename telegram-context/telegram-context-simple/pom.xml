@@ -24,6 +24,10 @@
             <groupId>dev.struchkov.godfather.telegram</groupId>
             <artifactId>telegram-context-main</artifactId>
         </dependency>
+        <dependency>
+            <groupId>dev.struchkov.godfather.telegram</groupId>
+            <artifactId>telegram-domain-simple</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.telegram</groupId>

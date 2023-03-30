@@ -6,6 +6,7 @@ import dev.struchkov.godfather.quarkus.domain.SentBox;
 import dev.struchkov.godfather.quarkus.domain.action.PreSendProcessing;
 import dev.struchkov.godfather.telegram.domain.keyboard.InlineKeyBoard;
 import dev.struchkov.godfather.telegram.main.context.BoxAnswerPayload;
+import dev.struchkov.godfather.telegram.main.context.convert.MessageMailConvert;
 import dev.struchkov.godfather.telegram.quarkus.context.repository.SenderRepository;
 import dev.struchkov.godfather.telegram.quarkus.context.service.TelegramConnect;
 import dev.struchkov.godfather.telegram.quarkus.context.service.TelegramSending;
@@ -179,7 +180,13 @@ public class TelegramSender implements TelegramSending {
                             });
 
                             return Uni.createFrom().completionStage(executeAsync(editMessageText))
-                                    .onItem().ifNotNull().transformToUni(t -> Uni.createFrom().optional(SentBox.optional(telegramId, lastMessageId, boxAnswer, boxAnswer)))
+                                    .onItem().ifNotNull().transform(t -> {
+                                        final SentBox sentBox = new SentBox();
+                                        sentBox.setSentAnswer(boxAnswer);
+                                        sentBox.setOriginalAnswer(boxAnswer);
+                                        sentBox.setMessageId(telegramId);
+                                        return sentBox;
+                                    })
                                     .onFailure(TelegramApiRequestException.class).recoverWithUni(
                                             ex -> {
                                                 final TelegramApiRequestException exception = (TelegramApiRequestException) ex;
@@ -209,8 +216,17 @@ public class TelegramSender implements TelegramSending {
                     }
                     return Uni.createFrom().nullItem();
                 })
-                .onItem().ifNotNull().transformToUni(
-                        answerMessages -> Uni.createFrom().optional(SentBox.optional(telegramId, answerMessages.get(answerMessages.size() - 1).getMessageId().toString(), boxAnswer, boxAnswer))
+                .onItem().ifNotNull().transform(
+                        answerMessages -> {
+                            final Message lastMessage = answerMessages.get(answerMessages.size() - 1);
+
+                            final SentBox sentBox = new SentBox();
+                            sentBox.setMessageId(lastMessage.getMessageId().toString());
+                            sentBox.setOriginalAnswer(boxAnswer);
+                            sentBox.setSentAnswer(boxAnswer);
+                            sentBox.setSentMail(MessageMailConvert.apply(lastMessage));
+                            return sentBox;
+                        }
                 );
     }
 

@@ -4,23 +4,31 @@ import dev.struchkov.godfather.main.domain.SendType;
 import dev.struchkov.godfather.simple.domain.BoxAnswer;
 import dev.struchkov.godfather.simple.domain.SentBox;
 import dev.struchkov.godfather.simple.domain.action.PreSendProcessing;
+import dev.struchkov.godfather.simple.domain.content.send.SendAttachment;
+import dev.struchkov.godfather.simple.domain.content.send.SendFile;
 import dev.struchkov.godfather.telegram.domain.keyboard.InlineKeyBoard;
 import dev.struchkov.godfather.telegram.main.context.BoxAnswerPayload;
+import dev.struchkov.godfather.telegram.main.context.convert.MessageMailConvert;
 import dev.struchkov.godfather.telegram.simple.context.repository.SenderRepository;
 import dev.struchkov.godfather.telegram.simple.context.service.TelegramConnect;
 import dev.struchkov.godfather.telegram.simple.context.service.TelegramSending;
+import dev.struchkov.godfather.telegram.simple.domain.attachment.send.PhotoSendAttachment;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.api.methods.invoices.SendInvoice;
+import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +38,7 @@ import static dev.struchkov.godfather.telegram.main.context.BoxAnswerPayload.DIS
 import static dev.struchkov.godfather.telegram.main.context.BoxAnswerPayload.ENABLE_MARKDOWN;
 import static dev.struchkov.godfather.telegram.main.sender.util.KeyBoardConvert.convertInlineKeyBoard;
 import static dev.struchkov.godfather.telegram.main.sender.util.KeyBoardConvert.convertKeyBoard;
+import static dev.struchkov.haiti.utils.Checker.checkNotBlank;
 import static dev.struchkov.haiti.utils.Checker.checkNotNull;
 import static dev.struchkov.haiti.utils.Inspector.isNotNull;
 import static java.lang.Boolean.TRUE;
@@ -148,6 +157,16 @@ public class TelegramSender implements TelegramSending {
                 }
             }
         }
+
+        final SendAttachment sendAttachment = boxAnswer.getAttachment();
+        if (checkNotNull(sendAttachment)) {
+            switch (sendAttachment.getType()) {
+                case "PHOTO":
+                    return sendPhoto(boxAnswer, preparedAnswer);
+                case "DOCUMENT":
+                    return sendDocument(boxAnswer, preparedAnswer);
+            }
+        }
         return sendMessage(recipientTelegramId, boxAnswer, preparedAnswer, saveMessageId);
     }
 
@@ -165,7 +184,14 @@ public class TelegramSender implements TelegramSending {
 
         try {
             absSender.execute(editMessageText);
-            return SentBox.optional(telegramId, replaceMessageId, preparedAnswer, boxAnswer);
+            return Optional.of(
+                    SentBox.builder()
+                            .personId(telegramId)
+                            .messageId(replaceMessageId)
+                            .originalAnswer(boxAnswer)
+                            .sentAnswer(boxAnswer)
+                            .build()
+            );
         } catch (TelegramApiRequestException e) {
             log.error(e.getApiResponse());
             if (ERROR_REPLACE_MESSAGE.equals(e.getApiResponse())) {
@@ -179,6 +205,7 @@ public class TelegramSender implements TelegramSending {
 
     private Optional<SentBox> sendMessage(@NotNull String telegramId, @NotNull BoxAnswer boxAnswer, BoxAnswer preparedAnswer, boolean saveMessageId) {
         final List<SendMessage> sendMessages = splitBoxAnswerByMessageLength(boxAnswer, 4000);
+
         Message execute = null;
         for (SendMessage sendMessage : sendMessages) {
             try {
@@ -193,9 +220,125 @@ public class TelegramSender implements TelegramSending {
             if (checkNotNull(senderRepository) && saveMessageId) {
                 senderRepository.saveLastSendMessage(telegramId, execute.getMessageId().toString());
             }
-            return SentBox.optional(telegramId, execute.getMessageId().toString(), preparedAnswer, boxAnswer);
+            return Optional.of(
+                    SentBox.builder()
+                            .personId(telegramId)
+                            .messageId(execute.getMessageId().toString())
+                            .sentAnswer(boxAnswer)
+                            .originalAnswer(boxAnswer)
+                            .sentMail(MessageMailConvert.apply(execute))
+                            .build()
+            );
         }
         return Optional.empty();
+    }
+
+    private Optional<SentBox> sendPhoto(BoxAnswer boxAnswer, BoxAnswer preparedAnswer) {
+        final PhotoSendAttachment photoSendAttachment = (PhotoSendAttachment) boxAnswer.getAttachment();
+        final SendFile sendFile = photoSendAttachment.getSendFile();
+
+        final SendPhoto sendPhoto = new SendPhoto();
+        sendPhoto.setCaption(boxAnswer.getMessage());
+        sendPhoto.setChatId(boxAnswer.getRecipientPersonId());
+        sendPhoto.setPhoto(convertInputFile(sendFile));
+        sendPhoto.setReplyMarkup(convertKeyBoard(boxAnswer.getKeyBoard()));
+
+        boxAnswer.getPayLoad(DISABLE_NOTIFICATION).ifPresent(isDisable -> {
+            if (TRUE.equals(isDisable)) sendPhoto.disableNotification();
+        });
+        boxAnswer.getPayLoad(ENABLE_MARKDOWN).ifPresent(isEnable -> {
+            if (TRUE.equals(isEnable)) sendPhoto.setParseMode("Markdown");
+        });
+
+        Message execute = null;
+        try {
+            execute = absSender.execute(sendPhoto);
+        } catch (TelegramApiRequestException e) {
+            log.error(e.getApiResponse());
+        } catch (TelegramApiException e) {
+            log.error(e.getMessage());
+        }
+        if (checkNotNull(execute)) {
+            if (checkNotNull(senderRepository)) {
+                senderRepository.saveLastSendMessage(boxAnswer.getRecipientPersonId(), execute.getMessageId().toString());
+            }
+            return Optional.of(
+                    SentBox.builder()
+                            .personId(boxAnswer.getRecipientPersonId())
+                            .messageId(execute.getMessageId().toString())
+                            .sentAnswer(boxAnswer)
+                            .originalAnswer(boxAnswer)
+                            .sentMail(MessageMailConvert.apply(execute))
+                            .build()
+            );
+        }
+        return Optional.empty();
+    }
+
+    private Optional<SentBox> sendDocument(BoxAnswer boxAnswer, BoxAnswer preparedAnswer) {
+        final SendDocument sendDocument = new SendDocument();
+        sendDocument.setCaption(boxAnswer.getMessage());
+        sendDocument.setChatId(boxAnswer.getRecipientPersonId());
+        sendDocument.setReplyMarkup(convertKeyBoard(boxAnswer.getKeyBoard()));
+        sendDocument.setDocument(convertInputFile(boxAnswer.getAttachment().getSendFile()));
+        boxAnswer.getPayLoad(DISABLE_NOTIFICATION).ifPresent(isDisable -> {
+            if (TRUE.equals(isDisable)) sendDocument.disableNotification();
+        });
+        boxAnswer.getPayLoad(ENABLE_MARKDOWN).ifPresent(isEnable -> {
+            if (TRUE.equals(isEnable)) sendDocument.setParseMode("Markdown");
+        });
+
+        Message execute = null;
+        try {
+            execute = absSender.execute(sendDocument);
+        } catch (TelegramApiRequestException e) {
+            log.error(e.getApiResponse());
+        } catch (TelegramApiException e) {
+            log.error(e.getMessage());
+        }
+        if (checkNotNull(execute)) {
+            if (checkNotNull(senderRepository)) {
+                senderRepository.saveLastSendMessage(boxAnswer.getRecipientPersonId(), execute.getMessageId().toString());
+            }
+            return Optional.of(
+                    SentBox.builder()
+                            .personId(boxAnswer.getRecipientPersonId())
+                            .messageId(execute.getMessageId().toString())
+                            .sentAnswer(boxAnswer)
+                            .originalAnswer(boxAnswer)
+                            .sentMail(MessageMailConvert.apply(execute))
+                            .build()
+            );
+        }
+        return Optional.empty();
+    }
+
+    private InputFile convertInputFile(SendFile sendFile) {
+        final File fileData = sendFile.getData();
+        final String fileName = sendFile.getFileName();
+
+        if (checkNotBlank(sendFile.getFileId())) {
+            return new InputFile(sendFile.getFileId());
+        }
+
+        if (checkNotBlank(sendFile.getUrl())) {
+            return new InputFile(sendFile.getUrl());
+        }
+
+        if (checkNotNull(fileData)) {
+            if (checkNotBlank(fileName)) {
+                return new InputFile(fileData, fileName);
+            } else {
+                return new InputFile(fileData);
+            }
+        }
+
+        if (checkNotNull(sendFile.getFileStream())) {
+            return new InputFile(sendFile.getFileStream(), fileName);
+        } else {
+            return new InputFile(fileName);
+        }
+
     }
 
     public List<SendMessage> splitBoxAnswerByMessageLength(BoxAnswer boxAnswer, int maxMessageLength) {
@@ -205,15 +348,15 @@ public class TelegramSender implements TelegramSending {
         while (message.length() > maxMessageLength) {
             String subMessage = message.substring(0, maxMessageLength);
             message = message.substring(maxMessageLength);
-            split.add(createNewBoxAnswer(boxAnswer, subMessage));
+            split.add(createNewMessage(boxAnswer, subMessage));
         }
 
-        split.add(createNewBoxAnswer(boxAnswer, message));
+        split.add(createNewMessage(boxAnswer, message));
 
         return split;
     }
 
-    private SendMessage createNewBoxAnswer(BoxAnswer boxAnswer, String subMessage) {
+    private SendMessage createNewMessage(BoxAnswer boxAnswer, String subMessage) {
         final SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(boxAnswer.getRecipientPersonId());
         sendMessage.setText(subMessage);

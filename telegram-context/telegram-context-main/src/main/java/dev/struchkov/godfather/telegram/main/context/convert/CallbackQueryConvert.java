@@ -1,4 +1,4 @@
-package dev.struchkov.godfather.telegram.main.consumer;
+package dev.struchkov.godfather.telegram.main.context.convert;
 
 import dev.struchkov.godfather.main.domain.content.Mail;
 import dev.struchkov.godfather.telegram.domain.attachment.ButtonClickAttachment;

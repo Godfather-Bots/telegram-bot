@@ -1,7 +1,7 @@
-package dev.struchkov.godfather.telegram.main.consumer;
+package dev.struchkov.godfather.telegram.main.context.convert;
 
 import dev.struchkov.godfather.main.domain.content.Attachment;
-import dev.struchkov.godfather.main.domain.content.Mail;
+import dev.struchkov.godfather.main.domain.content.ChatMail;
 import dev.struchkov.godfather.telegram.domain.attachment.CommandAttachment;
 import dev.struchkov.godfather.telegram.domain.attachment.ContactAttachment;
 import dev.struchkov.godfather.telegram.domain.attachment.DocumentAttachment;
@@ -11,12 +11,12 @@ import dev.struchkov.godfather.telegram.domain.attachment.PictureGroupAttachment
 import dev.struchkov.godfather.telegram.main.context.MailPayload;
 import dev.struchkov.haiti.utils.Checker;
 import dev.struchkov.haiti.utils.Strings;
-import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Contact;
 import org.telegram.telegrambots.meta.api.objects.Document;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 import org.telegram.telegrambots.meta.api.objects.PhotoSize;
+import org.telegram.telegrambots.meta.api.objects.User;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -32,25 +32,26 @@ import static dev.struchkov.haiti.utils.Exceptions.utilityClass;
  *
  * @author upagge [18.08.2019]
  */
-public final class MessageMailConvert {
+public final class MessageChatMailConvert {
 
-    private MessageMailConvert() {
+    private MessageChatMailConvert() {
         utilityClass();
     }
 
-    public static Mail apply(Message message) {
-        final Mail mail = new Mail();
+    public static ChatMail apply(Message message) {
+        final ChatMail mail = new ChatMail();
 
         final Long chatId = message.getChatId();
         mail.setId(message.getMessageId().toString());
-        mail.setFromPersonId(chatId != null ? chatId.toString() : null);
+        mail.setChatId(chatId.toString());
         mail.setText(message.getText());
         mail.setCreateDate(LocalDateTime.ofInstant(Instant.ofEpochSecond(message.getDate()), ZoneId.systemDefault()));
 
-        final Chat chat = message.getChat();
-        mail.setFirstName(chat.getFirstName());
-        mail.setLastName(chat.getLastName());
-        mail.addPayload(MailPayload.USERNAME, chat.getUserName());
+        final User fromUser = message.getFrom();
+        mail.setFirstName(fromUser.getFirstName());
+        mail.setLastName(fromUser.getLastName());
+        mail.addPayload(MailPayload.USERNAME, fromUser.getUserName());
+        mail.setFromPersonId(fromUser.getId().toString());
 
         convertDocument(message.getDocument()).ifPresent(mail::addAttachment);
         convertContact(message.getContact()).ifPresent(mail::addAttachment);
