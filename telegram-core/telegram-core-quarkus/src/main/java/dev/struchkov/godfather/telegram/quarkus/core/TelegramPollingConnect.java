@@ -17,11 +17,6 @@ import java.net.PasswordAuthentication;
 
 import static dev.struchkov.haiti.utils.Checker.checkNotNull;
 
-/**
- * TODO: Добавить описание класса.
- *
- * @author upagge [30.01.2020]
- */
 @Slf4j
 public class TelegramPollingConnect implements TelegramConnect {
 
@@ -32,6 +27,7 @@ public class TelegramPollingConnect implements TelegramConnect {
     }
 
     private void initLongPolling(TelegramBotConfig telegramBotConfig) {
+        log.info("Initializing Telegram Long Polling...");
         final ProxyConfig proxyConfig = telegramBotConfig.getProxyConfig();
         if (checkNotNull(proxyConfig) && proxyConfig.isEnable() && checkNotNull(proxyConfig.getPassword()) && !"".equals(proxyConfig.getPassword())) {
             try {
@@ -45,8 +41,9 @@ public class TelegramPollingConnect implements TelegramConnect {
                     }
                 });
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("Error setting default authenticator for telegram proxy", e);
             }
+            log.info("Telegram proxy with authentication enabled");
         }
 
         final TelegramBotsApi botapi;
@@ -54,26 +51,29 @@ public class TelegramPollingConnect implements TelegramConnect {
             if (checkNotNull(proxyConfig) && proxyConfig.isEnable() && checkNotNull(proxyConfig.getHost()) && !"".equals(proxyConfig.getHost())) {
                 System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2");
 //                System.setProperty("javax.net.debug", "all");
-                log.info(System.getProperty("https.protocols"));
+//                log.info(System.getProperty("https.protocols"));
                 DefaultBotOptions botOptions = new DefaultBotOptions();
                 botOptions.setProxyHost(proxyConfig.getHost());
                 botOptions.setProxyPort(proxyConfig.getPort());
                 botOptions.setProxyType(convertProxyType(proxyConfig.getType()));
 
+                log.info("Telegram proxy configuration set for bot");
 
                 final TelegramPollingBot bot = new TelegramPollingBot(telegramBotConfig, botOptions);
 
                 botapi = new TelegramBotsApi(DefaultBotSession.class);
                 botapi.registerBot(bot);
                 this.pollingBot = bot;
+                log.info("Telegram Bot registered with proxy settings");
             } else {
                 final TelegramPollingBot bot = new TelegramPollingBot(telegramBotConfig);
                 botapi = new TelegramBotsApi(DefaultBotSession.class);
                 botapi.registerBot(bot);
                 this.pollingBot = bot;
+                log.info("Telegram Bot registered without proxy settings");
             }
         } catch (TelegramApiException e) {
-            log.error(e.getMessage());
+            log.error("Error registering telegram bot", e);
         }
     }
 

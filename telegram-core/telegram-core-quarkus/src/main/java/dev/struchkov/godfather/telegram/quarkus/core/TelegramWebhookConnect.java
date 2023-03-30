@@ -15,6 +15,7 @@ public class TelegramWebhookConnect implements TelegramConnect {
     private TelegramWebhookBot webhookBot;
 
     public TelegramWebhookConnect(TelegramBotConfig telegramBotConfig) {
+        log.info("Initializing Webhook Polling...");
         try {
             final TelegramWebhookBot bot = new TelegramWebhookBot(telegramBotConfig);
             final WebhookConfig webhookConfig = telegramBotConfig.getWebhookConfig();
