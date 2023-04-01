@@ -182,9 +182,10 @@ public class TelegramSender implements TelegramSending {
                             return Uni.createFrom().completionStage(executeAsync(editMessageText))
                                     .onItem().ifNotNull().transform(t -> {
                                         final SentBox sentBox = new SentBox();
+                                        sentBox.setPersonId(telegramId);
+                                        sentBox.setMessageId(lastMessageId);
                                         sentBox.setSentAnswer(boxAnswer);
                                         sentBox.setOriginalAnswer(boxAnswer);
-                                        sentBox.setMessageId(telegramId);
                                         return sentBox;
                                     })
                                     .onFailure(TelegramApiRequestException.class).recoverWithUni(

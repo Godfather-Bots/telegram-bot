@@ -11,11 +11,6 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 
 import static dev.struchkov.haiti.utils.Checker.checkNotNull;
 
-/**
- * TODO: Добавить описание класса.
- *
- * @author upagge [15/07/2019]
- */
 public class TelegramPollingBot extends TelegramLongPollingBot implements TelegramBot {
 
     private final TelegramBotConfig telegramBotConfig;
