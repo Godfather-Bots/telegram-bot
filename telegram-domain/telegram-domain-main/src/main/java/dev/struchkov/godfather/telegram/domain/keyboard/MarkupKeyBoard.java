@@ -3,6 +3,7 @@ package dev.struchkov.godfather.telegram.domain.keyboard;
 import dev.struchkov.godfather.main.domain.keyboard.KeyBoard;
 import dev.struchkov.godfather.main.domain.keyboard.KeyBoardButton;
 import dev.struchkov.godfather.main.domain.keyboard.KeyBoardLine;
+import dev.struchkov.haiti.utils.Checker;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,6 +15,8 @@ import lombok.Singular;
 import java.util.List;
 
 import static dev.struchkov.godfather.main.domain.keyboard.simple.SimpleKeyBoardLine.simpleLine;
+import static dev.struchkov.haiti.utils.Checker.checkEmpty;
+import static dev.struchkov.haiti.utils.Checker.checkNotEmpty;
 
 @Getter
 @Setter
@@ -67,11 +70,11 @@ public class MarkupKeyBoard implements KeyBoard {
     }
 
     public boolean isEmpty() {
-        return lines.isEmpty();
+        return checkEmpty(lines);
     }
 
     public boolean isNotEmpty() {
-        return !lines.isEmpty();
+        return checkNotEmpty(lines);
     }
 
 }
