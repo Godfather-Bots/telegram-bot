@@ -4,14 +4,14 @@ import dev.struchkov.godfather.telegram.quarkus.context.repository.SenderReposit
 import io.smallrye.mutiny.Uni;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static dev.struchkov.haiti.utils.Inspector.isNotNull;
 
 public class SenderMapRepository implements SenderRepository {
 
-    private final Map<String, String> lastMessageId = new HashMap<>();
+    private final Map<String, String> lastMessageId = new ConcurrentHashMap<>();
 
     @Override
     public Uni<String> getLastSendMessage(String telegramId) {

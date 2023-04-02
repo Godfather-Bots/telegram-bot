@@ -5,6 +5,7 @@ import dev.struchkov.godfather.telegram.domain.config.ProxyConfig.Type;
 import dev.struchkov.godfather.telegram.domain.config.TelegramBotConfig;
 import dev.struchkov.godfather.telegram.quarkus.context.service.EventDistributor;
 import dev.struchkov.godfather.telegram.quarkus.context.service.TelegramConnect;
+import io.vertx.core.Vertx;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -22,11 +23,11 @@ public class TelegramPollingConnect implements TelegramConnect {
 
     private TelegramPollingBot pollingBot;
 
-    public TelegramPollingConnect(TelegramBotConfig telegramBotConfig) {
-        initLongPolling(telegramBotConfig);
+    public TelegramPollingConnect(Vertx vertx, TelegramBotConfig telegramBotConfig) {
+        initLongPolling(vertx, telegramBotConfig);
     }
 
-    private void initLongPolling(TelegramBotConfig telegramBotConfig) {
+    private void initLongPolling(Vertx vertx, TelegramBotConfig telegramBotConfig) {
         log.info("Initializing Telegram Long Polling...");
         final ProxyConfig proxyConfig = telegramBotConfig.getProxyConfig();
         if (checkNotNull(proxyConfig) && proxyConfig.isEnable() && checkNotNull(proxyConfig.getPassword()) && !"".equals(proxyConfig.getPassword())) {
@@ -59,14 +60,14 @@ public class TelegramPollingConnect implements TelegramConnect {
 
                 log.info("Telegram proxy configuration set for bot");
 
-                final TelegramPollingBot bot = new TelegramPollingBot(telegramBotConfig, botOptions);
+                final TelegramPollingBot bot = new TelegramPollingBot(vertx, telegramBotConfig, botOptions);
 
                 botapi = new TelegramBotsApi(DefaultBotSession.class);
                 botapi.registerBot(bot);
                 this.pollingBot = bot;
                 log.info("Telegram Bot registered with proxy settings");
             } else {
-                final TelegramPollingBot bot = new TelegramPollingBot(telegramBotConfig);
+                final TelegramPollingBot bot = new TelegramPollingBot(vertx, telegramBotConfig);
                 botapi = new TelegramBotsApi(DefaultBotSession.class);
                 botapi.registerBot(bot);
                 this.pollingBot = bot;
