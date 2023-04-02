@@ -88,11 +88,6 @@ public class TelegramSender implements TelegramSending {
     }
 
     @Override
-    public Uni<SentBox> replaceMessage(@NotNull String personId, @NotNull String messageId, @NotNull BoxAnswer newAnswer) {
-        return replace(personId, messageId, newAnswer, true);
-    }
-
-    @Override
     public Uni<SentBox> sendNotSave(@NotNull BoxAnswer boxAnswer) {
         return sendBoxAnswer(boxAnswer, false);
     }
@@ -222,6 +217,7 @@ public class TelegramSender implements TelegramSending {
                             final Message lastMessage = answerMessages.get(answerMessages.size() - 1);
 
                             final SentBox sentBox = new SentBox();
+                            sentBox.setPersonId(telegramId);
                             sentBox.setMessageId(lastMessage.getMessageId().toString());
                             sentBox.setOriginalAnswer(boxAnswer);
                             sentBox.setSentAnswer(boxAnswer);

@@ -86,11 +86,6 @@ public class TelegramSender implements TelegramSending {
     }
 
     @Override
-    public Optional<SentBox> replaceMessage(@NotNull String personId, @NotNull String messageId, @NotNull BoxAnswer newAnswer) {
-        return replace(personId, messageId, newAnswer, newAnswer, true);
-    }
-
-    @Override
     public Optional<SentBox> send(@NotNull BoxAnswer boxAnswer) {
         isNotNull(boxAnswer.getRecipientPersonId());
         return sendBoxAnswer(boxAnswer, true);
