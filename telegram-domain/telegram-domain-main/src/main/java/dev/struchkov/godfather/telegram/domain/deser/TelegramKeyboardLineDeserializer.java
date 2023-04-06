@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import dev.struchkov.godfather.main.domain.keyboard.KeyBoardLine;
-import dev.struchkov.godfather.main.domain.keyboard.simple.SimpleKeyBoardLine;
+import dev.struchkov.godfather.telegram.domain.keyboard.SimpleKeyBoardLine;
 
 import java.io.IOException;
 

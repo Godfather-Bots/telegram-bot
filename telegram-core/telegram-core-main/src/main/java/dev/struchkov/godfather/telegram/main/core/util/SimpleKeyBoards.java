@@ -1,8 +1,8 @@
 package dev.struchkov.godfather.telegram.main.core.util;
 
-import dev.struchkov.godfather.main.domain.keyboard.button.SimpleButton;
-import dev.struchkov.godfather.main.domain.keyboard.simple.SimpleKeyBoardLine;
 import dev.struchkov.godfather.telegram.domain.keyboard.MarkupKeyBoard;
+import dev.struchkov.godfather.telegram.domain.keyboard.SimpleKeyBoardLine;
+import dev.struchkov.godfather.telegram.domain.keyboard.button.SimpleButton;
 
 import java.util.Arrays;
 import java.util.List;

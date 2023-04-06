@@ -1,15 +1,15 @@
 package dev.struchkov.godfather.telegram.main.core.util;
 
 import dev.struchkov.godfather.main.domain.keyboard.KeyBoardButton;
-import dev.struchkov.godfather.main.domain.keyboard.button.SimpleButton;
-import dev.struchkov.godfather.main.domain.keyboard.simple.SimpleKeyBoardLine;
 import dev.struchkov.godfather.telegram.domain.keyboard.InlineKeyBoard;
+import dev.struchkov.godfather.telegram.domain.keyboard.SimpleKeyBoardLine;
+import dev.struchkov.godfather.telegram.domain.keyboard.button.SimpleButton;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static dev.struchkov.godfather.main.domain.keyboard.button.SimpleButton.simpleButton;
-import static dev.struchkov.godfather.main.domain.keyboard.simple.SimpleKeyBoardLine.simpleLine;
+import static dev.struchkov.godfather.telegram.domain.keyboard.SimpleKeyBoardLine.keyBoardLine;
+import static dev.struchkov.godfather.telegram.domain.keyboard.button.SimpleButton.simpleButton;
 import static dev.struchkov.haiti.utils.Exceptions.utilityClass;
 
 public final class InlineKeyBoards {
@@ -25,7 +25,7 @@ public final class InlineKeyBoards {
      * Возвращает клавиатуру формата 1х2, с кнопками "Да | Нет"
      */
     public static InlineKeyBoard lineYesOrNo() {
-        return InlineKeyBoard.inlineKeyBoard(simpleLine(YES_BUTTON, NO_BUTTON));
+        return InlineKeyBoard.inlineKeyBoard(keyBoardLine(YES_BUTTON, NO_BUTTON));
     }
 
     /**
@@ -37,7 +37,7 @@ public final class InlineKeyBoards {
     public static InlineKeyBoard verticalMenuString(List<String> labelButtons) {
         final InlineKeyBoard.InlineKeyBoardBuilder keyBoard = InlineKeyBoard.builder();
         for (String labelButton : labelButtons) {
-            keyBoard.line(simpleLine(simpleButton(labelButton, labelButton)));
+            keyBoard.line(keyBoardLine(simpleButton(labelButton, labelButton)));
         }
         return keyBoard.build();
     }
@@ -128,7 +128,7 @@ public final class InlineKeyBoards {
     public static InlineKeyBoard verticalMenuButton(KeyBoardButton... buttons) {
         final InlineKeyBoard.InlineKeyBoardBuilder keyBoard = InlineKeyBoard.builder();
         for (KeyBoardButton simpleButton : buttons) {
-            keyBoard.line(simpleLine(simpleButton));
+            keyBoard.line(keyBoardLine(simpleButton));
         }
         return keyBoard.build();
     }

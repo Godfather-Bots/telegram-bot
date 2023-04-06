@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import static dev.struchkov.godfather.main.domain.keyboard.simple.SimpleKeyBoardLine.simpleLine;
 import static dev.struchkov.godfather.telegram.domain.UnitPaginationUtil.navigableLine;
+import static dev.struchkov.godfather.telegram.domain.keyboard.SimpleKeyBoardLine.keyBoardLine;
 
 public class UnitPage<T> {
 
@@ -85,7 +85,7 @@ public class UnitPage<T> {
     }
 
     public UnitPage<T> additionLine(KeyBoardButton button) {
-        additionalLines.add(simpleLine(button));
+        additionalLines.add(keyBoardLine(button));
         return this;
     }
 

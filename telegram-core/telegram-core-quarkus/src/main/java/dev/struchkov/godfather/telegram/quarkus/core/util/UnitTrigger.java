@@ -49,8 +49,16 @@ public class UnitTrigger {
         return predicate(mail -> Attachments.findFirstCommand(mail.getAttachments()).isPresent());
     }
 
-    public static UniPredicate<Mail> isClickButton() {
+    public static UniPredicate<Mail> isButtonClick() {
         return predicate(mail -> Attachments.findFirstButtonClick(mail.getAttachments()).isPresent());
+    }
+
+    public static UniPredicate<Mail> isButtonClickArg(String argType) {
+        return predicate(
+                mail -> Attachments.findFirstButtonClick(mail.getAttachments())
+                        .flatMap(click -> click.getArgByType(argType))
+                        .isPresent()
+        );
     }
 
     public static UniPredicate<Mail> isLinks() {

@@ -1,9 +1,7 @@
 package dev.struchkov.godfather.telegram.domain.attachment;
 
 import dev.struchkov.godfather.main.domain.content.Attachment;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Collection;
@@ -23,7 +21,7 @@ public class ButtonClickAttachment extends Attachment {
      */
     private String messageId;
     private String rawCallBackData;
-    private Map<String, Arg> args = new HashMap<>();
+    private Map<String, ButtonArg> args = new HashMap<>();
 
     public ButtonClickAttachment() {
         super(TelegramAttachmentType.BUTTON_CLICK.name());
@@ -31,32 +29,21 @@ public class ButtonClickAttachment extends Attachment {
 
     public void addClickArg(String type, String value) {
         isNotNull(type, value);
-        args.put(type, new Arg(type, value));
+        args.put(type, ButtonArg.buttonArg(type, value));
     }
 
-    public Optional<Arg> getArgByType(String type) {
+    public Optional<ButtonArg> getArgByType(String type) {
         isNotNull(type);
         return Optional.ofNullable(args.get(type));
     }
 
-    public Arg getArgByTypeOrThrow(String type) {
+    public ButtonArg getArgByTypeOrThrow(String type) {
         isNotNull(type);
         return Optional.of(args.get(type)).orElseThrow(notFoundException("Аргумент типа {0} не найден.", type));
     }
 
-    public Collection<Arg> getClickArgs() {
+    public Collection<ButtonArg> getClickArgs() {
         return args.values();
-    }
-
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Arg {
-
-        private String type;
-        private String value;
-
     }
 
 }

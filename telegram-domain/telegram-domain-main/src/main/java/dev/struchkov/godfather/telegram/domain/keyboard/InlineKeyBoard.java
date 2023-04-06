@@ -13,7 +13,8 @@ import lombok.Singular;
 
 import java.util.List;
 
-import static dev.struchkov.godfather.main.domain.keyboard.simple.SimpleKeyBoardLine.simpleLine;
+import static dev.struchkov.godfather.telegram.domain.keyboard.SimpleKeyBoardLine.keyBoardLine;
+
 
 @Getter
 @Setter
@@ -36,7 +37,7 @@ public class InlineKeyBoard implements KeyBoard {
     }
 
     public static InlineKeyBoard inlineKeyBoard(KeyBoardButton... buttons) {
-        return builder().line(simpleLine(buttons)).build();
+        return builder().line(keyBoardLine(buttons)).build();
     }
 
     @Override

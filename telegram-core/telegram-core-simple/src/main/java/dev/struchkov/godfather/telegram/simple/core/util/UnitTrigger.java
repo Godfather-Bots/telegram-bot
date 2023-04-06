@@ -27,12 +27,18 @@ public class UnitTrigger {
         };
     }
 
-    public static Predicate<Mail> isClickButton() {
+    public static Predicate<Mail> isButtonClick() {
         return mail -> Attachments.findFirstButtonClick(mail.getAttachments()).isPresent();
     }
 
     public static Predicate<Mail> isLinks() {
         return mail -> Attachments.findFirstLink(mail.getAttachments()).isPresent();
+    }
+
+    public static Predicate<Mail> isButtonClickArg(String argType) {
+        return mail -> Attachments.findFirstButtonClick(mail.getAttachments())
+                .flatMap(click -> click.getArgByType(argType))
+                .isPresent();
     }
 
 }

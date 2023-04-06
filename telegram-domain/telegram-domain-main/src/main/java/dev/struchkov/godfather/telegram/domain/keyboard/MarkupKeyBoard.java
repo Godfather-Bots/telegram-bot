@@ -14,7 +14,7 @@ import lombok.Singular;
 
 import java.util.List;
 
-import static dev.struchkov.godfather.main.domain.keyboard.simple.SimpleKeyBoardLine.simpleLine;
+import static dev.struchkov.godfather.telegram.domain.keyboard.SimpleKeyBoardLine.keyBoardLine;
 import static dev.struchkov.haiti.utils.Checker.checkEmpty;
 import static dev.struchkov.haiti.utils.Checker.checkNotEmpty;
 
@@ -55,7 +55,7 @@ public class MarkupKeyBoard implements KeyBoard {
     public static MarkupKeyBoard markupKeyBoard(KeyBoardButton... buttons) {
         final MarkupKeyBoardBuilder builder = new MarkupKeyBoardBuilder();
         for (KeyBoardButton button : buttons) {
-            builder.line(simpleLine(button));
+            builder.line(keyBoardLine(button));
         }
         return builder.build();
     }

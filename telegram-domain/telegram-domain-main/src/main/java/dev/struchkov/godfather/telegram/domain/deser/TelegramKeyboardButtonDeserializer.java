@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import dev.struchkov.godfather.main.domain.keyboard.KeyBoardButton;
-import dev.struchkov.godfather.main.domain.keyboard.button.SimpleButton;
 import dev.struchkov.godfather.telegram.domain.keyboard.button.ContactButton;
+import dev.struchkov.godfather.telegram.domain.keyboard.button.SimpleButton;
 import dev.struchkov.godfather.telegram.domain.keyboard.button.UrlButton;
 import dev.struchkov.godfather.telegram.domain.keyboard.button.WebAppButton;
 
