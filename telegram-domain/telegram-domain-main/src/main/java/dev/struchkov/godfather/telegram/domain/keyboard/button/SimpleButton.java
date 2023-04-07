@@ -50,7 +50,7 @@ public class SimpleButton implements KeyBoardButton {
         return new SimpleButton(
                 label, Arrays.stream(args)
                 .map(buttonArg -> buttonArg.getType() + ":" + buttonArg.getValue())
-                .collect(Collectors.joining("[", "]", ";"))
+                .collect(Collectors.joining(";", "[", "]"))
         );
     }
 
