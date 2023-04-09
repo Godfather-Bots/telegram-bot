@@ -4,6 +4,7 @@ import dev.struchkov.godfather.main.domain.content.Mail;
 import dev.struchkov.godfather.telegram.domain.attachment.ButtonClickAttachment;
 import dev.struchkov.godfather.telegram.main.core.util.Attachments;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -39,6 +40,10 @@ public class UnitTrigger {
         return mail -> Attachments.findFirstButtonClick(mail.getAttachments())
                 .flatMap(click -> click.getArgByType(argType))
                 .isPresent();
+    }
+
+    public static Predicate<Mail> isPersonId(String... personId) {
+        return mail -> Arrays.stream(personId).anyMatch(id -> id.equals(mail.getFromPersonId()));
     }
 
 }
