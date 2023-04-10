@@ -9,6 +9,7 @@ import dev.struchkov.godfather.simple.domain.content.send.SendFile;
 import dev.struchkov.godfather.telegram.domain.keyboard.InlineKeyBoard;
 import dev.struchkov.godfather.telegram.main.context.BoxAnswerPayload;
 import dev.struchkov.godfather.telegram.main.context.convert.MessageMailConvert;
+import dev.struchkov.godfather.telegram.main.context.exception.TelegramSenderException;
 import dev.struchkov.godfather.telegram.simple.context.repository.SenderRepository;
 import dev.struchkov.godfather.telegram.simple.context.service.TelegramConnect;
 import dev.struchkov.godfather.telegram.simple.context.service.TelegramSending;
@@ -81,7 +82,7 @@ public class TelegramSender implements TelegramSending {
         try {
             absSender.execute(deleteMessage);
         } catch (TelegramApiException e) {
-            log.error(e.getMessage(), e);
+            throw new TelegramSenderException(e.getMessage(), e);
         }
     }
 
@@ -111,9 +112,9 @@ public class TelegramSender implements TelegramSending {
         try {
             absSender.execute(editMessageText);
         } catch (TelegramApiRequestException e) {
-            log.error(e.getApiResponse());
+            throw new TelegramSenderException(e.getApiResponse(), e);
         } catch (TelegramApiException e) {
-            log.error(e.getMessage(), e);
+            throw new TelegramSenderException(e.getMessage(), e);
         }
     }
 
@@ -129,8 +130,7 @@ public class TelegramSender implements TelegramSending {
                 absSender.execute(sendInvoice);
                 return Optional.empty();
             } catch (TelegramApiException e) {
-                log.error(e.getMessage(), e);
-                return Optional.empty();
+                throw new TelegramSenderException(e.getMessage(), e);
             }
         }
 
@@ -188,14 +188,14 @@ public class TelegramSender implements TelegramSending {
                             .build()
             );
         } catch (TelegramApiRequestException e) {
-            log.error(e.getApiResponse());
             if (ERROR_REPLACE_MESSAGE.equals(e.getApiResponse())) {
                 return sendMessage(telegramId, preparedAnswer, preparedAnswer, saveMessageId);
+            } else {
+                throw new TelegramSenderException(e.getApiResponse(), e);
             }
         } catch (TelegramApiException e) {
-            log.error(e.getMessage(), e);
+            throw new TelegramSenderException(e.getMessage(), e);
         }
-        return Optional.empty();
     }
 
     private Optional<SentBox> sendMessage(@NotNull String telegramId, @NotNull BoxAnswer boxAnswer, BoxAnswer preparedAnswer, boolean saveMessageId) {
@@ -206,9 +206,9 @@ public class TelegramSender implements TelegramSending {
             try {
                 execute = absSender.execute(sendMessage);
             } catch (TelegramApiRequestException e) {
-                log.error(e.getApiResponse());
+                throw new TelegramSenderException(e.getApiResponse(), e);
             } catch (TelegramApiException e) {
-                log.error(e.getMessage());
+                throw new TelegramSenderException(e.getMessage(), e);
             }
         }
         if (checkNotNull(execute)) {
@@ -249,9 +249,9 @@ public class TelegramSender implements TelegramSending {
         try {
             execute = absSender.execute(sendPhoto);
         } catch (TelegramApiRequestException e) {
-            log.error(e.getApiResponse());
+            throw new TelegramSenderException(e.getApiResponse(), e);
         } catch (TelegramApiException e) {
-            log.error(e.getMessage());
+            throw new TelegramSenderException(e.getMessage(), e);
         }
         if (checkNotNull(execute)) {
             if (checkNotNull(senderRepository)) {
@@ -287,9 +287,9 @@ public class TelegramSender implements TelegramSending {
         try {
             execute = absSender.execute(sendDocument);
         } catch (TelegramApiRequestException e) {
-            log.error(e.getApiResponse());
+            throw new TelegramSenderException(e.getApiResponse(), e);
         } catch (TelegramApiException e) {
-            log.error(e.getMessage());
+            throw new TelegramSenderException(e.getMessage(), e);
         }
         if (checkNotNull(execute)) {
             if (checkNotNull(senderRepository)) {
