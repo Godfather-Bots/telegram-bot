@@ -17,6 +17,7 @@ import dev.struchkov.godfather.telegram.simple.domain.attachment.send.PhotoSendA
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.invoices.SendInvoice;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -36,6 +37,7 @@ import java.util.Optional;
 
 import static dev.struchkov.godfather.telegram.main.context.BoxAnswerPayload.DISABLE_NOTIFICATION;
 import static dev.struchkov.godfather.telegram.main.context.BoxAnswerPayload.DISABLE_WEB_PAGE_PREVIEW;
+import static dev.struchkov.godfather.telegram.main.context.BoxAnswerPayload.ENABLE_HTML;
 import static dev.struchkov.godfather.telegram.main.context.BoxAnswerPayload.ENABLE_MARKDOWN;
 import static dev.struchkov.godfather.telegram.main.sender.util.KeyBoardConvert.convertInlineKeyBoard;
 import static dev.struchkov.godfather.telegram.main.sender.util.KeyBoardConvert.convertKeyBoard;
@@ -105,6 +107,7 @@ public class TelegramSender implements TelegramSending {
         editMessageText.setReplyMarkup(convertInlineKeyBoard((InlineKeyBoard) boxAnswer.getKeyBoard()));
 
         boxAnswer.getPayLoad(ENABLE_MARKDOWN).ifPresent(editMessageText::enableMarkdown);
+        boxAnswer.getPayLoad(ENABLE_HTML).ifPresent(editMessageText::enableHtml);
         boxAnswer.getPayLoad(DISABLE_WEB_PAGE_PREVIEW).ifPresent(isDisable -> {
             if (TRUE.equals(isDisable)) editMessageText.disableWebPagePreview();
         });
@@ -173,6 +176,7 @@ public class TelegramSender implements TelegramSending {
         editMessageText.setReplyMarkup(convertInlineKeyBoard((InlineKeyBoard) boxAnswer.getKeyBoard()));
 
         boxAnswer.getPayLoad(ENABLE_MARKDOWN).ifPresent(editMessageText::enableMarkdown);
+        boxAnswer.getPayLoad(ENABLE_HTML).ifPresent(editMessageText::enableHtml);
         boxAnswer.getPayLoad(DISABLE_WEB_PAGE_PREVIEW).ifPresent(isDisable -> {
             if (TRUE.equals(isDisable)) editMessageText.disableWebPagePreview();
         });
@@ -242,7 +246,10 @@ public class TelegramSender implements TelegramSending {
             if (TRUE.equals(isDisable)) sendPhoto.disableNotification();
         });
         boxAnswer.getPayLoad(ENABLE_MARKDOWN).ifPresent(isEnable -> {
-            if (TRUE.equals(isEnable)) sendPhoto.setParseMode("Markdown");
+            if (TRUE.equals(isEnable)) sendPhoto.setParseMode(ParseMode.MARKDOWN);
+        });
+        boxAnswer.getPayLoad(ENABLE_HTML).ifPresent(isEnable -> {
+            if (TRUE.equals(isEnable)) sendPhoto.setParseMode(ParseMode.HTML);
         });
 
         Message execute = null;
@@ -280,7 +287,10 @@ public class TelegramSender implements TelegramSending {
             if (TRUE.equals(isDisable)) sendDocument.disableNotification();
         });
         boxAnswer.getPayLoad(ENABLE_MARKDOWN).ifPresent(isEnable -> {
-            if (TRUE.equals(isEnable)) sendDocument.setParseMode("Markdown");
+            if (TRUE.equals(isEnable)) sendDocument.setParseMode(ParseMode.MARKDOWN);
+        });
+        boxAnswer.getPayLoad(ENABLE_HTML).ifPresent(isEnable -> {
+            if (TRUE.equals(isEnable)) sendDocument.setParseMode(ParseMode.HTML);
         });
 
         Message execute = null;
@@ -358,6 +368,7 @@ public class TelegramSender implements TelegramSending {
         sendMessage.setReplyMarkup(convertKeyBoard(boxAnswer.getKeyBoard()));
 
         boxAnswer.getPayLoad(ENABLE_MARKDOWN).ifPresent(sendMessage::enableMarkdown);
+        boxAnswer.getPayLoad(ENABLE_HTML).ifPresent(sendMessage::enableHtml);
         boxAnswer.getPayLoad(DISABLE_WEB_PAGE_PREVIEW).ifPresent(isDisable -> {
             if (TRUE.equals(isDisable)) sendMessage.disableWebPagePreview();
         });

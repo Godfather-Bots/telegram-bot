@@ -32,6 +32,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static dev.struchkov.godfather.telegram.main.context.BoxAnswerPayload.DISABLE_NOTIFICATION;
 import static dev.struchkov.godfather.telegram.main.context.BoxAnswerPayload.DISABLE_WEB_PAGE_PREVIEW;
+import static dev.struchkov.godfather.telegram.main.context.BoxAnswerPayload.ENABLE_HTML;
 import static dev.struchkov.godfather.telegram.main.context.BoxAnswerPayload.ENABLE_MARKDOWN;
 import static dev.struchkov.godfather.telegram.main.sender.util.KeyBoardConvert.convertInlineKeyBoard;
 import static dev.struchkov.godfather.telegram.main.sender.util.KeyBoardConvert.convertKeyBoard;
@@ -103,6 +104,7 @@ public class TelegramSender implements TelegramSending {
                             editMessageText.setReplyMarkup(convertInlineKeyBoard((InlineKeyBoard) boxAnswer.getKeyBoard()));
 
                             boxAnswer.getPayLoad(ENABLE_MARKDOWN).ifPresent(editMessageText::enableMarkdown);
+                            boxAnswer.getPayLoad(ENABLE_HTML).ifPresent(editMessageText::enableHtml);
                             boxAnswer.getPayLoad(DISABLE_WEB_PAGE_PREVIEW).ifPresent(
                                     isDisable -> {
                                         if (TRUE.equals(isDisable)) editMessageText.disableWebPagePreview();
@@ -170,6 +172,7 @@ public class TelegramSender implements TelegramSending {
                             editMessageText.setReplyMarkup(convertInlineKeyBoard((InlineKeyBoard) boxAnswer.getKeyBoard()));
 
                             boxAnswer.getPayLoad(ENABLE_MARKDOWN).ifPresent(editMessageText::enableMarkdown);
+                            boxAnswer.getPayLoad(ENABLE_HTML).ifPresent(editMessageText::enableHtml);
                             boxAnswer.getPayLoad(DISABLE_WEB_PAGE_PREVIEW).ifPresent(isDisable -> {
                                 if (TRUE.equals(isDisable)) editMessageText.disableWebPagePreview();
                             });
@@ -249,6 +252,7 @@ public class TelegramSender implements TelegramSending {
         sendMessage.setReplyMarkup(convertKeyBoard(boxAnswer.getKeyBoard()));
 
         boxAnswer.getPayLoad(ENABLE_MARKDOWN).ifPresent(sendMessage::enableMarkdown);
+        boxAnswer.getPayLoad(ENABLE_HTML).ifPresent(sendMessage::enableHtml);
         boxAnswer.getPayLoad(DISABLE_WEB_PAGE_PREVIEW).ifPresent(isDisable -> {
             if (TRUE.equals(isDisable)) sendMessage.disableWebPagePreview();
         });
