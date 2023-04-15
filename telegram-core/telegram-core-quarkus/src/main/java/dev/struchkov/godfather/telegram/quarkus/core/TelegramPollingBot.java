@@ -3,12 +3,16 @@ package dev.struchkov.godfather.telegram.quarkus.core;
 import dev.struchkov.godfather.telegram.domain.config.TelegramBotConfig;
 import dev.struchkov.godfather.telegram.quarkus.context.service.EventDistributor;
 import dev.struchkov.godfather.telegram.quarkus.context.service.TelegramBot;
+import io.smallrye.mutiny.infrastructure.Infrastructure;
 import io.vertx.core.Vertx;
+import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.bots.AbsSender;
+
+import java.lang.reflect.Field;
 
 /**
  * TODO: Добавить описание класса.
@@ -21,10 +25,18 @@ public class TelegramPollingBot extends TelegramLongPollingBot implements Telegr
     private final TelegramBotConfig telegramBotConfig;
     private EventDistributor eventDistributor;
 
+    @SneakyThrows
     public TelegramPollingBot(Vertx vertx, TelegramBotConfig telegramBotConfig, DefaultBotOptions defaultBotOptions) {
         super(defaultBotOptions);
         this.telegramBotConfig = telegramBotConfig;
         this.vertx = vertx;
+        final Field field = this.getClass().getSuperclass().getSuperclass().getDeclaredField("exe");
+        // Делаем поле exe доступным для изменений
+        field.setAccessible(true);
+        // Заменяем поле exe в экземпляре наследника
+        field.set(this, Infrastructure.getDefaultExecutor());
+        // Закрываем доступ к полю exe
+        field.setAccessible(false);
     }
 
     public TelegramPollingBot(Vertx vertx, TelegramBotConfig telegramBotConfig) {
