@@ -37,25 +37,16 @@ public class WebhookController {
     @Path("{webhookPath}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateReceived(@PathParam("webhookPath") String botPath, @HeaderParam("X-Telegram-Bot-Api-Secret-Token") String secretTokenFromTelegram, Update update) {
-        Uni.createFrom().voidItem()
+    public Uni<Response> updateReceived(@PathParam("webhookPath") String botPath, @HeaderParam("X-Telegram-Bot-Api-Secret-Token") String secretTokenFromTelegram, Update update) {
+        return Uni.createFrom().voidItem()
                 .invoke(() -> {
                     log.debug("Получено webhook событие");
                     isTrue(pathKey.equals(botPath), accessException(ERROR_ACCESS));
                     isTrue(secretToken.equals(secretTokenFromTelegram), accessException(ERROR_ACCESS));
                 })
-                .call(
-                        () -> eventDistributor.processing(update)
-                                .onFailure().recoverWithNull()
-                )
-                .invoke(() -> log.debug("Webhook событие успешно обработано"))
-                .subscribe().with(
-                        item -> {
-                        },
-                        failure -> log.error("Произошла ошибка: " + failure)
-                );
-        log.debug("Дали отмашку telegram, что webhook событие получено");
-        return Response.ok().build();
+                .call(() -> eventDistributor.processing(update))
+                .invoke(() -> log.debug("Дали отмашку, что все збс"))
+                .map(ignored -> Response.ok().build());
     }
 
     @GET
