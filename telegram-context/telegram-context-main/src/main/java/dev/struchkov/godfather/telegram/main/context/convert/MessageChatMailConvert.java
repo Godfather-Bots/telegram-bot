@@ -8,6 +8,7 @@ import dev.struchkov.godfather.telegram.domain.attachment.DocumentAttachment;
 import dev.struchkov.godfather.telegram.domain.attachment.LinkAttachment;
 import dev.struchkov.godfather.telegram.domain.attachment.Picture;
 import dev.struchkov.godfather.telegram.domain.attachment.PictureGroupAttachment;
+import dev.struchkov.godfather.telegram.domain.attachment.VideoAttachment;
 import dev.struchkov.godfather.telegram.main.context.MailPayload;
 import dev.struchkov.haiti.utils.Checker;
 import dev.struchkov.haiti.utils.Strings;
@@ -17,6 +18,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.User;
+import org.telegram.telegrambots.meta.api.objects.Video;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -56,6 +58,7 @@ public final class MessageChatMailConvert {
         convertDocument(message.getDocument()).ifPresent(mail::addAttachment);
         convertContact(message.getContact()).ifPresent(mail::addAttachment);
         convertPhoto(message.getPhoto()).ifPresent(mail::addAttachment);
+        convertVideo(message.getVideo()).ifPresent(mail::addAttachment);
 
         final List<MessageEntity> entities = message.getEntities();
         if (entities != null) {
@@ -116,6 +119,17 @@ public final class MessageChatMailConvert {
             attachment.setFileSize(document.getFileSize());
             attachment.setFileName(document.getFileName());
             attachment.setMimeType(document.getMimeType());
+            return Optional.of(attachment);
+        }
+        return Optional.empty();
+    }
+
+    private static Optional<VideoAttachment> convertVideo(Video video) {
+        if (video != null) {
+            final VideoAttachment attachment = new VideoAttachment();
+            attachment.setFileId(video.getFileId());
+            attachment.setFileSize(video.getFileSize());
+            attachment.setFileName(video.getFileName());
             return Optional.of(attachment);
         }
         return Optional.empty();

@@ -7,6 +7,7 @@ public enum TelegramAttachmentType {
     PICTURE,
     LINK,
     COMMAND,
-    BUTTON_CLICK
+    BUTTON_CLICK,
+    VIDEO
 
 }

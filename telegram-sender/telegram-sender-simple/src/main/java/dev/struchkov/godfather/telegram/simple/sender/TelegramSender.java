@@ -14,6 +14,7 @@ import dev.struchkov.godfather.telegram.simple.context.repository.SenderReposito
 import dev.struchkov.godfather.telegram.simple.context.service.TelegramConnect;
 import dev.struchkov.godfather.telegram.simple.context.service.TelegramSending;
 import dev.struchkov.godfather.telegram.simple.domain.attachment.send.PhotoSendAttachment;
+import dev.struchkov.godfather.telegram.simple.domain.attachment.send.VideoSendAttachment;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,7 @@ import org.telegram.telegrambots.meta.api.methods.invoices.SendInvoice;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.methods.send.SendVideo;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
@@ -163,6 +165,8 @@ public class TelegramSender implements TelegramSending {
                     return sendPhoto(boxAnswer, preparedAnswer);
                 case "DOCUMENT":
                     return sendDocument(boxAnswer, preparedAnswer);
+                case "VIDEO":
+                    return sendVideo(boxAnswer);
             }
         }
         return sendMessage(recipientTelegramId, boxAnswer, preparedAnswer, saveMessageId);
@@ -255,6 +259,51 @@ public class TelegramSender implements TelegramSending {
         Message execute = null;
         try {
             execute = absSender.execute(sendPhoto);
+        } catch (TelegramApiRequestException e) {
+            throw new TelegramSenderException(e.getApiResponse(), e);
+        } catch (TelegramApiException e) {
+            throw new TelegramSenderException(e.getMessage(), e);
+        }
+        if (checkNotNull(execute)) {
+            if (checkNotNull(senderRepository)) {
+                senderRepository.saveLastSendMessage(boxAnswer.getRecipientPersonId(), execute.getMessageId().toString());
+            }
+            return Optional.of(
+                    SentBox.builder()
+                            .personId(boxAnswer.getRecipientPersonId())
+                            .messageId(execute.getMessageId().toString())
+                            .sentAnswer(boxAnswer)
+                            .originalAnswer(boxAnswer)
+                            .sentMail(MessageMailConvert.apply(execute))
+                            .build()
+            );
+        }
+        return Optional.empty();
+    }
+
+    private Optional<SentBox> sendVideo(BoxAnswer boxAnswer) {
+        final VideoSendAttachment video = (VideoSendAttachment) boxAnswer.getAttachment();
+        final SendFile sendFile = video.getSendFile();
+
+        final SendVideo sendVideo = new SendVideo();
+        sendVideo.setCaption(boxAnswer.getMessage());
+        sendVideo.setChatId(boxAnswer.getRecipientPersonId());
+        sendVideo.setVideo(convertInputFile(sendFile));
+        sendVideo.setReplyMarkup(convertKeyBoard(boxAnswer.getKeyBoard()));
+
+        boxAnswer.getPayLoad(DISABLE_NOTIFICATION).ifPresent(isDisable -> {
+            if (TRUE.equals(isDisable)) sendVideo.disableNotification();
+        });
+        boxAnswer.getPayLoad(ENABLE_MARKDOWN).ifPresent(isEnable -> {
+            if (TRUE.equals(isEnable)) sendVideo.setParseMode(ParseMode.MARKDOWN);
+        });
+        boxAnswer.getPayLoad(ENABLE_HTML).ifPresent(isEnable -> {
+            if (TRUE.equals(isEnable)) sendVideo.setParseMode(ParseMode.HTML);
+        });
+
+        Message execute = null;
+        try {
+            execute = absSender.execute(sendVideo);
         } catch (TelegramApiRequestException e) {
             throw new TelegramSenderException(e.getApiResponse(), e);
         } catch (TelegramApiException e) {

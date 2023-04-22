@@ -9,6 +9,7 @@ import dev.struchkov.godfather.telegram.domain.attachment.LinkAttachment;
 import dev.struchkov.godfather.telegram.domain.attachment.Picture;
 import dev.struchkov.godfather.telegram.domain.attachment.PictureGroupAttachment;
 import dev.struchkov.godfather.telegram.domain.attachment.TelegramAttachmentType;
+import dev.struchkov.godfather.telegram.domain.attachment.VideoAttachment;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -51,6 +52,17 @@ public final class Attachments {
             for (Attachment attachment : attachments) {
                 if (isButtonClick(attachment)) {
                     return Optional.of((ButtonClickAttachment) attachment);
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
+    public static Optional<VideoAttachment> findFirstVideo(Collection<Attachment> attachments) {
+        if (checkNotEmpty(attachments)) {
+            for (Attachment attachment : attachments) {
+                if (isVideo(attachment)) {
+                    return Optional.of((VideoAttachment) attachment);
                 }
             }
         }
@@ -151,6 +163,11 @@ public final class Attachments {
     public static boolean isButtonClick(Attachment attachment) {
         isNotNull(attachment);
         return TelegramAttachmentType.BUTTON_CLICK.name().equals(attachment.getType());
+    }
+
+    public static boolean isVideo(Attachment attachment) {
+        isNotNull(attachment);
+        return TelegramAttachmentType.VIDEO.name().equals(attachment.getType());
     }
 
 }
