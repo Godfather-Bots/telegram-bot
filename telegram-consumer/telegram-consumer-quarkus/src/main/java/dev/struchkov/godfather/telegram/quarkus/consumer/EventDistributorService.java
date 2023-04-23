@@ -18,6 +18,7 @@ import org.telegram.telegrambots.meta.api.objects.ChatMemberUpdated;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
+import org.telegram.telegrambots.meta.api.objects.inlinequery.ChosenInlineQuery;
 import org.telegram.telegrambots.meta.api.objects.inlinequery.InlineQuery;
 import org.telegram.telegrambots.meta.api.objects.payments.PreCheckoutQuery;
 
@@ -46,10 +47,15 @@ public class EventDistributorService implements EventDistributor {
                             final CallbackQuery callbackQuery = update.getCallbackQuery();
                             final PreCheckoutQuery preCheckoutQuery = update.getPreCheckoutQuery();
                             final InlineQuery inlineQuery = update.getInlineQuery();
+                            final ChosenInlineQuery chosenInlineQuery = update.getChosenInlineQuery();
 
                             // запросы к боту из чатов: https://core.telegram.org/bots/inline
                             if (update.hasInlineQuery()) {
                                 return Uni.createFrom().item(new EventContainer<>(InlineQuery.class, inlineQuery));
+                            }
+
+                            if (update.hasChosenInlineQuery()) {
+                                return Uni.createFrom().item(new EventContainer<>(ChosenInlineQuery.class, chosenInlineQuery));
                             }
 
                             if (update.hasPreCheckoutQuery()) {
