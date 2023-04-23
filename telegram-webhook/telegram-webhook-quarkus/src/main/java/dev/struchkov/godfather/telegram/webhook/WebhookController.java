@@ -45,7 +45,7 @@ public class WebhookController {
                     isTrue(secretToken.equals(secretTokenFromTelegram), accessException(ERROR_ACCESS));
                 })
                 .call(() -> eventDistributor.processing(update))
-                .invoke(() -> log.debug("Дали отмашку, что все збс"))
+                .invoke(() -> log.debug("Сообщили Telegram, что вебхук событие обработано"))
                 .map(ignored -> Response.ok().build());
     }
 
