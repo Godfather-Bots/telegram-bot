@@ -1,7 +1,6 @@
 package dev.struchkov.godfather.telegram.simple.core;
 
 import dev.struchkov.godfather.main.domain.content.ChatMail;
-import dev.struchkov.godfather.simple.context.service.PersonSettingService;
 import dev.struchkov.godfather.simple.core.GeneralAutoResponder;
 import dev.struchkov.godfather.simple.core.service.StorylineService;
 
@@ -13,10 +12,9 @@ import dev.struchkov.godfather.simple.core.service.StorylineService;
 public class ChatMailAutoresponderTelegram extends GeneralAutoResponder<ChatMail> {
 
     public ChatMailAutoresponderTelegram(
-            PersonSettingService personSettingService,
             StorylineService<ChatMail> storyLineService
     ) {
-        super(personSettingService, storyLineService);
+        super(storyLineService);
     }
 
 }
