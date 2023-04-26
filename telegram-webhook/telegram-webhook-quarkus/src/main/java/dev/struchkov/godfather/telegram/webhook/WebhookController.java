@@ -40,12 +40,12 @@ public class WebhookController {
     public Uni<Response> updateReceived(@PathParam("webhookPath") String botPath, @HeaderParam("X-Telegram-Bot-Api-Secret-Token") String secretTokenFromTelegram, Update update) {
         return Uni.createFrom().voidItem()
                 .invoke(() -> {
-                    log.debug("Получено webhook событие");
+                    log.trace("Получено webhook событие: {}", update);
                     isTrue(pathKey.equals(botPath), accessException(ERROR_ACCESS));
                     isTrue(secretToken.equals(secretTokenFromTelegram), accessException(ERROR_ACCESS));
                 })
                 .call(() -> eventDistributor.processing(update))
-                .invoke(() -> log.debug("Сообщили Telegram, что вебхук событие обработано"))
+                .invoke(() -> log.trace("Сообщили Telegram, что вебхук событие обработано. Идентификатор события: {}", update.getUpdateId()))
                 .map(ignored -> Response.ok().build());
     }
 
