@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import static dev.struchkov.haiti.utils.Inspector.Utils.nullPointer;
 import static dev.struchkov.haiti.utils.Inspector.isNotNull;
@@ -17,6 +18,7 @@ import static dev.struchkov.haiti.utils.Inspector.isNotNull;
 @Getter
 @Setter
 @Builder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ContactButton implements KeyBoardButton {

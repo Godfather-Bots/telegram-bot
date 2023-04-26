@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -20,6 +21,7 @@ import static dev.struchkov.haiti.utils.Inspector.isNotNull;
  */
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @EqualsAndHashCode
 public class SimpleButton implements KeyBoardButton {
