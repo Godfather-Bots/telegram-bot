@@ -4,7 +4,7 @@
     <parent>
         <artifactId>telegram-bot</artifactId>
         <groupId>dev.struchkov.godfather.telegram</groupId>
-        <version>0.0.63</version>
+        <version>0.0.64-SNAPSHOT</version>
     </parent>
 
     <artifactId>telegram-context</artifactId>
