@@ -4,7 +4,7 @@
     <parent>
         <groupId>dev.struchkov.godfather.telegram</groupId>
         <artifactId>telegram-core</artifactId>
-        <version>0.0.65-SNAPSHOT</version>
+        <version>0.0.65</version>
     </parent>
 
     <artifactId>telegram-core-simple</artifactId>
