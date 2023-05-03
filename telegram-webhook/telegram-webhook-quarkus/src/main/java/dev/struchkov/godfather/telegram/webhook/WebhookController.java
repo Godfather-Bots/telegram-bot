@@ -23,8 +23,8 @@ import static dev.struchkov.haiti.utils.Inspector.isTrue;
 @Path("callback")
 public class WebhookController {
 
-    public static final String ERROR_ACCESS = "В доступе отказано!";
-    private final String pathKey = "bot";
+    private static final String ERROR_ACCESS = "В доступе отказано!";
+    private static final String PATH_KEY = "bot";
     private final String secretToken;
     private final EventDistributor eventDistributor;
 
@@ -41,10 +41,12 @@ public class WebhookController {
         return Uni.createFrom().voidItem()
                 .invoke(() -> {
                     log.trace("Получено webhook событие: {}", update);
-                    isTrue(pathKey.equals(botPath), accessException(ERROR_ACCESS));
+                    isTrue(PATH_KEY.equals(botPath), accessException(ERROR_ACCESS));
                     isTrue(secretToken.equals(secretTokenFromTelegram), accessException(ERROR_ACCESS));
                 })
                 .call(() -> eventDistributor.processing(update))
+                .onFailure().invoke(th -> log.error("При обработке webhook события произошла ошибка. Идентификатор события: " + update.getUpdateId(), th))
+                .onFailure().recoverWithNull()
                 .invoke(() -> log.trace("Сообщили Telegram, что вебхук событие обработано. Идентификатор события: {}", update.getUpdateId()))
                 .map(ignored -> Response.ok().build());
     }
@@ -55,7 +57,7 @@ public class WebhookController {
     public Uni<String> testReceived(@PathParam("webhookPath") String botPath, @HeaderParam("X-Telegram-Bot-Api-Secret-Token") String secretTokenFromTelegram) {
         return Uni.createFrom().voidItem()
                 .onItem().invoke(() -> {
-                    isTrue(pathKey.equals(botPath), accessException(ERROR_ACCESS));
+                    isTrue(PATH_KEY.equals(botPath), accessException(ERROR_ACCESS));
                     isTrue(secretToken.equals(secretTokenFromTelegram), accessException(ERROR_ACCESS));
                 })
                 .onItem().transform(ignore -> "Hi there " + botPath + "!");
