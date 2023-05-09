@@ -320,19 +320,21 @@ public class TelegramSender implements TelegramSending {
         while (message.length() > maxMessageLength) {
             String subMessage = message.substring(0, maxMessageLength);
             message = message.substring(maxMessageLength);
-            split.add(createNewTextAnswer(boxAnswer, subMessage));
+            split.add(createNewTextAnswer(boxAnswer, subMessage, false));
         }
 
-        split.add(createNewTextAnswer(boxAnswer, message));
+        split.add(createNewTextAnswer(boxAnswer, message, true));
 
         return Multi.createFrom().iterable(split);
     }
 
-    private SendMessage createNewTextAnswer(BoxAnswer boxAnswer, String subMessage) {
+    private SendMessage createNewTextAnswer(BoxAnswer boxAnswer, String subMessage, boolean lastMessage) {
         final SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(boxAnswer.getRecipientPersonId());
         sendMessage.setText(subMessage);
-        sendMessage.setReplyMarkup(convertKeyBoard(boxAnswer.getKeyBoard()));
+        if (lastMessage) {
+            sendMessage.setReplyMarkup(convertKeyBoard(boxAnswer.getKeyBoard()));
+        }
 
         boxAnswer.getPayLoad(ENABLE_MARKDOWN).ifPresent(sendMessage::enableMarkdown);
         boxAnswer.getPayLoad(ENABLE_HTML).ifPresent(sendMessage::enableHtml);
