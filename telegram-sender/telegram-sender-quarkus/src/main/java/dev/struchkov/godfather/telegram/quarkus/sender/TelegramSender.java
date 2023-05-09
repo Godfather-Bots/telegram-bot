@@ -332,6 +332,10 @@ public class TelegramSender implements TelegramSending {
         final SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(boxAnswer.getRecipientPersonId());
         sendMessage.setText(subMessage);
+
+        if (checkNotBlank(boxAnswer.getReplyToMessageId())) {
+            sendMessage.setReplyToMessageId(Integer.parseInt(boxAnswer.getReplyToMessageId()));
+        }
         if (lastMessage) {
             sendMessage.setReplyMarkup(convertKeyBoard(boxAnswer.getKeyBoard()));
         }
