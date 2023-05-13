@@ -1,8 +1,8 @@
-package dev.struchkov.godfather.telegram.simple.core.util;
+package dev.struchkov.godfather.telegram.main.core.util;
 
 import dev.struchkov.godfather.main.domain.content.Mail;
 import dev.struchkov.godfather.telegram.domain.attachment.ButtonClickAttachment;
-import dev.struchkov.godfather.telegram.main.core.util.Attachments;
+import dev.struchkov.godfather.telegram.domain.attachment.CommandAttachment;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -23,6 +23,18 @@ public class UnitTrigger {
                 final ButtonClickAttachment buttonClick = optButtonClick.get();
                 final String rawData = buttonClick.getRawCallBackData();
                 return rawData.equals(rawCallBackData);
+            }
+            return false;
+        };
+    }
+
+    public static Predicate<Mail> isCommandByType(String commandType) {
+        return mail -> {
+            final Optional<CommandAttachment> optCommand = Attachments.findFirstCommand(mail.getAttachments());
+            if (optCommand.isPresent()) {
+                final CommandAttachment command = optCommand.get();
+                final String type = command.getCommandType();
+                return type.equals(commandType);
             }
             return false;
         };
