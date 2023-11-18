@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static dev.struchkov.haiti.utils.Checker.checkNotBlank;
 import static dev.struchkov.haiti.utils.Exceptions.utilityClass;
 
 /**
@@ -46,7 +47,7 @@ public final class MessageMailConvert {
         final Long chatId = message.getChatId();
         mail.setId(message.getMessageId().toString());
         mail.setFromPersonId(chatId != null ? chatId.toString() : null);
-        mail.setText(message.getText());
+        mail.setText(getText(message));
         mail.setCreateDate(LocalDateTime.ofInstant(Instant.ofEpochSecond(message.getDate()), ZoneId.systemDefault()));
 
         final Chat chat = message.getChat();
@@ -69,6 +70,16 @@ public final class MessageMailConvert {
         }
 
         return mail;
+    }
+
+    private static String getText(Message message) {
+        if (checkNotBlank(message.getText())) {
+            return message.getText();
+        }
+        if (checkNotBlank(message.getCaption())) {
+            return message.getCaption();
+        }
+        return null;
     }
 
     private static Optional<Attachment> convertPhoto(List<PhotoSize> photoSizes) {
