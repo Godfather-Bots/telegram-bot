@@ -11,8 +11,10 @@ import dev.struchkov.godfather.telegram.domain.attachment.ContactAttachment;
 import dev.struchkov.godfather.telegram.domain.attachment.DocumentAttachment;
 import dev.struchkov.godfather.telegram.domain.attachment.LinkAttachment;
 import dev.struchkov.godfather.telegram.domain.attachment.PictureGroupAttachment;
+import dev.struchkov.godfather.telegram.domain.attachment.StickerAttachment;
 import dev.struchkov.godfather.telegram.domain.attachment.TelegramAttachmentType;
 import dev.struchkov.godfather.telegram.domain.attachment.VideoAttachment;
+import dev.struchkov.godfather.telegram.domain.attachment.VoiceAttachment;
 import dev.struchkov.haiti.utils.ObjectUtils;
 
 import java.io.IOException;
@@ -41,6 +43,8 @@ public class TelegramAttachmentDeserializer extends StdDeserializer<Attachment> 
             case LINK -> parser.getCodec().treeToValue(node, LinkAttachment.class);
             case COMMAND -> parser.getCodec().treeToValue(node, CommandAttachment.class);
             case VIDEO -> parser.getCodec().treeToValue(node, VideoAttachment.class);
+            case VOICE -> parser.getCodec().treeToValue(node, VoiceAttachment.class);
+            case STICKER -> parser.getCodec().treeToValue(node, StickerAttachment.class);
         };
     }
 

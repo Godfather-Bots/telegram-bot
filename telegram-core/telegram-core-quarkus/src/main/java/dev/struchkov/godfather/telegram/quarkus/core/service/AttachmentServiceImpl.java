@@ -1,7 +1,9 @@
 package dev.struchkov.godfather.telegram.quarkus.core.service;
 
 import dev.struchkov.godfather.telegram.domain.attachment.DocumentAttachment;
+import dev.struchkov.godfather.telegram.domain.attachment.FileAttachment;
 import dev.struchkov.godfather.telegram.domain.attachment.Picture;
+import dev.struchkov.godfather.telegram.domain.attachment.TelegramAttachmentType;
 import dev.struchkov.godfather.telegram.domain.files.ByteContainer;
 import dev.struchkov.godfather.telegram.domain.files.FileContainer;
 import dev.struchkov.godfather.telegram.quarkus.context.service.AttachmentService;
@@ -62,17 +64,17 @@ public class AttachmentServiceImpl implements AttachmentService {
     }
 
     @Override
-    public Uni<FileContainer> uploadFile(@NotNull DocumentAttachment documentAttachment) {
-        isNotNull(documentAttachment);
-        return downloadFile(documentAttachment)
-                .onItem().ifNotNull().transform(file -> new FileContainer(documentAttachment.getFileName(), documentAttachment.getMimeType(), file));
+    public Uni<FileContainer> uploadFile(@NotNull FileAttachment fileAttachment) {
+        isNotNull(fileAttachment);
+        return downloadFile(fileAttachment)
+                .onItem().ifNotNull().transform(file -> new FileContainer(fileAttachment.getFileName(), fileAttachment.getMimeType(), file));
     }
 
     @Override
-    public Uni<ByteContainer> uploadBytes(@NotNull DocumentAttachment documentAttachment) {
-        isNotNull(documentAttachment);
-        return downloadBytes(documentAttachment)
-                .onItem().ifNotNull().transform(bytes -> new ByteContainer(documentAttachment.getFileName(), documentAttachment.getMimeType(), bytes));
+    public Uni<ByteContainer> uploadBytes(@NotNull FileAttachment fileAttachment) {
+        isNotNull(fileAttachment);
+        return downloadBytes(fileAttachment)
+                .onItem().ifNotNull().transform(bytes -> new ByteContainer(fileAttachment.getFileName(), fileAttachment.getMimeType(), bytes));
     }
 
     @Override
@@ -86,7 +88,7 @@ public class AttachmentServiceImpl implements AttachmentService {
         return telegramDownloadBytes(picture.getFileId());
     }
 
-    private Uni<byte[]> downloadBytes(DocumentAttachment documentAttachment) {
+    private Uni<byte[]> downloadBytes(FileAttachment documentAttachment) {
         return telegramDownloadBytes(documentAttachment.getFileId());
     }
 
@@ -110,15 +112,15 @@ public class AttachmentServiceImpl implements AttachmentService {
                 );
     }
 
-    private Uni<File> downloadFile(DocumentAttachment documentAttachment) {
-        return getFileUrl(documentAttachment.getFileId())
+    private Uni<File> downloadFile(FileAttachment fileAttachment) {
+        return getFileUrl(fileAttachment.getFileId())
                 .onItem().ifNotNull().transformToUni(fileUrl -> Uni.createFrom().completionStage(
                         CompletableFuture.supplyAsync(() -> {
                                     final StringBuilder filePath = new StringBuilder();
                                     if (folderPathForFiles != null) {
                                         filePath.append(folderPathForFiles);
                                     }
-                                    filePath.append(UUID.randomUUID()).append("_").append(documentAttachment.getFileName());
+                                    filePath.append(UUID.randomUUID()).append("_").append(fileAttachment.getFileName());
                                     final File localFile = new File(filePath.toString());
                                     final InputStream is;
                                     try {

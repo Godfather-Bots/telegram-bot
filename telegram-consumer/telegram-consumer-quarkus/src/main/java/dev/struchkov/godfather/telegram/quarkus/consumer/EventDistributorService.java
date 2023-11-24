@@ -1,6 +1,7 @@
 package dev.struchkov.godfather.telegram.quarkus.consumer;
 
 import dev.struchkov.godfather.main.domain.EventContainer;
+import dev.struchkov.godfather.main.domain.content.EditedMail;
 import dev.struchkov.godfather.main.domain.content.Mail;
 import dev.struchkov.godfather.quarkus.context.service.EventDispatching;
 import dev.struchkov.godfather.telegram.domain.event.Subscribe;
@@ -44,6 +45,7 @@ public class EventDistributorService implements EventDistributor {
                 .onItem().transformToUni(
                         v -> {
                             final Message message = update.getMessage();
+                            final Message editedMessage = update.getEditedMessage();
                             final CallbackQuery callbackQuery = update.getCallbackQuery();
                             final PreCheckoutQuery preCheckoutQuery = update.getPreCheckoutQuery();
                             final InlineQuery inlineQuery = update.getInlineQuery();
@@ -64,6 +66,10 @@ public class EventDistributorService implements EventDistributor {
 
                             if (update.hasMessage()) {
                                 return Uni.createFrom().item(new EventContainer<>(Mail.class, MessageMailConvert.apply(message)));
+                            }
+
+                            if (update.hasEditedMessage()) {
+                                return Uni.createFrom().item(new EventContainer<>(EditedMail.class, MessageMailConvert.applyEdited(editedMessage)));
                             }
 
                             if (update.hasCallbackQuery()) {

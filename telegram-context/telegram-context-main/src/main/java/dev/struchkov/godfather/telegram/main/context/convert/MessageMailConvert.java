@@ -1,6 +1,7 @@
 package dev.struchkov.godfather.telegram.main.context.convert;
 
 import dev.struchkov.godfather.main.domain.content.Attachment;
+import dev.struchkov.godfather.main.domain.content.EditedMail;
 import dev.struchkov.godfather.main.domain.content.Mail;
 import dev.struchkov.godfather.telegram.domain.attachment.CommandAttachment;
 import dev.struchkov.godfather.telegram.domain.attachment.ContactAttachment;
@@ -8,7 +9,9 @@ import dev.struchkov.godfather.telegram.domain.attachment.DocumentAttachment;
 import dev.struchkov.godfather.telegram.domain.attachment.LinkAttachment;
 import dev.struchkov.godfather.telegram.domain.attachment.Picture;
 import dev.struchkov.godfather.telegram.domain.attachment.PictureGroupAttachment;
+import dev.struchkov.godfather.telegram.domain.attachment.StickerAttachment;
 import dev.struchkov.godfather.telegram.domain.attachment.VideoAttachment;
+import dev.struchkov.godfather.telegram.domain.attachment.VoiceAttachment;
 import dev.struchkov.godfather.telegram.main.context.MailPayload;
 import dev.struchkov.haiti.utils.Checker;
 import dev.struchkov.haiti.utils.Strings;
@@ -19,13 +22,17 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.Video;
+import org.telegram.telegrambots.meta.api.objects.Voice;
+import org.telegram.telegrambots.meta.api.objects.stickers.Sticker;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static dev.struchkov.haiti.utils.Checker.checkNotBlank;
 import static dev.struchkov.haiti.utils.Exceptions.utilityClass;
@@ -39,6 +46,13 @@ public final class MessageMailConvert {
 
     private MessageMailConvert() {
         utilityClass();
+    }
+
+    public static EditedMail applyEdited(Message message) {
+        return EditedMail.builder()
+                .editDate(LocalDateTime.ofInstant(Instant.ofEpochSecond(message.getEditDate()), ZoneId.systemDefault()))
+                .newMail(apply(message))
+                .build();
     }
 
     public static Mail apply(Message message) {
@@ -59,6 +73,7 @@ public final class MessageMailConvert {
         convertContact(message.getContact()).ifPresent(mail::addAttachment);
         convertPhoto(message.getPhoto()).ifPresent(mail::addAttachment);
         convertVideo(message.getVideo()).ifPresent(mail::addAttachment);
+        convertVoice(message.getVoice()).ifPresent(mail::addAttachment);
 
         final List<MessageEntity> entities = message.getEntities();
         if (entities != null) {
@@ -129,6 +144,32 @@ public final class MessageMailConvert {
             attachment.setFileSize(document.getFileSize());
             attachment.setFileName(document.getFileName());
             attachment.setMimeType(document.getMimeType());
+            return Optional.of(attachment);
+        }
+        return Optional.empty();
+    }
+
+    private static Optional<VoiceAttachment> convertVoice(Voice voice) {
+        if (voice != null) {
+            final VoiceAttachment attachment = new VoiceAttachment();
+            attachment.setFileId(voice.getFileId());
+            attachment.setFileSize(voice.getFileSize());
+            attachment.setMimeType(voice.getMimeType());
+            attachment.setDuration(Duration.ofSeconds(voice.getDuration()));
+            attachment.setFileName(UUID.randomUUID().toString());
+            return Optional.of(attachment);
+        }
+        return Optional.empty();
+    }
+
+    private static Optional<StickerAttachment> convertVoice(Sticker sticker) {
+        if (sticker != null) {
+            final StickerAttachment attachment = new StickerAttachment();
+            attachment.setFileId(sticker.getFileId());
+            attachment.setFileSize(sticker.getFileSize().longValue());
+            attachment.setAnimated(sticker.getIsAnimated());
+            attachment.setVideo(sticker.getIsVideo());
+            attachment.setFileName(UUID.randomUUID().toString());
             return Optional.of(attachment);
         }
         return Optional.empty();

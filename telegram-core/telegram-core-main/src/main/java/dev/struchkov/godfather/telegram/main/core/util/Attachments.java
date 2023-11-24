@@ -8,8 +8,10 @@ import dev.struchkov.godfather.telegram.domain.attachment.DocumentAttachment;
 import dev.struchkov.godfather.telegram.domain.attachment.LinkAttachment;
 import dev.struchkov.godfather.telegram.domain.attachment.Picture;
 import dev.struchkov.godfather.telegram.domain.attachment.PictureGroupAttachment;
+import dev.struchkov.godfather.telegram.domain.attachment.StickerAttachment;
 import dev.struchkov.godfather.telegram.domain.attachment.TelegramAttachmentType;
 import dev.struchkov.godfather.telegram.domain.attachment.VideoAttachment;
+import dev.struchkov.godfather.telegram.domain.attachment.VoiceAttachment;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -41,6 +43,28 @@ public final class Attachments {
             for (Attachment attachment : attachments) {
                 if (isLink(attachment)) {
                     return Optional.of((LinkAttachment) attachment);
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
+    public static Optional<VoiceAttachment> findFirstVoice(Collection<Attachment> attachments) {
+        if (checkNotEmpty(attachments)) {
+            for (Attachment attachment : attachments) {
+                if (isVoice(attachment)) {
+                    return Optional.of((VoiceAttachment) attachment);
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
+    public static Optional<StickerAttachment> findFirstSticker(Collection<Attachment> attachments) {
+        if (checkNotEmpty(attachments)) {
+            for (Attachment attachment : attachments) {
+                if (isSticker(attachment)) {
+                    return Optional.of((StickerAttachment) attachment);
                 }
             }
         }
@@ -145,17 +169,17 @@ public final class Attachments {
         return TelegramAttachmentType.DOCUMENT.name().equals(attachment.getType());
     }
 
-    private static boolean isContact(Attachment attachment) {
+    public static boolean isContact(Attachment attachment) {
         isNotNull(attachment);
         return TelegramAttachmentType.CONTACT.name().equals(attachment.getType());
     }
 
-    private static boolean isPictureGroup(Attachment attachment) {
+    public static boolean isPictureGroup(Attachment attachment) {
         isNotNull(attachment);
         return TelegramAttachmentType.PICTURE.name().equals(attachment.getType());
     }
 
-    private static boolean isLink(Attachment attachment) {
+    public static boolean isLink(Attachment attachment) {
         isNotNull(attachment);
         return TelegramAttachmentType.LINK.name().equals(attachment.getType());
     }
@@ -168,6 +192,16 @@ public final class Attachments {
     public static boolean isVideo(Attachment attachment) {
         isNotNull(attachment);
         return TelegramAttachmentType.VIDEO.name().equals(attachment.getType());
+    }
+
+    public static boolean isVoice(Attachment attachment) {
+        isNotNull(attachment);
+        return TelegramAttachmentType.VOICE.name().equals(attachment.getType());
+    }
+
+    public static boolean isSticker(Attachment attachment) {
+        isNotNull(attachment);
+        return TelegramAttachmentType.STICKER.name().equals(attachment.getType());
     }
 
 }
