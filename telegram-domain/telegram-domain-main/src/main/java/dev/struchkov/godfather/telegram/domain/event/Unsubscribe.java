@@ -17,8 +17,11 @@ import java.time.LocalDateTime;
 public class Unsubscribe {
 
     private String telegramId;
+    private String login;
+    private LocalDateTime unsubscriptionDate;
+    private String languageCode;
+    private boolean premium;
     private String firstName;
     private String lastName;
-    private LocalDateTime unsubscriptionDate;
 
 }
