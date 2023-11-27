@@ -156,7 +156,7 @@ public final class MessageMailConvert {
             attachment.setFileSize(voice.getFileSize());
             attachment.setMimeType(voice.getMimeType());
             attachment.setDuration(Duration.ofSeconds(voice.getDuration()));
-            attachment.setFileName(UUID.randomUUID().toString());
+            attachment.setFileName(generateFileName(voice.getMimeType()));
             return Optional.of(attachment);
         }
         return Optional.empty();
@@ -170,9 +170,21 @@ public final class MessageMailConvert {
             attachment.setAnimated(sticker.getIsAnimated());
             attachment.setVideo(sticker.getIsVideo());
             attachment.setFileName(UUID.randomUUID().toString());
+            attachment.setEmoji(sticker.getEmoji());
             return Optional.of(attachment);
         }
         return Optional.empty();
+    }
+
+    private static String generateFileName(String mimeType) {
+        final StringBuilder builder = new StringBuilder(UUID.randomUUID().toString());
+        switch (mimeType) {
+            case "audio/ogg" -> builder.append(".ogg");
+            case "image/png" -> builder.append(".png");
+            case "image/jpeg" -> builder.append(".jpeg");
+            default -> {}
+        }
+        return builder.toString();
     }
 
     private static Optional<VideoAttachment> convertVideo(Video video) {
