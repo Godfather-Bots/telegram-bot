@@ -15,6 +15,7 @@ import dev.struchkov.godfather.telegram.domain.attachment.VoiceAttachment;
 import dev.struchkov.godfather.telegram.main.context.MailPayload;
 import dev.struchkov.haiti.utils.Checker;
 import dev.struchkov.haiti.utils.Strings;
+import org.glassfish.grizzly.http.util.MimeType;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Contact;
 import org.telegram.telegrambots.meta.api.objects.Document;
@@ -109,6 +110,8 @@ public final class MessageMailConvert {
                         picture.setFileId(photoSize.getFileId());
                         picture.setHeight(photoSize.getHeight());
                         picture.setWeight(photoSize.getWidth());
+                        picture.setMimeType("image/jpeg");
+                        picture.setFileName(generateFileName("image/jpeg"));
                         return picture;
                     }).toList();
 
@@ -181,7 +184,7 @@ public final class MessageMailConvert {
         switch (mimeType) {
             case "audio/ogg" -> builder.append(".ogg");
             case "image/png" -> builder.append(".png");
-            case "image/jpeg" -> builder.append(".jpeg");
+            case "image/jpeg" -> builder.append(".jpg");
             default -> {}
         }
         return builder.toString();
