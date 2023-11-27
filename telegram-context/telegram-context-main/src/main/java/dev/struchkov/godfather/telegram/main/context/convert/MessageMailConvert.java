@@ -74,6 +74,7 @@ public final class MessageMailConvert {
         convertPhoto(message.getPhoto()).ifPresent(mail::addAttachment);
         convertVideo(message.getVideo()).ifPresent(mail::addAttachment);
         convertVoice(message.getVoice()).ifPresent(mail::addAttachment);
+        convertSticker(message.getSticker()).ifPresent(mail::addAttachment);
 
         final List<MessageEntity> entities = message.getEntities();
         if (entities != null) {
@@ -104,11 +105,10 @@ public final class MessageMailConvert {
             final List<Picture> pictures = photoSizes.stream()
                     .map(photoSize -> {
                         final Picture picture = new Picture();
-                        picture.setFileSize(photoSize.getFileSize());
+                        picture.setFileSize(photoSize.getFileSize().longValue());
                         picture.setFileId(photoSize.getFileId());
                         picture.setHeight(photoSize.getHeight());
                         picture.setWeight(photoSize.getWidth());
-                        picture.setFileUniqueId(photoSize.getFileUniqueId());
                         return picture;
                     }).toList();
 
@@ -162,7 +162,7 @@ public final class MessageMailConvert {
         return Optional.empty();
     }
 
-    private static Optional<StickerAttachment> convertVoice(Sticker sticker) {
+    private static Optional<StickerAttachment> convertSticker(Sticker sticker) {
         if (sticker != null) {
             final StickerAttachment attachment = new StickerAttachment();
             attachment.setFileId(sticker.getFileId());
@@ -181,6 +181,7 @@ public final class MessageMailConvert {
             attachment.setFileId(video.getFileId());
             attachment.setFileSize(video.getFileSize());
             attachment.setFileName(video.getFileName());
+            attachment.setMimeType(video.getMimeType());
             return Optional.of(attachment);
         }
         return Optional.empty();

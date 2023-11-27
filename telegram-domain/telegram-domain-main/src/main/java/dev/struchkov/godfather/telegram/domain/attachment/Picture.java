@@ -5,12 +5,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Picture {
+public class Picture extends FileAttachment {
 
-    private String fileId;
-    private String fileUniqueId;
-    private Integer fileSize;
     private Integer weight;
     private Integer height;
+
+    public Picture() {
+        super(TelegramAttachmentType.PICTURE.name());
+    }
 
 }

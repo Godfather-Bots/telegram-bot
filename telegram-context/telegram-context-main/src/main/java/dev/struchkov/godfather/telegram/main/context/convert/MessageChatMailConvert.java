@@ -79,11 +79,10 @@ public final class MessageChatMailConvert {
             final List<Picture> pictures = photoSizes.stream()
                     .map(photoSize -> {
                         final Picture picture = new Picture();
-                        picture.setFileSize(photoSize.getFileSize());
+                        picture.setFileSize(photoSize.getFileSize().longValue());
                         picture.setFileId(photoSize.getFileId());
                         picture.setHeight(photoSize.getHeight());
                         picture.setWeight(photoSize.getWidth());
-                        picture.setFileUniqueId(photoSize.getFileUniqueId());
                         return picture;
                     }).toList();
 

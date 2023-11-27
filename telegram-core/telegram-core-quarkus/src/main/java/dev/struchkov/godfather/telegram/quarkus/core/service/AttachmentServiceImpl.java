@@ -77,17 +77,6 @@ public class AttachmentServiceImpl implements AttachmentService {
                 .onItem().ifNotNull().transform(bytes -> new ByteContainer(fileAttachment.getFileName(), fileAttachment.getMimeType(), bytes));
     }
 
-    @Override
-    public Uni<ByteContainer> uploadBytes(@NotNull Picture picture) {
-        isNotNull(picture);
-        return downloadBytes(picture)
-                .onItem().ifNotNull().transform(bytes -> new ByteContainer(null, "image/jpeg", bytes));
-    }
-
-    private Uni<byte[]> downloadBytes(Picture picture) {
-        return telegramDownloadBytes(picture.getFileId());
-    }
-
     private Uni<byte[]> downloadBytes(FileAttachment documentAttachment) {
         return telegramDownloadBytes(documentAttachment.getFileId());
     }

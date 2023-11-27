@@ -15,12 +15,12 @@ public class PictureGroupAttachment extends Attachment {
     private List<Picture> pictures;
 
     public PictureGroupAttachment() {
-        super(TelegramAttachmentType.PICTURE.name());
+        super(TelegramAttachmentType.PICTURE_GROUP.name());
     }
 
     public Optional<Picture> getLargePicture() {
         return pictures.stream()
-                .max(Comparator.comparingInt(Picture::getFileSize));
+                .max(Comparator.comparing(Picture::getFileSize));
     }
 
 }

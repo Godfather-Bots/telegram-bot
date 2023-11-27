@@ -176,7 +176,7 @@ public final class Attachments {
 
     public static boolean isPictureGroup(Attachment attachment) {
         isNotNull(attachment);
-        return TelegramAttachmentType.PICTURE.name().equals(attachment.getType());
+        return TelegramAttachmentType.PICTURE_GROUP.name().equals(attachment.getType());
     }
 
     public static boolean isLink(Attachment attachment) {

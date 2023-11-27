@@ -4,6 +4,7 @@ public enum TelegramAttachmentType {
 
     DOCUMENT,
     CONTACT,
+    PICTURE_GROUP,
     PICTURE,
     LINK,
     COMMAND,

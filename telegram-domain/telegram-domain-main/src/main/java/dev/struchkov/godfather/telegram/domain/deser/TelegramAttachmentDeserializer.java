@@ -39,12 +39,13 @@ public class TelegramAttachmentDeserializer extends StdDeserializer<Attachment> 
             case BUTTON_CLICK -> parser.getCodec().treeToValue(node, ButtonClickAttachment.class);
             case DOCUMENT -> parser.getCodec().treeToValue(node, DocumentAttachment.class);
             case CONTACT -> parser.getCodec().treeToValue(node, ContactAttachment.class);
-            case PICTURE -> parser.getCodec().treeToValue(node, PictureGroupAttachment.class);
+            case PICTURE_GROUP -> parser.getCodec().treeToValue(node, PictureGroupAttachment.class);
             case LINK -> parser.getCodec().treeToValue(node, LinkAttachment.class);
             case COMMAND -> parser.getCodec().treeToValue(node, CommandAttachment.class);
             case VIDEO -> parser.getCodec().treeToValue(node, VideoAttachment.class);
             case VOICE -> parser.getCodec().treeToValue(node, VoiceAttachment.class);
             case STICKER -> parser.getCodec().treeToValue(node, StickerAttachment.class);
+            case PICTURE -> null;
         };
     }
 
