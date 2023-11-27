@@ -83,7 +83,7 @@ public final class MessageMailConvert {
         }
 
         if (message.getReplyToMessage() != null) {
-            mail.setForwardMail(Collections.singletonList(apply(message.getReplyToMessage())));
+            mail.setReplayMail(apply(message.getReplyToMessage()));
         }
 
         return mail;

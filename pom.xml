@@ -38,7 +38,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <godfather.core.ver>1.1.0</godfather.core.ver>
+        <godfather.core.ver>1.2.0-SNAPSHOT</godfather.core.ver>
 
         <!-- https://mvnrepository.com/artifact/org.telegram/telegrambots -->
         <telegrambots.ver>6.8.0</telegrambots.ver>
