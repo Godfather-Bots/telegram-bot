@@ -151,6 +151,6 @@ image_pull_secrets:
 #      path: /drone/volume/mkdocs_cache/godfather_telegram/spring/ru
 ---
 kind: signature
-hmac: a34ade73094a4c0e8416102e384c4e36b5612f81331447d69589f632a3e1cde4
+hmac: 34e42dae6623cfc54bc51b79219a79564fcbac0f5e7463d3d9ac485756350b4b
 
 ...
