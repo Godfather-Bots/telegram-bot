@@ -15,7 +15,7 @@ volumes:
 steps:
 
   - name: publish
-    image: maven:3.8.5-openjdk-17
+    image: hub.docker.struchkov.dev/maven:3.9.5-eclipse-temurin-17-alpine
     privileged: true
     volumes:
       - name: m2
@@ -44,7 +44,7 @@ volumes:
 steps:
 
   - name: publish maven central
-    image: maven:3.8.5-openjdk-17
+    image: hub.docker.struchkov.dev/maven:3.9.5-eclipse-temurin-17-alpine
     privileged: true
     volumes:
       - name: m2
@@ -79,7 +79,7 @@ volumes:
 steps:
 
   - name: publish struchkov nexus
-    image: maven:3.8.5-openjdk-17
+    image: hub.docker.struchkov.dev/maven:3.9.5-eclipse-temurin-17-alpine
     privileged: true
     volumes:
       - name: m2
@@ -113,7 +113,7 @@ clone:
 steps:
 
   - name: build docs
-    image: git.struchkov.dev/upagge/mkdocs-material-insiders:latest
+    image: private.docker.struchkov.dev/mkdocs:latest
     volumes:
       - name: mkdocs_cache
         path: ${DRONE_WORKSPACE}/documentation/ru/.cache
