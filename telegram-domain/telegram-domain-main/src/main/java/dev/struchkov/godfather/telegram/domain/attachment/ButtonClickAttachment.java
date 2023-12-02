@@ -2,6 +2,7 @@ package dev.struchkov.godfather.telegram.domain.attachment;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.struchkov.godfather.main.domain.content.Attachment;
+import dev.struchkov.godfather.main.domain.content.Mail;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,11 +18,8 @@ import static dev.struchkov.haiti.utils.Inspector.isNotNull;
 @Setter
 public class ButtonClickAttachment extends Attachment {
 
-    /**
-     * Идентификатор сообщения, под которым пользователь нажал кнопку.
-     */
-    private String messageId;
     private String rawCallBackData;
+    private Mail message;
 
     private Map<String, ButtonArg> args = new HashMap<>();
 

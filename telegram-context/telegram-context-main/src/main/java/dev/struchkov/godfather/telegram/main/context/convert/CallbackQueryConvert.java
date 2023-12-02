@@ -3,6 +3,7 @@ package dev.struchkov.godfather.telegram.main.context.convert;
 import dev.struchkov.godfather.main.domain.content.Mail;
 import dev.struchkov.godfather.telegram.domain.attachment.ButtonClickAttachment;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.User;
 
 import java.time.LocalDateTime;
@@ -21,7 +22,7 @@ public class CallbackQueryConvert {
         mail.setId(callbackQuery.getMessage().getMessageId().toString());
         mail.setCreateDate(LocalDateTime.now());
         mail.setText(callbackData);
-        mail.addAttachment(convertToButtonClick(callbackData, callbackQuery.getMessage().getMessageId()));
+        mail.addAttachment(convertToButtonClick(callbackData, callbackQuery.getMessage()));
 
         final Long chatId = callbackQuery.getFrom().getId();
         mail.setFromPersonId(chatId.toString());
@@ -32,10 +33,10 @@ public class CallbackQueryConvert {
         return mail;
     }
 
-    private static ButtonClickAttachment convertToButtonClick(String callbackData, Integer messageId) {
+    private static ButtonClickAttachment convertToButtonClick(String callbackData, Message message) {
         final ButtonClickAttachment buttonClickAttachment = new ButtonClickAttachment();
         buttonClickAttachment.setRawCallBackData(callbackData);
-        buttonClickAttachment.setMessageId(messageId.toString());
+        buttonClickAttachment.setMessage(MessageMailConvert.apply(message));
         if (callbackData.charAt(0) == '[' && callbackData.charAt(callbackData.length() - 1) == ']') {
             final String[] args = callbackData.substring(1, callbackData.length() - 1).split(";");
             for (String arg : args) {
