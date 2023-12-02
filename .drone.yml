@@ -27,6 +27,8 @@ steps:
       - echo "$MAVEN_SETTINGS" >> maven-settings.xml
       - mvn --settings maven-settings.xml -U -P snapshot clean deploy
 
+image_pull_secrets:
+  - DOCKER_AUTH
 ---
 kind: pipeline
 type: docker
@@ -62,6 +64,8 @@ steps:
       - gpg --pinentry-mode loopback --passphrase $GPG_PASSPHRASE --import gpg.key
       - mvn --settings maven-settings.xml -U -P ossrh,release clean deploy
 
+image_pull_secrets:
+  - DOCKER_AUTH
 ---
 kind: pipeline
 type: docker
@@ -97,6 +101,8 @@ steps:
       - gpg --pinentry-mode loopback --passphrase $GPG_PASSPHRASE --import gpg.key
       - mvn --settings maven-settings.xml -U -P ossrh,release-struchkov-nexus clean deploy
 
+image_pull_secrets:
+  - DOCKER_AUTH
 ---
 kind: pipeline
 type: docker
@@ -145,6 +151,6 @@ volumes:
       path: /drone/volume/mkdocs_cache/godfather_telegram/spring/ru
 ---
 kind: signature
-hmac: ec0fecfc2895dfd33ce77ae31eac3a345d79ef45bd0db30d44273082ab597d96
+hmac: a34ade73094a4c0e8416102e384c4e36b5612f81331447d69589f632a3e1cde4
 
 ...
