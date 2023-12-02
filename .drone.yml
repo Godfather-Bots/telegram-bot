@@ -9,7 +9,7 @@ trigger:
 
 steps:
   - name: build site
-    image: git.struchkov.dev/upagge/mkdocs-material-insiders:latest
+    image: private.docker.struchkov.dev/mkdocs:latest
     environment:
       SSH_DEPLOY_KEY:
         from_secret: SSH_DEPLOY_KEY
@@ -35,6 +35,6 @@ image_pull_secrets:
   - DOCKER_AUTH
 ---
 kind: signature
-hmac: cce0a879234d3e4b0a19e835506c5ec7834711ca21acac4cb755605d56371291
+hmac: 413c2d4eacfb07a3f78b3e560726c7c3dbafe140890934316225923f3cae11e3
 
 ...
