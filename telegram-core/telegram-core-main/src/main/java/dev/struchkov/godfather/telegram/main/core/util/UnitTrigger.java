@@ -54,6 +54,13 @@ public class UnitTrigger {
                 .isPresent();
     }
 
+    public static Predicate<Mail> isButtonClickArgValue(String argType, String argValue) {
+        return mail -> Attachments.findFirstButtonClick(mail.getAttachments())
+                .flatMap(click -> click.getArgByType(argType))
+                .filter(buttonArg -> argValue.equals(buttonArg.getValue()))
+                .isPresent();
+    }
+
     public static Predicate<Mail> isPersonId(String... personId) {
         return mail -> Arrays.stream(personId).anyMatch(id -> id.equals(mail.getFromPersonId()));
     }
